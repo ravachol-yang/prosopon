@@ -1,0 +1,92 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id         String   @id @default(cuid())
+  email      String   @unique
+  name       String?
+  password   String
+  verified   Boolean  @default(false)
+  role       Role     @default(USER)
+
+  invitedBy  Invite?  @relation("invite_code", fields: [inviteId], references: [code])
+  inviteId   String?
+
+  profiles   Profile[]
+  closet     Texture[]
+  createdInvites Invite[]  @relation("creator")
+
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model Invite {
+  code       String   @id @default(cuid())
+  maxInvites Int      @default(1)
+
+  createdBy  User     @relation("creator", fields: [creatorId], references: [id])
+  creatorId  String
+
+  usedBy User[]       @relation("invite_code")
+
+  createdAt  DateTime @default(now())
+}
+
+model Profile {
+  id          String   @id
+  name        String   @unique
+
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  skin        Texture? @relation("skin", fields: [skinId], references: [id])
+  skinId      String?
+  cape        Texture? @relation("cape", fields: [capeId], references: [id])
+  capeId      String?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Texture {
+  id          String    @id @default(cuid())
+  name        String
+  type        TextureType
+  hash        String
+  model       SkinModel @default(DEFAULT)
+
+  uploader    User      @relation(fields: [uploaderId], references: [id])
+  uploaderId  String
+
+  profileSkin Profile[] @relation("skin")
+  profileCape Profile[] @relation("cape")
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+enum TextureType {
+  SKIN
+  CAPE
+}
+
+enum SkinModel {
+  DEFAULT
+  SLIM
+}
