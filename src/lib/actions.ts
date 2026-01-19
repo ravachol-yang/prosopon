@@ -1,6 +1,10 @@
-import { registerParams } from "@/lib/schema";
+"use server";
+
+import { loginParams, registerParams } from "@/lib/schema";
 import prisma from "@/lib/prisma";
-import { hashPassword } from "@/lib/password";
+import { checkPassword, hashPassword } from "@/lib/password";
+import { createToken } from "@/lib/jwt";
+import { cookies } from "next/headers";
 
 export async function register(formData: FormData) {
   const data = Object.fromEntries(formData);
@@ -27,6 +31,46 @@ export async function register(formData: FormData) {
       email,
       password: passwordHash,
     },
+  });
+
+  return { success: true };
+}
+
+export async function login(formData: FormData) {
+  const data = Object.fromEntries(formData);
+  const validated = loginParams.safeParse(data);
+
+  if (!validated.success) {
+    return { error: validated.error.message };
+  }
+
+  const { email, password } = validated.data;
+
+  const user = await prisma.user.findUnique({
+    where: { email },
+  });
+
+  if (!user) {
+    return { error: "User not found" };
+  }
+
+  if (!checkPassword(password, user.password)) {
+    return { error: "Invalid Credentials" };
+  }
+
+  const token = await createToken({
+    id: user.id,
+    role: user.role,
+    verified: user.verified,
+  });
+
+  const cookieStore = await cookies();
+  cookieStore.set("prosopon.session", token, {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 15,
   });
 
   return { success: true };

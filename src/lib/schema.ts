@@ -5,3 +5,8 @@ export const registerParams = z.object({
   password: z.string().min(8),
   inviteCode: z.string().optional(),
 });
+
+export const loginParams = z.object({
+  email: z.email(),
+  password: z.string().min(8),
+});
