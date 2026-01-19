@@ -1,0 +1,48 @@
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { uploadTexture } from "@/lib/actions";
+import prisma from "@/lib/prisma";
+import { hashPassword } from "@/lib/password";
+import { setCurrentUserMock } from "@/lib/__tests__/mock";
+
+let userId: string;
+
+beforeAll(async () => {
+  await prisma.texture.deleteMany({});
+  await prisma.user.deleteMany({});
+
+  const user = await prisma.user.create({
+    data: {
+      email: "user@example.com",
+      password: hashPassword("password"),
+      role: "USER",
+      verified: true,
+    },
+  });
+  userId = user.id;
+  setCurrentUserMock({ sub: userId, role: "USER", verified: true });
+});
+
+afterAll(async () => {
+  await prisma.texture.deleteMany({});
+  await prisma.user.deleteMany({});
+  await prisma.$disconnect();
+});
+
+describe("uploadTexture", () => {
+  it("should create a texture", async () => {
+    const file = new File(["dummy"], "skin.png", { type: "image/png" });
+    const formData = new FormData();
+    formData.set("name", "Skin");
+    formData.set("type", "SKIN");
+    formData.set("model", "DEFAULT");
+    formData.set("file", file);
+
+    const texture = await uploadTexture(formData);
+
+    expect(texture.name).toBe("Skin");
+    expect(texture.type).toBe("SKIN");
+    expect(texture.model).toBe("DEFAULT");
+    expect(texture.hash).toBeDefined();
+    expect(texture.uploaderId).toBe(userId);
+  });
+});
