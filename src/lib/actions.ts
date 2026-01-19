@@ -1,6 +1,12 @@
 "use server";
 
-import { createProfileParam, loginParams, registerParams, uploadTextureParams } from "@/lib/schema";
+import {
+  bindProfileTextureParams,
+  createProfileParam,
+  loginParams,
+  registerParams,
+  uploadTextureParams,
+} from "@/lib/schema";
 import prisma from "@/lib/prisma";
 import { checkPassword, hashPassword } from "@/lib/password";
 import { createToken } from "@/lib/jwt";
@@ -164,5 +170,38 @@ export async function uploadTexture(formData: FormData) {
       model: type === "SKIN" ? model : undefined,
       uploader: { connect: { id: user.sub } },
     },
+  });
+}
+
+export async function bindProfileTexture(data: z.infer<typeof bindProfileTextureParams>) {
+  const user = await getCurrentUser();
+  if (!user || !user.sub) throw new Error("Not logged in");
+  if (!user.verified) throw new Error("Require Verification");
+
+  const { profileId, textureId, type } = bindProfileTextureParams.parse(data);
+
+  const profile = await prisma.profile.findUnique({
+    where: { id: profileId },
+  });
+
+  if (!profile || profile.userId != user.sub) {
+    throw new Error("Don't own profile");
+  }
+
+  const texture = await prisma.texture.findUnique({
+    where: { id: textureId },
+  });
+
+  if (!texture) {
+    throw new Error("Texture not found");
+  }
+
+  if (texture.type != type) {
+    throw new Error("Wrong type");
+  }
+
+  await prisma.profile.update({
+    where: { id: profileId },
+    data: type === "SKIN" ? { skinId: textureId } : { capeId: textureId },
   });
 }
