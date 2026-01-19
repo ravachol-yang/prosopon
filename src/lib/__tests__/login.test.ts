@@ -15,6 +15,7 @@ vi.mock("next/headers", () => ({
 }));
 
 beforeAll(async () => {
+  await prisma.invite.deleteMany({});
   await prisma.user.deleteMany({});
   await prisma.user.create({
     data: {
@@ -25,6 +26,7 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
+  await prisma.invite.deleteMany({});
   await prisma.user.deleteMany({});
   await prisma.$disconnect();
 });

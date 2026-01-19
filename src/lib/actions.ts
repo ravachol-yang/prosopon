@@ -14,7 +14,7 @@ export async function register(formData: FormData) {
     return { error: validated.error.message };
   }
 
-  const { email, password } = validated.data;
+  const { email, password, inviteCode } = validated.data;
 
   const existing = await prisma.user.findUnique({
     where: { email },
@@ -24,12 +24,34 @@ export async function register(formData: FormData) {
     return { error: `User with email: ${email} already exists` };
   }
 
+  let verified = false;
+  let inviteId;
+  if (inviteCode) {
+    const invite = await prisma.invite.findUnique({
+      where: { code: inviteCode },
+      include: { usedBy: true },
+    });
+
+    if (!invite) {
+      return { error: "Invalid invite code" };
+    }
+
+    if (invite.usedBy.length >= invite.maxInvites) {
+      return { error: "Invites used up" };
+    }
+
+    verified = true;
+    inviteId = invite.code;
+  }
+
   const passwordHash = hashPassword(password);
 
   await prisma.user.create({
     data: {
       email,
       password: passwordHash,
+      verified,
+      invitedBy: inviteId ? { connect: { code: inviteId } } : undefined,
     },
   });
 
