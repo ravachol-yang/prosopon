@@ -45,4 +45,26 @@ describe("uploadTexture", () => {
     expect(texture.hash).toBeDefined();
     expect(texture.uploaderId).toBe(userId);
   });
+
+  it("should fail without a file", async () => {
+    const formData = new FormData();
+    formData.append("name", "NoFile");
+    formData.append("type", "SKIN");
+
+    await expect(uploadTexture(formData)).rejects.toThrow("File is required");
+  });
+
+  it("should not set model if uploading a cape", async () => {
+    const file = new File(["dummy"], "cape.png", { type: "image/png" });
+    const formData = new FormData();
+    formData.set("name", "Cape");
+    formData.set("type", "CAPE");
+    formData.set("model", "SLIM");
+    formData.set("file", file);
+
+    const texture = await uploadTexture(formData);
+
+    expect(texture.name).toBe("Cape");
+    expect(texture.model).not.toBe("SLIM");
+  });
 });
