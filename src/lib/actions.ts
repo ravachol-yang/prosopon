@@ -7,7 +7,6 @@ import { createToken } from "@/lib/jwt";
 import { cookies } from "next/headers";
 import { getCurrentUser } from "@/lib/user";
 import { z } from "zod";
-import { SkinModel, TextureType } from "@/generated/prisma/enums";
 
 export async function register(formData: FormData) {
   const data = Object.fromEntries(formData);
@@ -143,14 +142,16 @@ export async function uploadTexture(formData: FormData) {
 
   if (!user.verified) throw new Error("Require Verification");
 
-  const nameData = formData.get("name") as string | undefined;
-  const typeData = formData.get("type") as TextureType | undefined;
-  const modelData = formData.get("model") as SkinModel | undefined;
-  const file = formData.get("file") as File | null;
+  const raw = {
+    name: formData.get("name"),
+    type: formData.get("type"),
+    model: formData.get("model"),
+  };
 
+  const file = formData.get("file") as File | null;
   if (!file) throw new Error("File is required");
 
-  const { name, type, model } = uploadTextureParams.parse({ nameData, typeData, modelData });
+  const { name, type, model } = uploadTextureParams.parse(raw);
 
   // TODO: upload to S3 compatible
   const hash = "fakehash-" + Date.now();
@@ -160,7 +161,7 @@ export async function uploadTexture(formData: FormData) {
       name: name ? name : hash,
       type,
       hash,
-      model,
+      model: type === "SKIN" ? model : undefined,
       uploader: { connect: { id: user.sub } },
     },
   });
