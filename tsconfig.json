@@ -28,7 +28,8 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
-    "**/*.mts"
+    "**/*.mts",
+    "node_modules/.pnpm/vitest@4.0.17_@types+node@20.19.30_jiti@2.6.1_lightningcss@1.30.2_yaml@2.8.2/node_modules/vitest/globals.d.ts"
   ],
   "exclude": ["node_modules"]
 }
