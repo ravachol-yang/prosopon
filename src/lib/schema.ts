@@ -24,6 +24,6 @@ export const uploadTextureParams = z.object({
 
 export const bindProfileTextureParams = z.object({
   profileId: z.string(),
-  textureId: z.string(),
+  textureId: z.string().optional(),
   type: z.enum(TextureType),
 });

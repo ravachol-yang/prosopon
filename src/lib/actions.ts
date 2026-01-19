@@ -188,16 +188,18 @@ export async function bindProfileTexture(data: z.infer<typeof bindProfileTexture
     throw new Error("Don't own profile");
   }
 
-  const texture = await prisma.texture.findUnique({
-    where: { id: textureId },
-  });
+  if (textureId) {
+    const texture = await prisma.texture.findUnique({
+      where: { id: textureId },
+    });
 
-  if (!texture) {
-    throw new Error("Texture not found");
-  }
+    if (!texture) {
+      throw new Error("Texture not found");
+    }
 
-  if (texture.type != type) {
-    throw new Error("Wrong type");
+    if (texture.type != type) {
+      throw new Error("Wrong type");
+    }
   }
 
   return prisma.profile.update({
