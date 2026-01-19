@@ -1,10 +1,11 @@
 "use server";
 
-import { loginParams, registerParams } from "@/lib/schema";
+import { createProfileParam, loginParams, registerParams } from "@/lib/schema";
 import prisma from "@/lib/prisma";
 import { checkPassword, hashPassword } from "@/lib/password";
 import { createToken } from "@/lib/jwt";
 import { cookies } from "next/headers";
+import { getCurrentUser } from "@/lib/user";
 
 export async function register(formData: FormData) {
   const data = Object.fromEntries(formData);
@@ -96,4 +97,32 @@ export async function login(formData: FormData) {
   });
 
   return { success: true };
+}
+
+export async function createProfile(formData: FormData) {
+  const user = await getCurrentUser();
+
+  if (!user || !user.sub) return { error: "Require login" };
+
+  if (!user.verified) return { error: "Require Verified user" };
+
+  const data = Object.fromEntries(formData);
+  const validated = createProfileParam.safeParse(data);
+  if (!validated.success) return { error: validated.error.message };
+
+  const { name } = validated.data;
+  const existing = await prisma.profile.findUnique({
+    where: { name },
+  });
+
+  if (existing) return { error: "Profile already exists" };
+
+  return prisma.profile.create({
+    data: {
+      name,
+      user: {
+        connect: { id: user.sub },
+      },
+    },
+  });
 }

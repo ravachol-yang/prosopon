@@ -45,7 +45,7 @@ model Invite {
 }
 
 model Profile {
-  id          String   @id
+  id          String   @id @default(uuid(4))
   name        String   @unique
 
   user        User     @relation(fields: [userId], references: [id])
