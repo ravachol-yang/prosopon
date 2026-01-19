@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { SkinModel, TextureType } from "@/generated/prisma/enums";
 
 export const registerParams = z.object({
   email: z.email(),
@@ -13,4 +14,10 @@ export const loginParams = z.object({
 
 export const createProfileParam = z.object({
   name: z.string().min(2).max(32),
+});
+
+export const uploadTextureParams = z.object({
+  name: z.string().min(1).max(32).optional(),
+  type: z.enum(TextureType),
+  model: z.enum(SkinModel).optional(),
 });
