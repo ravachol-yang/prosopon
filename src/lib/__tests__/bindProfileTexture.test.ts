@@ -101,6 +101,15 @@ describe("bindProfileTexture", () => {
 
     expect(profile.capeId).toBe(capeId);
   });
+  it("should unbind if textureId is undefined", async () => {
+    const profile = await bindProfileTexture({
+      profileId,
+      textureId: undefined,
+      type: "SKIN",
+    });
+
+    expect(profile.skinId).toBeNull();
+  });
   it("should fail on wrong type", async () => {
     await expect(
       bindProfileTexture({

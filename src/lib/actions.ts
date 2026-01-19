@@ -204,6 +204,9 @@ export async function bindProfileTexture(data: z.infer<typeof bindProfileTexture
 
   return prisma.profile.update({
     where: { id: profileId },
-    data: type === "SKIN" ? { skinId: textureId } : { capeId: textureId },
+    data:
+      type === "SKIN"
+        ? { skin: textureId ? { connect: { id: textureId } } : { disconnect: true } }
+        : { cape: textureId ? { connect: { id: textureId } } : { disconnect: true } },
   });
 }
