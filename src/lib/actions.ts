@@ -200,7 +200,7 @@ export async function bindProfileTexture(data: z.infer<typeof bindProfileTexture
     throw new Error("Wrong type");
   }
 
-  await prisma.profile.update({
+  return prisma.profile.update({
     where: { id: profileId },
     data: type === "SKIN" ? { skinId: textureId } : { capeId: textureId },
   });
