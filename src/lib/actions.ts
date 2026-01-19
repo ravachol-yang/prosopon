@@ -6,6 +6,7 @@ import { checkPassword, hashPassword } from "@/lib/password";
 import { createToken } from "@/lib/jwt";
 import { cookies } from "next/headers";
 import { getCurrentUser } from "@/lib/user";
+import { z } from "zod";
 
 export async function register(formData: FormData) {
   const data = Object.fromEntries(formData);
@@ -99,23 +100,30 @@ export async function login(formData: FormData) {
   return { success: true };
 }
 
-export async function createProfile(formData: FormData) {
+export async function createProfile(data: z.infer<typeof createProfileParam>) {
   const user = await getCurrentUser();
 
-  if (!user || !user.sub) return { error: "Require login" };
+  if (!user || !user.sub) throw new Error("Not logged in");
 
-  if (!user.verified) return { error: "Require Verified user" };
+  if (!user.verified) throw new Error("Require Verification");
 
-  const data = Object.fromEntries(formData);
-  const validated = createProfileParam.safeParse(data);
-  if (!validated.success) return { error: validated.error.message };
+  if (user.role !== "ADMIN") {
+    const profiles = await prisma.profile.findMany({
+      where: { userId: user.sub },
+    });
 
-  const { name } = validated.data;
+    if (profiles.length >= 1) {
+      throw new Error("Too many profiles");
+    }
+  }
+
+  const { name } = createProfileParam.parse(data);
+
   const existing = await prisma.profile.findUnique({
     where: { name },
   });
 
-  if (existing) return { error: "Profile already exists" };
+  if (existing) throw new Error("Profile already exists");
 
   return prisma.profile.create({
     data: {
