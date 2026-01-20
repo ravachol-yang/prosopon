@@ -19,7 +19,7 @@ export async function register(formData: FormData) {
   const validated = registerParams.safeParse(data);
 
   if (!validated.success) {
-    return { error: validated.error.message };
+    return { success: false, message: validated.error.message };
   }
 
   const { email, password, inviteCode } = validated.data;
@@ -29,7 +29,7 @@ export async function register(formData: FormData) {
   });
 
   if (existing) {
-    return { error: `User with email: ${email} already exists` };
+    return { success: false, message: `User with email: ${email} already exists` };
   }
 
   let verified = false;
@@ -41,11 +41,11 @@ export async function register(formData: FormData) {
     });
 
     if (!invite) {
-      return { error: "Invalid invite code" };
+      return { success: false, message: "Invalid invite code" };
     }
 
     if (invite.usedBy.length >= invite.maxInvites) {
-      return { error: "Invites used up" };
+      return { success: false, message: "Invites used up" };
     }
 
     verified = true;
@@ -71,7 +71,7 @@ export async function login(formData: FormData) {
   const validated = loginParams.safeParse(data);
 
   if (!validated.success) {
-    return { error: validated.error.message };
+    return { success: false, message: validated.error.message };
   }
 
   const { email, password } = validated.data;
@@ -81,11 +81,11 @@ export async function login(formData: FormData) {
   });
 
   if (!user) {
-    return { error: "User not found" };
+    return { success: false, message: "Invalid Credentials" };
   }
 
   if (!checkPassword(password, user.password)) {
-    return { error: "Invalid Credentials" };
+    return { success: false, message: "Invalid Credentials" };
   }
 
   const token = await createToken({

@@ -89,7 +89,7 @@ describe("registerWithInvite", () => {
 
     const result = await register(formData);
 
-    expect(typeof result.error).toBe("string");
+    expect(result.message).toBe("Invites used up");
   });
 
   it("should fail on an invalid code", async () => {
@@ -102,6 +102,6 @@ describe("registerWithInvite", () => {
 
     const result = await register(formData);
 
-    expect(typeof result.error).toBe("string");
+    expect(result.message).toBe("Invalid invite code");
   });
 });

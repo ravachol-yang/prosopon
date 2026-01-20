@@ -54,7 +54,7 @@ describe("login", () => {
     formData.set("password", "wrong_password");
 
     const result = await login(formData);
-    expect(typeof result.error).toBe("string");
+    expect(result.message).toBe("Invalid Credentials");
   });
 
   it("should fail on non-exist user", async () => {
@@ -63,6 +63,6 @@ describe("login", () => {
     formData.set("password", password);
 
     const result = await login(formData);
-    expect(typeof result.error).toBe("string");
+    expect(result.message).toBe("Invalid Credentials");
   });
 });
