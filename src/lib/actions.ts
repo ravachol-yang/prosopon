@@ -19,8 +19,7 @@ import { getStorage } from "@/lib/storage";
 const UPLOAD_MAX_SIZE = 1024 * 1024 * 2;
 const ALLOWED_TYPES = ["image/png"];
 
-export async function register(formData: FormData) {
-  const data = Object.fromEntries(formData);
+export async function register(data: z.infer<typeof registerParams>) {
   const validated = registerParams.safeParse(data);
 
   if (!validated.success) {
@@ -71,8 +70,7 @@ export async function register(formData: FormData) {
   return { success: true };
 }
 
-export async function login(formData: FormData) {
-  const data = Object.fromEntries(formData);
+export async function login(data: z.infer<typeof loginParams>) {
   const validated = loginParams.safeParse(data);
 
   if (!validated.success) {
