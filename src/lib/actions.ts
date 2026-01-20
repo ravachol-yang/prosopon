@@ -10,7 +10,6 @@ import {
 } from "@/lib/schema";
 import prisma from "@/lib/prisma";
 import { checkPassword, hashPassword } from "@/lib/password";
-import { createToken } from "@/lib/jwt";
 import { cookies } from "next/headers";
 import { checkAuth, signin } from "@/lib/auth";
 import { z } from "zod";
