@@ -37,13 +37,16 @@ describe("uploadTexture", () => {
     formData.set("model", "DEFAULT");
     formData.set("file", file);
 
-    const texture = await uploadTexture(formData);
+    const result = await uploadTexture(formData);
 
-    expect(texture.name).toBe("Skin");
-    expect(texture.type).toBe("SKIN");
-    expect(texture.model).toBe("DEFAULT");
-    expect(texture.hash).toBeDefined();
-    expect(texture.uploaderId).toBe(userId);
+    expect(result.success).toBe(true);
+
+    const texture = result.data;
+    expect(texture?.name).toBe("Skin");
+    expect(texture?.type).toBe("SKIN");
+    expect(texture?.model).toBe("DEFAULT");
+    expect(texture?.hash).toBeDefined();
+    expect(texture?.uploaderId).toBe(userId);
   });
 
   it("should fail without a file", async () => {
@@ -51,7 +54,10 @@ describe("uploadTexture", () => {
     formData.append("name", "NoFile");
     formData.append("type", "SKIN");
 
-    await expect(uploadTexture(formData)).rejects.toThrow("File is required");
+    const result = await uploadTexture(formData);
+
+    expect(result.success).toBe(false);
+    expect(result.message).toBe("File is required");
   });
 
   it("should not set model if uploading a cape", async () => {
@@ -62,9 +68,11 @@ describe("uploadTexture", () => {
     formData.set("model", "SLIM");
     formData.set("file", file);
 
-    const texture = await uploadTexture(formData);
+    const result = await uploadTexture(formData);
+    expect(result.success).toBe(true);
 
-    expect(texture.name).toBe("Cape");
-    expect(texture.model).not.toBe("SLIM");
+    const texture = result.data;
+    expect(texture?.name).toBe("Cape");
+    expect(texture?.model).not.toBe("SLIM");
   });
 });

@@ -44,26 +44,36 @@ describe("createProfile", () => {
   it("should create a profile", async () => {
     setCurrentUserMock({ sub: adminId, role: "ADMIN", verified: true });
 
-    const profile = await createProfile({ name });
+    const result = await createProfile({ name });
 
-    expect(profile.name).toBe(name);
-    expect(profile.userId).toBe(adminId);
+    expect(result.success).toBe(true);
+    expect(result.data?.name).toBe(name);
+    expect(result.data?.userId).toBe(adminId);
   });
 
   it("should fail on duplicate name", async () => {
-    await expect(createProfile({ name })).rejects.toThrow("Profile already exists");
+    const result = await createProfile({ name });
+
+    expect(result.success).toBe(false);
+    expect(result.message).toBe("Profile already exists");
   });
 
   it("should fail on too many profiles", async () => {
     setCurrentUserMock({ sub: userId, role: "USER", verified: true });
 
     await createProfile({ name: "New" });
-    await expect(createProfile({ name: "Many" })).rejects.toThrow("Too many profiles");
+    const result = await createProfile({ name: "Many" });
+
+    expect(result.success).toBe(false);
+    expect(result.message).toBe("Too many profiles");
   });
 
   it("should fail on unverified user", async () => {
     setCurrentUserMock({ sub: userId, role: "USER", verified: false });
 
-    await expect(createProfile({ name: "Unverified" })).rejects.toThrow("Require Verification");
+    const result = await createProfile({ name: "Unverified" });
+
+    expect(result.success).toBe(false);
+    expect(result.message).toBe("Require Verification");
   });
 });

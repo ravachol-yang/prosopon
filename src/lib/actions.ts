@@ -108,10 +108,8 @@ export async function login(formData: FormData) {
 
 export async function createProfile(data: z.infer<typeof createProfileParam>) {
   const user = await getCurrentUser();
-
-  if (!user || !user.sub) throw new Error("Not logged in");
-
-  if (!user.verified) throw new Error("Require Verification");
+  if (!user || !user.sub) return { success: false, message: "Not logged in" };
+  if (!user.verified) return { success: false, message: "Require Verification" };
 
   if (user.role !== "ADMIN") {
     const profiles = await prisma.profile.findMany({
@@ -119,19 +117,23 @@ export async function createProfile(data: z.infer<typeof createProfileParam>) {
     });
 
     if (profiles.length >= 1) {
-      throw new Error("Too many profiles");
+      return { success: false, message: "Too many profiles" };
     }
   }
 
-  const { name } = createProfileParam.parse(data);
+  const validated = createProfileParam.safeParse(data);
+  if (!validated.success) {
+    return { success: false, message: validated.error.message };
+  }
+  const { name } = validated.data;
 
   const existing = await prisma.profile.findUnique({
     where: { name },
   });
 
-  if (existing) throw new Error("Profile already exists");
+  if (existing) return { success: false, message: "Profile already exists" };
 
-  return prisma.profile.create({
+  const profile = await prisma.profile.create({
     data: {
       name,
       user: {
@@ -139,14 +141,14 @@ export async function createProfile(data: z.infer<typeof createProfileParam>) {
       },
     },
   });
+
+  return { success: true, data: profile };
 }
 
 export async function uploadTexture(formData: FormData) {
   const user = await getCurrentUser();
-
-  if (!user || !user.sub) throw new Error("Not logged in");
-
-  if (!user.verified) throw new Error("Require Verification");
+  if (!user || !user.sub) return { success: false, message: "Not logged in" };
+  if (!user.verified) return { success: false, message: "Require Verification" };
 
   const raw = {
     name: formData.get("name"),
@@ -155,14 +157,18 @@ export async function uploadTexture(formData: FormData) {
   };
 
   const file = formData.get("file") as File | null;
-  if (!file) throw new Error("File is required");
+  if (!file) return { success: false, message: "File is required" };
 
-  const { name, type, model } = uploadTextureParams.parse(raw);
+  const validated = uploadTextureParams.safeParse(raw);
+  if (!validated.success) {
+    return { success: false, message: validated.error.message };
+  }
+  const { name, type, model } = validated.data;
 
   // TODO: upload to S3 compatible
   const hash = "fakehash-" + Date.now();
 
-  return prisma.texture.create({
+  const texture = await prisma.texture.create({
     data: {
       name: name ? name : hash,
       type,
@@ -171,12 +177,14 @@ export async function uploadTexture(formData: FormData) {
       uploader: { connect: { id: user.sub } },
     },
   });
+
+  return { success: true, data: texture };
 }
 
 export async function bindProfileTexture(data: z.infer<typeof bindProfileTextureParams>) {
   const user = await getCurrentUser();
-  if (!user || !user.sub) throw new Error("Not logged in");
-  if (!user.verified) throw new Error("Require Verification");
+  if (!user || !user.sub) return { success: false, message: "Not logged in" };
+  if (!user.verified) return { success: false, message: "Require Verification" };
 
   const { profileId, textureId, type } = bindProfileTextureParams.parse(data);
 
@@ -185,7 +193,7 @@ export async function bindProfileTexture(data: z.infer<typeof bindProfileTexture
   });
 
   if (!profile || profile.userId != user.sub) {
-    throw new Error("Don't own profile");
+    return { success: false, message: "Don't own profile" };
   }
 
   if (textureId) {
@@ -194,19 +202,21 @@ export async function bindProfileTexture(data: z.infer<typeof bindProfileTexture
     });
 
     if (!texture) {
-      throw new Error("Texture not found");
+      return { success: false, message: "Texture not found" };
     }
 
     if (texture.type != type) {
-      throw new Error("Wrong type");
+      return { success: false, message: "Wrong type" };
     }
   }
 
-  return prisma.profile.update({
+  const updatedProfile = await prisma.profile.update({
     where: { id: profileId },
     data:
       type === "SKIN"
         ? { skin: textureId ? { connect: { id: textureId } } : { disconnect: true } }
         : { cape: textureId ? { connect: { id: textureId } } : { disconnect: true } },
   });
+
+  return { success: true, data: updatedProfile };
 }

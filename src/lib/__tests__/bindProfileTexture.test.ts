@@ -84,48 +84,51 @@ afterAll(async () => {
 
 describe("bindProfileTexture", () => {
   it("should bind a profile and a skin", async () => {
-    const profile = await bindProfileTexture({
+    const result = await bindProfileTexture({
       profileId,
       textureId: skinId,
       type: "SKIN",
     });
 
-    expect(profile.skinId).toBe(skinId);
+    const profile = result.data;
+    expect(profile?.skinId).toBe(skinId);
   });
   it("should bind a profile and a cape", async () => {
-    const profile = await bindProfileTexture({
+    const result = await bindProfileTexture({
       profileId,
       textureId: capeId,
       type: "CAPE",
     });
 
-    expect(profile.capeId).toBe(capeId);
+    const profile = result.data;
+    expect(profile?.capeId).toBe(capeId);
   });
   it("should unbind if textureId is undefined", async () => {
-    const profile = await bindProfileTexture({
+    const result = await bindProfileTexture({
       profileId,
       textureId: undefined,
       type: "SKIN",
     });
 
-    expect(profile.skinId).toBeNull();
+    const profile = result.data;
+    expect(profile?.skinId).toBeNull();
   });
   it("should fail on wrong type", async () => {
-    await expect(
-      bindProfileTexture({
-        profileId,
-        textureId: skinId,
-        type: "CAPE",
-      }),
-    ).rejects.toThrow("Wrong type");
+    const result = await bindProfileTexture({
+      profileId,
+      textureId: skinId,
+      type: "CAPE",
+    });
+
+    expect(result.message).toBe("Wrong type");
   });
   it("should fail not owning a profile", async () => {
-    await expect(
-      bindProfileTexture({
-        profileId: wrongProfileId,
-        textureId: skinId,
-        type: "SKIN",
-      }),
-    ).rejects.toThrow("Don't own profile");
+    const result = await bindProfileTexture({
+      profileId: wrongProfileId,
+      textureId: skinId,
+      type: "SKIN",
+    });
+
+    expect(result.message).toBe("Don't own profile");
   });
 });
