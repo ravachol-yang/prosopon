@@ -27,3 +27,7 @@ export const bindProfileTextureParams = z.object({
   textureId: z.string().optional(),
   type: z.enum(TextureType),
 });
+
+export const createInviteParam = z.object({
+  maxInvites: z.number().min(1).optional(),
+});

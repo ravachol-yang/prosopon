@@ -2,6 +2,7 @@
 
 import {
   bindProfileTextureParams,
+  createInviteParam,
   createProfileParam,
   loginParams,
   registerParams,
@@ -224,4 +225,29 @@ export async function bindProfileTexture(data: z.infer<typeof bindProfileTexture
   });
 
   return { success: true, data: updatedProfile };
+}
+
+export async function createInvite(data: z.infer<typeof createInviteParam>) {
+  const user = await checkAuth();
+  if (user.error) return { success: false, message: user.error };
+
+  if (user.role !== "ADMIN") return { success: false, message: "No permission" };
+
+  const validated = createInviteParam.safeParse(data);
+  if (!validated.success) {
+    return { success: false, message: validated.error.message };
+  }
+
+  const { maxInvites } = validated.data;
+
+  const invite = await prisma.invite.create({
+    data: {
+      maxInvites: maxInvites,
+      createdBy: {
+        connect: { id: user.id },
+      },
+    },
+  });
+
+  return { success: true, data: invite };
 }
