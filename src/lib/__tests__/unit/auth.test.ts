@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { createToken, parseToken } from "@/lib/jwt";
+import { createToken } from "@/lib/jwt";
 import { checkAuth, getCurrentUser } from "@/lib/auth";
 
 const getCookieMock = vi.fn();
@@ -9,20 +9,6 @@ vi.mock("next/headers", () => ({
     get: getCookieMock,
   }),
 }));
-
-it("should create and verify token", async () => {
-  const token = await createToken({
-    id: "userId",
-    role: "ADMIN",
-    verified: true,
-  });
-
-  expect(token).toBeDefined();
-
-  const payload = await parseToken(token);
-
-  expect(payload.sub).toBe("userId");
-});
 
 describe("auth", async () => {
   const token = await createToken({

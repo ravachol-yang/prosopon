@@ -6,7 +6,8 @@ export default defineConfig({
   test: {
     globals: true,
     environment: "node",
-    include: ["src/lib/__tests__/unit/*.test.ts"],
+    fileParallelism: false,
+    include: ["src/lib/__tests__/integration/*.test.ts"],
     setupFiles: ["dotenv/config"],
   },
 });
