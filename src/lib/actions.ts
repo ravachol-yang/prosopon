@@ -12,9 +12,10 @@ import prisma from "@/lib/prisma";
 import { checkPassword, hashPassword } from "@/lib/password";
 import { createToken } from "@/lib/jwt";
 import { cookies } from "next/headers";
-import { checkAuth } from "@/lib/auth";
+import { checkAuth, signin } from "@/lib/auth";
 import { z } from "zod";
 import { getStorage } from "@/lib/storage";
+import { redirect } from "next/navigation";
 
 const UPLOAD_MAX_SIZE = 1024 * 1024 * 2;
 const ALLOWED_TYPES = ["image/png"];
@@ -58,7 +59,7 @@ export async function register(data: z.infer<typeof registerParams>) {
 
   const passwordHash = hashPassword(password);
 
-  await prisma.user.create({
+  const user = await prisma.user.create({
     data: {
       email,
       password: passwordHash,
@@ -67,7 +68,9 @@ export async function register(data: z.infer<typeof registerParams>) {
     },
   });
 
-  return { success: true };
+  await signin({ id: user.id, role: user.role, verified: user.verified });
+
+  redirect("/dashboard");
 }
 
 export async function login(data: z.infer<typeof loginParams>) {
@@ -91,22 +94,9 @@ export async function login(data: z.infer<typeof loginParams>) {
     return { success: false, message: "Invalid Credentials" };
   }
 
-  const token = await createToken({
-    id: user.id,
-    role: user.role,
-    verified: user.verified,
-  });
+  await signin({ id: user.id, role: user.role, verified: user.verified });
 
-  const cookieStore = await cookies();
-  cookieStore.set("prosopon.session", token, {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    maxAge: 60 * 60 * 24 * 15,
-  });
-
-  return { success: true };
+  redirect("/dashboard");
 }
 
 export async function createProfile(data: z.infer<typeof createProfileParam>) {
