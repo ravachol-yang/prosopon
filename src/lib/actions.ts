@@ -13,6 +13,10 @@ import { createToken } from "@/lib/jwt";
 import { cookies } from "next/headers";
 import { checkAuth } from "@/lib/auth";
 import { z } from "zod";
+import { getStorage } from "@/lib/storage";
+
+const UPLOAD_MAX_SIZE = 1024 * 1024 * 2;
+const ALLOWED_TYPES = ["image/png"];
 
 export async function register(formData: FormData) {
   const data = Object.fromEntries(formData);
@@ -155,7 +159,8 @@ export async function uploadTexture(formData: FormData) {
   };
 
   const file = formData.get("file") as File | null;
-  if (!file) return { success: false, message: "File is required" };
+  if (!file || file.size > UPLOAD_MAX_SIZE || !ALLOWED_TYPES.includes(file.type))
+    return { success: false, message: "File is required" };
 
   const validated = uploadTextureParams.safeParse(raw);
   if (!validated.success) {
@@ -163,8 +168,11 @@ export async function uploadTexture(formData: FormData) {
   }
   const { name, type, model } = validated.data;
 
-  // TODO: upload to S3 compatible
+  const storage = getStorage();
   const hash = "fakehash-" + Date.now();
+  const buffer = new Uint8Array(await file.arrayBuffer());
+
+  await storage.put(hash, buffer, file.type);
 
   const texture = await prisma.texture.create({
     data: {

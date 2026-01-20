@@ -29,6 +29,7 @@ afterAll(async () => {
 });
 
 describe("uploadTexture", () => {
+  vi.spyOn(console, "warn").mockImplementation(() => {});
   it("should create a texture", async () => {
     const file = new File(["dummy"], "skin.png", { type: "image/png" });
     const formData = new FormData();
