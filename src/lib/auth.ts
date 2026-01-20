@@ -19,5 +19,6 @@ export async function checkAuth(verify = true) {
   return {
     id: user.sub,
     role: user.role,
+    verified: user.verified,
   };
 }

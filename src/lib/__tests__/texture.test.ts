@@ -1,8 +1,8 @@
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { uploadTexture } from "@/lib/actions";
 import prisma from "@/lib/prisma";
 import { hashPassword } from "@/lib/password";
-import { setCurrentUserMock } from "@/lib/__tests__/mock";
+import * as auth from "@/lib/auth";
 
 let userId: string;
 
@@ -19,7 +19,7 @@ beforeAll(async () => {
     },
   });
   userId = user.id;
-  setCurrentUserMock({ sub: userId, role: "USER", verified: true });
+  vi.spyOn(auth, "checkAuth").mockResolvedValue({ id: userId, role: "USER", verified: true });
 });
 
 afterAll(async () => {

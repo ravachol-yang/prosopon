@@ -1,8 +1,8 @@
-import { describe, beforeAll, afterAll, expect, it } from "vitest";
+import { describe, beforeAll, afterAll, expect, it, vi } from "vitest";
 import { hashPassword } from "@/lib/password";
 import prisma from "@/lib/prisma";
-import { setCurrentUserMock } from "@/lib/__tests__/mock";
 import { createProfile } from "@/lib/actions";
+import * as auth from "@/lib/auth";
 
 let adminId: string;
 let userId: string;
@@ -42,7 +42,7 @@ describe("createProfile", () => {
   const name = "Mock";
 
   it("should create a profile", async () => {
-    setCurrentUserMock({ sub: adminId, role: "ADMIN", verified: true });
+    vi.spyOn(auth, "checkAuth").mockResolvedValue({ id: adminId, role: "ADMIN", verified: true });
 
     const result = await createProfile({ name });
 
@@ -59,7 +59,7 @@ describe("createProfile", () => {
   });
 
   it("should fail on too many profiles", async () => {
-    setCurrentUserMock({ sub: userId, role: "USER", verified: true });
+    vi.spyOn(auth, "checkAuth").mockResolvedValue({ id: userId, role: "USER", verified: true });
 
     await createProfile({ name: "New" });
     const result = await createProfile({ name: "Many" });
@@ -69,7 +69,7 @@ describe("createProfile", () => {
   });
 
   it("should fail on unverified user", async () => {
-    setCurrentUserMock({ sub: userId, role: "USER", verified: false });
+    vi.spyOn(auth, "checkAuth").mockResolvedValue({ error: "Require Verification" });
 
     const result = await createProfile({ name: "Unverified" });
 

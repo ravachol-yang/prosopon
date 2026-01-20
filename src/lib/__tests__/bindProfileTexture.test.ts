@@ -1,8 +1,8 @@
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import prisma from "@/lib/prisma";
 import { hashPassword } from "@/lib/password";
-import { setCurrentUserMock } from "@/lib/__tests__/mock";
 import { bindProfileTexture } from "@/lib/actions";
+import * as auth from "@/lib/auth";
 
 let userId: string;
 let profileId: string;
@@ -72,7 +72,7 @@ beforeAll(async () => {
   });
   capeId = cape.id;
 
-  setCurrentUserMock({ sub: userId, role: "USER", verified: true });
+  vi.spyOn(auth, "checkAuth").mockResolvedValue({ id: userId, role: "USER", verified: true });
 });
 
 afterAll(async () => {

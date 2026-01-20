@@ -11,7 +11,7 @@ import prisma from "@/lib/prisma";
 import { checkPassword, hashPassword } from "@/lib/password";
 import { createToken } from "@/lib/jwt";
 import { cookies } from "next/headers";
-import { checkAuth, getCurrentUser } from "@/lib/auth";
+import { checkAuth } from "@/lib/auth";
 import { z } from "zod";
 
 export async function register(formData: FormData) {
