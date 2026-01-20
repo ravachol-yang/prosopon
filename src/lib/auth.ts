@@ -8,3 +8,16 @@ export async function getCurrentUser() {
 
   return await parseToken(token);
 }
+
+export async function checkAuth(verify = true) {
+  const user = await getCurrentUser();
+
+  if (!user) return { error: "Not logged in" };
+
+  if (verify && !user.verified) return { error: "Require Verification" };
+
+  return {
+    id: user.sub,
+    role: user.role,
+  };
+}

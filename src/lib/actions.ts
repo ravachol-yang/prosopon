@@ -11,7 +11,7 @@ import prisma from "@/lib/prisma";
 import { checkPassword, hashPassword } from "@/lib/password";
 import { createToken } from "@/lib/jwt";
 import { cookies } from "next/headers";
-import { getCurrentUser } from "@/lib/user";
+import { checkAuth, getCurrentUser } from "@/lib/auth";
 import { z } from "zod";
 
 export async function register(formData: FormData) {
@@ -107,13 +107,12 @@ export async function login(formData: FormData) {
 }
 
 export async function createProfile(data: z.infer<typeof createProfileParam>) {
-  const user = await getCurrentUser();
-  if (!user || !user.sub) return { success: false, message: "Not logged in" };
-  if (!user.verified) return { success: false, message: "Require Verification" };
+  const user = await checkAuth();
+  if (user.error) return { success: false, message: user.error };
 
   if (user.role !== "ADMIN") {
     const profiles = await prisma.profile.findMany({
-      where: { userId: user.sub },
+      where: { userId: user.id },
     });
 
     if (profiles.length >= 1) {
@@ -137,7 +136,7 @@ export async function createProfile(data: z.infer<typeof createProfileParam>) {
     data: {
       name,
       user: {
-        connect: { id: user.sub },
+        connect: { id: user.id },
       },
     },
   });
@@ -146,9 +145,8 @@ export async function createProfile(data: z.infer<typeof createProfileParam>) {
 }
 
 export async function uploadTexture(formData: FormData) {
-  const user = await getCurrentUser();
-  if (!user || !user.sub) return { success: false, message: "Not logged in" };
-  if (!user.verified) return { success: false, message: "Require Verification" };
+  const user = await checkAuth();
+  if (user.error) return { success: false, message: user.error };
 
   const raw = {
     name: formData.get("name"),
@@ -174,7 +172,7 @@ export async function uploadTexture(formData: FormData) {
       type,
       hash,
       model: type === "SKIN" ? model : undefined,
-      uploader: { connect: { id: user.sub } },
+      uploader: { connect: { id: user.id } },
     },
   });
 
@@ -182,9 +180,8 @@ export async function uploadTexture(formData: FormData) {
 }
 
 export async function bindProfileTexture(data: z.infer<typeof bindProfileTextureParams>) {
-  const user = await getCurrentUser();
-  if (!user || !user.sub) return { success: false, message: "Not logged in" };
-  if (!user.verified) return { success: false, message: "Require Verification" };
+  const user = await checkAuth();
+  if (user.error) return { success: false, message: user.error };
 
   const { profileId, textureId, type } = bindProfileTextureParams.parse(data);
 
@@ -192,7 +189,7 @@ export async function bindProfileTexture(data: z.infer<typeof bindProfileTexture
     where: { id: profileId },
   });
 
-  if (!profile || profile.userId != user.sub) {
+  if (!profile || profile.userId != user.id) {
     return { success: false, message: "Don't own profile" };
   }
 
