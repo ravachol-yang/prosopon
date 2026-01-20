@@ -38,11 +38,10 @@ describe("register", () => {
   it("creates an unverified user without a invite code", async () => {
     const email = "unverified@example.com";
 
-    const formData = new FormData();
-    formData.set("email", email);
-    formData.set("password", "12345678");
-
-    const result = await register(formData);
+    const result = await register({
+      email,
+      password: "password",
+    });
 
     expect(result.success).toBe(true);
 
@@ -59,12 +58,11 @@ describe("registerWithInvite", () => {
   it("should create a verified user on valid code", async () => {
     const email = "verified@example.com";
 
-    const formData = new FormData();
-    formData.set("email", email);
-    formData.set("password", "12345678");
-    formData.set("inviteCode", inviteCode);
-
-    const result = await register(formData);
+    const result = await register({
+      email,
+      password: "password",
+      inviteCode,
+    });
 
     expect(result.success).toBe(true);
 
@@ -82,12 +80,11 @@ describe("registerWithInvite", () => {
   it("should fail on an used-up code", async () => {
     const email = "used-up@example.com";
 
-    const formData = new FormData();
-    formData.set("email", email);
-    formData.set("password", "12345678");
-    formData.set("inviteCode", inviteCode);
-
-    const result = await register(formData);
+    const result = await register({
+      email,
+      password: "password",
+      inviteCode,
+    });
 
     expect(result.message).toBe("Invites used up");
   });
@@ -95,12 +92,11 @@ describe("registerWithInvite", () => {
   it("should fail on an invalid code", async () => {
     const email = "invalid@example.com";
 
-    const formData = new FormData();
-    formData.set("email", email);
-    formData.set("password", "12345678");
-    formData.set("inviteCode", "invalid");
-
-    const result = await register(formData);
+    const result = await register({
+      email,
+      password: "password",
+      inviteCode: "invalid",
+    });
 
     expect(result.message).toBe("Invalid invite code");
   });

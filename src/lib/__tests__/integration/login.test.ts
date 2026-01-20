@@ -33,11 +33,10 @@ afterAll(async () => {
 
 describe("login", () => {
   it("should succeed and set jwt cookie", async () => {
-    const formData = new FormData();
-    formData.set("email", email);
-    formData.set("password", password);
-
-    const result = await login(formData);
+    const result = await login({
+      email,
+      password,
+    });
     expect(result.success).toBe(true);
 
     expect(setCookieMock).toHaveBeenCalledOnce();
@@ -49,20 +48,18 @@ describe("login", () => {
   });
 
   it("should fail on wrong password", async () => {
-    const formData = new FormData();
-    formData.set("email", email);
-    formData.set("password", "wrong_password");
-
-    const result = await login(formData);
+    const result = await login({
+      email,
+      password: "wrong_password",
+    });
     expect(result.message).toBe("Invalid Credentials");
   });
 
   it("should fail on non-exist user", async () => {
-    const formData = new FormData();
-    formData.set("email", "non-exist@example.com");
-    formData.set("password", password);
-
-    const result = await login(formData);
+    const result = await login({
+      email: "non-exist@example.com",
+      password,
+    });
     expect(result.message).toBe("Invalid Credentials");
   });
 });
