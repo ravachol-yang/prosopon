@@ -3,15 +3,20 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { checkAuth } from "@/lib/auth";
 import { SIDEBAR_ENTRIES } from "@/lib/constants";
+import { findUserById } from "@/queries/user";
 
 export default async function DashboardLayout({ children }: { children: ReactNode }) {
-  const user = await checkAuth(false);
+  const currentAuth = await checkAuth(false);
 
-  const entries = SIDEBAR_ENTRIES.filter((entry) => !entry.requireAdmin || user.role === "ADMIN");
+  const entries = SIDEBAR_ENTRIES.filter(
+    (entry) => !entry.requireAdmin || currentAuth.role === "ADMIN",
+  );
+
+  const user = await findUserById(currentAuth.id!);
 
   return (
     <SidebarProvider>
-      <AppSidebar entries={entries} />
+      <AppSidebar entries={entries} user={user} />
       <SidebarInset>
         <main>{children}</main>
       </SidebarInset>
