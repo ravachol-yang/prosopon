@@ -9,7 +9,6 @@ import {
   SidebarMenu,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { useMemo } from "react";
 import { createAvatar } from "@dicebear/core";
@@ -30,7 +29,7 @@ export function AppSidebar({ entries, user }) {
         <SidebarMenu>
           <SidebarMenuItem>
             <div className="flex items-center gap-2 my-1.5 px-1.5 text-left text-sm">
-              <img src={avatar} className="rounded-full w-15" />
+              <img src={avatar} className="rounded-full w-15" alt={user.email} />
               <div className="grid flex-1 text-left leading-tight w-full">
                 <span className="truncate font-medium text-base">
                   {user.name ?? user.email.split("@")[0]}
