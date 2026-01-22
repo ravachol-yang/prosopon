@@ -18,10 +18,10 @@ export default async function DashboardLayout({ children }: { children: ReactNod
   return (
     <SidebarProvider>
       <AppSidebar entries={entries} user={user} />
-      <SidebarInset>
+      <SidebarInset className="bg-accent">
         <main>
           <PageHeader />
-          {children}
+          <div className="p-6 max-w-400">{children}</div>
         </main>
       </SidebarInset>
     </SidebarProvider>

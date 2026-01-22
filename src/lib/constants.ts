@@ -3,6 +3,7 @@ export const ENTRIES = {
   overview: { id: "overview", title: "概览", parent: "dashboard" },
   profile: { id: "profile", title: "角色管理", parent: "dashboard" },
   closet: { id: "closet", title: "我的衣柜", parent: "dashboard" },
+  account: { id: "account", title: "我的账户", parent: "dashboard" },
   genconfig: { id: "genconfig", title: "配置生成", parent: "dashboard" },
 
   explore: { id: "wild", title: "探索" },
@@ -17,7 +18,13 @@ export const SIDEBAR_ENTRIES = [
   {
     title: ENTRIES.overview.title,
     requireAdmin: false,
-    entries: [ENTRIES.overview, ENTRIES.profile, ENTRIES.closet, ENTRIES.genconfig],
+    entries: [
+      ENTRIES.overview,
+      ENTRIES.profile,
+      ENTRIES.closet,
+      ENTRIES.account,
+      ENTRIES.genconfig,
+    ],
   },
   {
     title: ENTRIES.explore.title,

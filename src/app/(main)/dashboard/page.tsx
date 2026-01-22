@@ -1,12 +1,24 @@
 import { checkAuth } from "@/lib/auth";
+import Greeting from "@/components/greeting";
+import { findUserByIdWithProfilesAndTextures } from "@/queries/user";
+import AccountConfig from "@/components/account-config";
+import Resources from "@/components/resources";
 
 export default async function DashboardPage() {
-  const user = await checkAuth(false);
+  const currentAuth = await checkAuth(false);
+
+  const user = await findUserByIdWithProfilesAndTextures(currentAuth.id!);
+
   return (
     <>
-      <div className="p-6">
-        <h1 className="text-xl font-semibold">Welcome to Prosopon</h1>
-        <p className="text-muted-foreground mt-2">user id: {user.id}</p>
+      <div className="lg:flex">
+        <div className="w-max-200 w-full lg:p-3">
+          <Greeting user={user} />
+          <AccountConfig verified={user!.verified} />
+          <h3 className="text-lg">我的资源</h3>
+          <Resources profiles={user!.profiles} closet={user!.closet} />
+        </div>
+        <div className=" w-max-200 w-full lg:p-3"></div>
       </div>
     </>
   );

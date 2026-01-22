@@ -25,17 +25,16 @@ export function AppSidebar({ entries, user }) {
   }, [user.id]);
 
   return (
-    <Sidebar collapsible="icon" variant="inset">
+    <Sidebar collapsible="icon" variant="sidebar">
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <div className="flex items-center gap-2 py-1.5 px-0.5 text-left text-sm">
-              <Avatar className="h-11 w-11 rounded-lg">
-                <AvatarImage src={avatar} alt="user avatar" />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
-              </Avatar>
-              <div className="grid flex-1 text-left leading-tight">
-                <span className="truncate font-medium text-base">{user.name}</span>
+            <div className="flex items-center gap-2 my-1.5 px-1.5 text-left text-sm">
+              <img src={avatar} className="rounded-full w-15" />
+              <div className="grid flex-1 text-left leading-tight w-full">
+                <span className="truncate font-medium text-base">
+                  {user.name ?? user.email.split("@")[0]}
+                </span>
                 <span className="truncate text-muted-foreground">{user.email}</span>
               </div>
             </div>
