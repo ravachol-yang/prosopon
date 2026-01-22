@@ -7,15 +7,14 @@ import {
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import Link from "next/link";
 import { useMemo } from "react";
 import { createAvatar } from "@dicebear/core";
 import { lorelei } from "@dicebear/collection";
+import SidebarEntry from "@/components/sidebar-entry";
 
 export function AppSidebar({ entries, user }) {
   const avatar = useMemo(() => {
@@ -55,14 +54,7 @@ export function AppSidebar({ entries, user }) {
               <SidebarGroupContent className="mb-3">
                 <SidebarMenu>
                   {section.entries.map((entry) => (
-                    <SidebarMenuItem key={entry.title}>
-                      <SidebarMenuButton asChild>
-                        <Link href={"/dashboard/" + entry.url}>
-                          <entry.icon strokeWidth={2} />
-                          <span className="text-base">{entry.title}</span>
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
+                    <SidebarEntry key={entry.title} entry={entry} />
                   ))}
                 </SidebarMenu>
               </SidebarGroupContent>

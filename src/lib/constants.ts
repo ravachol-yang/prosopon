@@ -1,57 +1,32 @@
-import { Boxes, Drama, Settings, Shirt, UserRound, File, Compass } from "lucide-react";
+export const ENTRIES = {
+  dashboard: { id: "/dashboard", title: "仪表盘" },
+  overview: { id: "overview", title: "概览", parent: "dashboard" },
+  profile: { id: "profile", title: "角色管理", parent: "dashboard" },
+  closet: { id: "closet", title: "我的衣柜", parent: "dashboard" },
+  genconfig: { id: "genconfig", title: "配置生成", parent: "dashboard" },
+
+  explore: { id: "wild", title: "探索" },
+  textures: { id: "textures", title: "材质列表", parent: "explore" },
+
+  admin: { id: "admin", title: "管理员" },
+  content: { id: "content", title: "内容管理", parent: "admin" },
+  settings: { id: "settings", title: "网站设置", parent: "admin" },
+};
 
 export const SIDEBAR_ENTRIES = [
   {
-    title: "仪表盘",
+    title: ENTRIES.overview.title,
     requireAdmin: false,
-    entries: [
-      {
-        title: "概览",
-        url: "",
-        icon: Compass,
-      },
-      {
-        title: "角色管理",
-        url: "profile",
-        icon: Drama,
-      },
-      {
-        title: "我的衣柜",
-        url: "closet",
-        icon: Shirt,
-      },
-      {
-        title: "我的账户",
-        url: "account",
-        icon: UserRound,
-      },
-    ],
+    entries: [ENTRIES.overview, ENTRIES.profile, ENTRIES.closet, ENTRIES.genconfig],
   },
   {
-    title: "广场",
+    title: ENTRIES.explore.title,
     requireAdmin: false,
-    entries: [
-      {
-        title: "材质列表",
-        url: "#",
-        icon: Boxes,
-      },
-      {
-        title: "配置生成",
-        url: "#",
-        icon: File,
-      },
-    ],
+    entries: [ENTRIES.textures],
   },
   {
-    title: "管理员",
+    title: ENTRIES.admin.title,
     requireAdmin: true,
-    entries: [
-      {
-        title: "网站管理",
-        url: "#",
-        icon: Settings,
-      },
-    ],
+    entries: [ENTRIES.content, ENTRIES.settings],
   },
 ];

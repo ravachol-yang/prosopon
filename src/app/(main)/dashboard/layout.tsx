@@ -4,6 +4,7 @@ import { AppSidebar } from "@/components/AppSidebar";
 import { checkAuth } from "@/lib/auth";
 import { SIDEBAR_ENTRIES } from "@/lib/constants";
 import { findUserById } from "@/queries/user";
+import { PageHeader } from "@/components/PageHeader";
 
 export default async function DashboardLayout({ children }: { children: ReactNode }) {
   const currentAuth = await checkAuth(false);
@@ -18,7 +19,10 @@ export default async function DashboardLayout({ children }: { children: ReactNod
     <SidebarProvider>
       <AppSidebar entries={entries} user={user} />
       <SidebarInset>
-        <main>{children}</main>
+        <main>
+          <PageHeader />
+          {children}
+        </main>
       </SidebarInset>
     </SidebarProvider>
   );
