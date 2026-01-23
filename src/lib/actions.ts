@@ -10,7 +10,6 @@ import {
 } from "@/lib/schema";
 import prisma from "@/lib/prisma";
 import { checkPassword, hashPassword } from "@/lib/password";
-import { cookies } from "next/headers";
 import { checkAuth, signin } from "@/lib/auth";
 import { z } from "zod";
 import { getStorage } from "@/lib/storage";
@@ -107,7 +106,7 @@ export async function createProfile(data: z.infer<typeof createProfileParam>) {
       where: { userId: user.id },
     });
 
-    if (profiles.length >= 1) {
+    if (profiles.length >= 3) {
       return { success: false, message: "Too many profiles" };
     }
   }

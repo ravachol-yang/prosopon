@@ -1,11 +1,25 @@
 import { checkAuth } from "@/lib/auth";
+import { findUserByIdWithProfilesAndTextures } from "@/queries/user";
+import ProfileList from "@/components/profile-list";
 
 export default async function ProfilePage() {
-  const user = await checkAuth(false);
+  const currentAuth = await checkAuth(false);
+
+  const user = await findUserByIdWithProfilesAndTextures(currentAuth.id!);
+
   return (
-    <div className="p-6">
-      <h1 className="text-xl font-semibold">我的角色</h1>
-      <p className="text-muted-foreground mt-2">user id: {user.id}</p>
-    </div>
+    <>
+      <div className="lg:flex">
+        <div className="w-max-200 w-full lg:p-3">
+          <h3 className="text-lg">我的角色</h3>
+          <ProfileList
+            profiles={user!.profiles}
+            isAdmin={user!.role === "ADMIN"}
+            verified={user!.verified}
+          />
+        </div>
+        <div className=" w-max-200 w-full lg:p-3"></div>
+      </div>
+    </>
   );
 }

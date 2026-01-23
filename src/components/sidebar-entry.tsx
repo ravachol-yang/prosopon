@@ -2,7 +2,7 @@
 
 import { SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 import Link from "next/link";
-import { Boxes, Compass, Drama, File, Settings, Shirt, UserRound } from "lucide-react";
+import { Boxes, Compass, File, Settings, Shirt, Smile, UserRound } from "lucide-react";
 import { usePathname } from "next/dist/client/components/navigation";
 import { ENTRIES } from "@/lib/constants";
 
@@ -21,7 +21,7 @@ export default function SidebarEntry({ entry }) {
       >
         <Link href={"/dashboard/" + (isOverview ? "" : entry.id)}>
           {entry.id === "overview" && <Compass />}
-          {entry.id === "profile" && <Drama />}
+          {entry.id === "profile" && <Smile />}
           {entry.id === "closet" && <Shirt />}
           {entry.id === "account" && <UserRound />}
           {entry.id === "textures" && <Boxes />}
