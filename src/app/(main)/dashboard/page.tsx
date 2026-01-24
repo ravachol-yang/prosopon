@@ -16,7 +16,11 @@ export default async function DashboardPage() {
           <Greeting user={user} />
           <AccountConfig verified={user!.verified} />
           <h3 className="text-lg">我的资源</h3>
-          <Resources profiles={user!.profiles} closet={user!.closet} />
+          <Resources
+            profiles={user!.profiles}
+            closet={user!.closet}
+            isAdmin={user!.role === "ADMIN"}
+          />
         </div>
         <div className=" w-max-200 w-full lg:p-3"></div>
       </div>
