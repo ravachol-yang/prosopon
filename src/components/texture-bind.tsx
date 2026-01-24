@@ -1,0 +1,171 @@
+"use client";
+
+import { X, Search, Shirt, Upload } from "lucide-react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { clsx } from "clsx";
+import { z } from "zod";
+import { SkinModel, TextureType } from "@/generated/prisma/enums";
+import { Controller, useForm, useWatch } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+const textureUploadSchema = z.object({
+  name: z.string().min(1, "不少于1个字符").max(32, "不多于32个字符").optional(),
+  type: z.enum(TextureType, "类型错误"),
+  model: z.enum(SkinModel, "模型错误").optional(),
+});
+
+export default function TextureBind() {
+  const form = useForm({
+    resolver: zodResolver(textureUploadSchema),
+    mode: "onBlur",
+    defaultValues: {
+      name: "",
+      type: "SKIN",
+    },
+  });
+
+  const [file, setFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string>("");
+  const [isDragging, setIsDragging] = useState(false);
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile) {
+      if (selectedFile.type === "image/png") {
+        setFile(selectedFile);
+        setPreview(URL.createObjectURL(selectedFile));
+      } else {
+        alert("只允许上传PNG文件");
+      }
+    }
+  };
+
+  async function handleUpload(data: z.infer<typeof textureUploadSchema>) {}
+
+  const router = useRouter();
+
+  return (
+    <>
+      {!file ? (
+        <div
+          onDragOver={handleDragOver}
+          onDragLeave={() => setIsDragging(false)}
+          onDrop={() => setIsDragging(false)}
+          className={clsx(
+            "rounded-sm border-dashed border-muted-foreground border p-6 w-full relative",
+            isDragging && "border-sky-500 bg-sky-50 scale-[1.02]",
+          )}
+        >
+          <input
+            type="file"
+            onChange={handleFileChange}
+            className="absolute inset-0 opacity-0 cursor-pointer z-10"
+            accept="image/png"
+          />
+          <div className="grid place-items-center my-3">
+            <div
+              className={clsx(
+                "rounded-full bg-muted w-15 h-15 grid place-items-center",
+                isDragging && "bg-sky-100 text-sky-700",
+              )}
+            >
+              <Shirt />
+            </div>
+            <h2 className={clsx("mt-4 mb-1.5 text-center", isDragging && "text-sky-700")}>
+              绑定材质
+            </h2>
+            <p className="text-muted-foreground text-center break-all max-w-60 my-1.5 h-10">
+              {isDragging ? "松开投放文件" : "拖拽到此处上传材质, 披风, 或从你的衣柜中选择"}
+            </p>
+            <div className="h-20">
+              {!isDragging && (
+                <div className="flex gap-3">
+                  <button className="p-1 rounded-sm h-9 w-20 bg-foreground my-4 text-background hover:bg-gray-800">
+                    <p className="w-full">
+                      <span>
+                        <Upload size={17} className="inline mr-2" />
+                      </span>
+                      上传
+                    </p>
+                  </button>
+                  <button className="p-1 rounded-sm h-9 w-20 bg-background my-4  border border-foreground hover:bg-gray-100 z-11">
+                    <p className="w-full">
+                      <span>
+                        <Search size={17} className="inline mr-2" />
+                      </span>
+                      选择
+                    </p>
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div>
+          <p>已选择: {file.name}</p>
+          <button
+            className="p-1 rounded-sm h-9 w-20 bg-destructive my-4 text-background hover:bg-destructive/75"
+            onClick={() => setFile(null)}
+          >
+            <p className="w-full">
+              <span>
+                <X size={17} className="inline mr-2" />
+              </span>
+              清除
+            </p>
+          </button>
+          <img src={preview} alt={file.name} className="h-40 my-4" />
+          <form onSubmit={form.handleSubmit(handleUpload)}>
+            <Controller
+              name="name"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid} className="my-4">
+                  <FieldLabel htmlFor="name">名称 (可选)</FieldLabel>
+                  <Input
+                    {...field}
+                    id="name"
+                    aria-invalid={fieldState.invalid}
+                    placeholder={file?.name}
+                  />
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                </Field>
+              )}
+            />
+
+            <div className="flex gap-3">
+              <Field>
+                <FieldLabel htmlFor="type">材质类型</FieldLabel>
+                <Select defaultValue="SKIN">
+                  <SelectTrigger id="type">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="SKIN">皮肤</SelectItem>
+                    <SelectItem value="CAPE">披风</SelectItem>
+                  </SelectContent>
+                </Select>
+              </Field>
+            </div>
+          </form>
+        </div>
+      )}
+    </>
+  );
+}
