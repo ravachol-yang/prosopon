@@ -1,11 +1,21 @@
 import { checkAuth } from "@/lib/auth";
 import { findUserByIdWithProfilesAndTextures } from "@/queries/user";
 import ProfileList from "@/components/profile-list";
+import { findProfileByIdWithTextures } from "@/queries/profile";
+import ProfileDetail from "@/components/profile-detail";
 
-export default async function ProfilePage() {
+export default async function ProfilePage({ searchParams }) {
   const currentAuth = await checkAuth(false);
 
   const user = await findUserByIdWithProfilesAndTextures(currentAuth.id!);
+
+  let profile;
+
+  const params = await searchParams;
+
+  if (params.detail) profile = await findProfileByIdWithTextures(params.detail);
+
+  if (user && profile?.userId !== user.id) profile = undefined;
 
   return (
     <>
@@ -16,9 +26,18 @@ export default async function ProfilePage() {
             profiles={user!.profiles}
             isAdmin={user!.role === "ADMIN"}
             verified={user!.verified}
+            detail={params.detail}
           />
         </div>
-        <div className=" w-max-200 w-full lg:p-3"></div>
+
+        <div className=" w-max-200 w-full lg:p-3">
+          {profile && (
+            <>
+              <h3 className="text-lg">角色信息</h3>
+              <ProfileDetail profile={profile} />
+            </>
+          )}
+        </div>
       </div>
     </>
   );

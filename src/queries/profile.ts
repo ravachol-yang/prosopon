@@ -9,3 +9,13 @@ export async function findProfileByUserId(id: string) {
     },
   });
 }
+
+export async function findProfileByIdWithTextures(id: string) {
+  return prisma.profile.findUnique({
+    where: { id },
+    include: {
+      skin: true,
+      cape: true,
+    },
+  });
+}

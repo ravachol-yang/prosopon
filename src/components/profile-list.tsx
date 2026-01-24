@@ -1,7 +1,10 @@
 import CreateProfile from "@/components/create-profile";
 import AccountConfig from "@/components/account-config";
+import Link from "next/link";
+import { clsx } from "clsx";
+import { ChevronRight } from "lucide-react";
 
-export default function ProfileList({ profiles, isAdmin, verified }) {
+export default function ProfileList({ profiles, isAdmin, verified, detail }) {
   return (
     <div className="border rounded-md min-h-60 md:min-h-80 p-5 my-4 bg-background">
       {!verified ? (
@@ -14,13 +17,24 @@ export default function ProfileList({ profiles, isAdmin, verified }) {
             <strong className="underline">{profiles.length}</strong> 个角色
           </p>
           {profiles.map((profile) => (
-            <div
-              key={profile.id}
-              className="rounded-sm border-gray-200 border p-6 w-full hover:bg-accent hover:border-accent min-h-20 my-2"
-            >
-              <p>{profile.name}</p>
-              <p className="truncate text-sm text-muted-foreground">{profile.id}</p>
-            </div>
+            <Link href={`/dashboard/profile?detail=${profile.id}`} key={profile.id}>
+              <div
+                className={clsx(
+                  "flex flex-auto rounded-sm border-gray-200 border p-6 w-full hover:bg-accent hover:border-accent min-h-20 my-2",
+                  { "font-bold bg-accent border-accent": detail === profile.id },
+                )}
+              >
+                <div>
+                  <p>{profile.name}</p>
+                  <p className="truncate text-sm text-muted-foreground">{profile.id}</p>
+                </div>
+                {detail === profile.id && (
+                  <span className="w-full flex flex-row-reverse">
+                    <ChevronRight className="h-full" />
+                  </span>
+                )}
+              </div>
+            </Link>
           ))}
           <div className="flex">
             <div className="w-full"></div>
