@@ -30,10 +30,10 @@ export default function ProfileTexture({ profile }) {
       {!upload ? (
         <div className="w-full">
           <div className="flex flex-auto gap-6 my-4">
-            <div className="w-full">
+            <div className="w-full p-0">
               {profile.skin && (
                 <>
-                  <p className="my-3">
+                  <p className="mb-3">
                     <span>皮肤</span>
                     {detach && (
                       <X
@@ -54,7 +54,7 @@ export default function ProfileTexture({ profile }) {
             <div className="w-full">
               {profile.cape && (
                 <>
-                  <p className="my-3">
+                  <p className="mb-3">
                     <span>披风</span>
                     {detach && (
                       <X
@@ -74,10 +74,13 @@ export default function ProfileTexture({ profile }) {
           </div>
 
           <div className="flex flex-row-reverse my-4 gap-3">
-            <Button className="bg-destructive" onClick={() => setDetach(!detach)}>
+            <Button
+              className="bg-destructive hover:bg-destructive/75"
+              onClick={() => setDetach(!detach)}
+            >
               解绑
             </Button>
-            <Button className="bg-primary" onClick={() => setUpload(true)}>
+            <Button className="bg-primary hover:bg-primary/75" onClick={() => setUpload(true)}>
               修改
             </Button>
           </div>
