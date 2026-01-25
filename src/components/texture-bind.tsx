@@ -17,6 +17,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { bindProfileTexture, uploadTexture } from "@/lib/actions";
+import { useRouter } from "next/navigation";
 
 const textureUploadSchema = z.object({
   name: z.string().max(32, "不多于32个字符").optional(),
@@ -37,6 +39,9 @@ export default function TextureBind({ profile }) {
 
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string>("");
+
+  const [message, setMessage] = useState<string | null>(null);
+  const [status, setStatus] = useState(false);
 
   const [isDragging, setIsDragging] = useState(false);
 
@@ -59,11 +64,40 @@ export default function TextureBind({ profile }) {
     }
   };
 
+  const router = useRouter();
+
   async function handleUpload(data: z.infer<typeof textureUploadSchema>) {
     if (data.type === "CAPE") data.model = undefined;
     if (!data.name) data.name = file?.name;
-    console.log(data);
-    console.log(profile.id);
+
+    const formData = new FormData();
+    formData.append("name", data.name!);
+    formData.append("type", data.type!);
+    formData.append("file", file!);
+
+    if (data.type === "SKIN") {
+      formData.append("model", data.model!);
+    }
+
+    const result = await uploadTexture(formData);
+
+    if (!result.success) {
+      setStatus(false);
+      setMessage(result.message || "未知错误");
+    } else {
+      const bindResult = await bindProfileTexture({
+        profileId: profile.id,
+        textureId: result.data!.id,
+        type: data.type,
+      });
+
+      if (!bindResult.success) {
+        setStatus(false);
+        setMessage(result.message || "未知错误");
+      } else {
+        router.refresh();
+      }
+    }
   }
 
   return (
@@ -201,6 +235,13 @@ export default function TextureBind({ profile }) {
             <div className="flex flex-row-reverse">
               <Button type="submit">提交</Button>
             </div>
+
+            {!status && message && (
+              <div className="text-center text-sm text-red-500">{message}</div>
+            )}
+            {status && message && (
+              <div className="text-center text-sm text-green-500">{message}</div>
+            )}
           </form>
         </div>
       )}

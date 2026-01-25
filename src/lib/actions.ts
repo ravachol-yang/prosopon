@@ -14,6 +14,8 @@ import { checkAuth, signin } from "@/lib/auth";
 import { z } from "zod";
 import { getStorage } from "@/lib/storage";
 import { redirect } from "next/navigation";
+import { getContentHash } from "@/lib/crypto";
+import { Buffer } from "node:buffer";
 
 const UPLOAD_MAX_SIZE = 1024 * 1024 * 2;
 const ALLOWED_TYPES = ["image/png"];
@@ -156,10 +158,13 @@ export async function uploadTexture(formData: FormData) {
   const { name, type, model } = validated.data;
 
   const storage = getStorage();
-  const hash = "fakehash-" + Date.now();
-  const buffer = new Uint8Array(await file.arrayBuffer());
+  const buffer = Buffer.from(await file.arrayBuffer());
+  const hash = getContentHash(buffer);
 
-  await storage.put(hash, buffer, file.type);
+  const existing = await prisma.texture.findFirst({ where: { hash } });
+  if (!existing) {
+    await storage.put(hash, buffer, file.type);
+  }
 
   const texture = await prisma.texture.create({
     data: {
