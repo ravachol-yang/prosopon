@@ -1,5 +1,6 @@
 import { TEXTURE_PREFIX } from "@/lib/constants";
 import { Separator } from "@/components/ui/separator";
+import ProfileBind from "@/components/profile-bind";
 
 export default function TextureDetail({ texture, user }) {
   let profiles;
@@ -24,6 +25,8 @@ export default function TextureDetail({ texture, user }) {
           </code>
         </span>
       </p>
+
+      <ProfileBind texture={texture} user={user} />
 
       <Separator className="my-5" />
       <h3 className="mb-2">详细信息</h3>
