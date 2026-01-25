@@ -7,6 +7,7 @@ import {
   loginParams,
   registerParams,
   uploadTextureParams,
+  verifyInviteCodeParam,
 } from "@/lib/schema";
 import prisma from "@/lib/prisma";
 import { checkPassword, hashPassword } from "@/lib/password";
@@ -97,6 +98,47 @@ export async function login(data: z.infer<typeof loginParams>) {
   await signin({ id: user.id, role: user.role, verified: user.verified });
 
   redirect("/dashboard");
+}
+
+export async function verifyInviteCode(data: z.infer<typeof verifyInviteCodeParam>) {
+  const user = await checkAuth(false);
+
+  if (!user || user.verified) {
+    return { success: false, message: "Wrong user" };
+  }
+
+  const validated = verifyInviteCodeParam.safeParse(data);
+
+  if (!validated.success) {
+    return { success: false, message: "Invalid Input" };
+  }
+
+  const { inviteCode } = validated.data;
+
+  const invite = await prisma.invite.findUnique({
+    where: { code: inviteCode },
+    include: { usedBy: true },
+  });
+
+  if (!invite) {
+    return { success: false, message: "Invalid invite code" };
+  }
+
+  if (invite.usedBy.length >= invite.maxInvites) {
+    return { success: false, message: "Invites used up" };
+  }
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: {
+      invitedBy: {
+        connect: { code: inviteCode },
+      },
+      verified: true,
+    },
+  });
+
+  redirect("/logout");
 }
 
 export async function createProfile(data: z.infer<typeof createProfileParam>) {

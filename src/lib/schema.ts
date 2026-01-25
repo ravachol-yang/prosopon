@@ -12,6 +12,10 @@ export const loginParams = z.object({
   password: z.string().min(8),
 });
 
+export const verifyInviteCodeParam = z.object({
+  inviteCode: z.string(),
+});
+
 export const createProfileParam = z.object({
   name: z.string().min(2).max(32),
 });
