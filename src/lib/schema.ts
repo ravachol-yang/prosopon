@@ -17,7 +17,7 @@ export const createProfileParam = z.object({
 });
 
 export const uploadTextureParams = z.object({
-  name: z.string().min(1).max(32).optional(),
+  name: z.string().min(1).max(128).optional(),
   type: z.enum(TextureType),
   model: z.enum(SkinModel).optional(),
 });

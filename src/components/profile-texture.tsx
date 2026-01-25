@@ -45,7 +45,7 @@ export default function ProfileTexture({ profile }) {
                   <img
                     src={TEXTURE_PREFIX + profile.skin.hash}
                     alt={profile.skin.name}
-                    className="w-full"
+                    className="w-full h-full"
                   />
                 </>
               )}

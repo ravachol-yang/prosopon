@@ -166,17 +166,28 @@ export async function uploadTexture(formData: FormData) {
     await storage.put(hash, buffer, file.type);
   }
 
-  const texture = await prisma.texture.create({
-    data: {
-      name: name ? name : hash,
-      type,
+  const existingPersonal = await prisma.texture.findFirst({
+    where: {
+      uploaderId: user.id,
       hash,
-      model: type === "SKIN" ? model : undefined,
-      uploader: { connect: { id: user.id } },
     },
   });
 
-  return { success: true, data: texture };
+  if (!existingPersonal) {
+    const texture = await prisma.texture.create({
+      data: {
+        name: name ? name : hash,
+        type,
+        hash,
+        model: type === "SKIN" ? model : undefined,
+        uploader: { connect: { id: user.id } },
+      },
+    });
+
+    return { success: true, data: texture };
+  }
+
+  return { success: true, data: existingPersonal };
 }
 
 export async function bindProfileTexture(data: z.infer<typeof bindProfileTextureParams>) {

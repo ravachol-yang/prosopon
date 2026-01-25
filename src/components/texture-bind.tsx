@@ -67,17 +67,15 @@ export default function TextureBind({ profile }) {
   const router = useRouter();
 
   async function handleUpload(data: z.infer<typeof textureUploadSchema>) {
-    if (data.type === "CAPE") data.model = undefined;
     if (!data.name) data.name = file?.name;
+    if (data.type !== "SKIN") data.model = "DEFAULT";
 
     const formData = new FormData();
     formData.append("name", data.name!);
     formData.append("type", data.type!);
     formData.append("file", file!);
 
-    if (data.type === "SKIN") {
-      formData.append("model", data.model!);
-    }
+    formData.append("model", data.model!);
 
     const result = await uploadTexture(formData);
 
@@ -95,6 +93,8 @@ export default function TextureBind({ profile }) {
         setStatus(false);
         setMessage(result.message || "未知错误");
       } else {
+        setStatus(true);
+        setMessage("绑定成功，请刷新");
         router.refresh();
       }
     }
