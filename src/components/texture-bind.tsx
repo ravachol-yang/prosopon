@@ -19,6 +19,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { bindProfileTexture, uploadTexture } from "@/lib/actions";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const textureUploadSchema = z.object({
   name: z.string().max(32, "不多于32个字符").optional(),
@@ -144,14 +145,16 @@ export default function TextureBind({ profile }) {
                       上传
                     </p>
                   </button>
-                  <button className="p-1 rounded-sm h-9 w-20 bg-background my-4  border border-foreground hover:bg-gray-100 z-11">
-                    <p className="w-full">
-                      <span>
-                        <Search size={17} className="inline mr-2" />
-                      </span>
-                      选择
-                    </p>
-                  </button>
+                  <Link href="/dashboard/closet" className="z-11">
+                    <button className="p-1 rounded-sm h-9 w-20 bg-background my-4  border border-foreground hover:bg-gray-100 z-11">
+                      <p className="w-full">
+                        <span>
+                          <Search size={17} className="inline mr-2" />
+                        </span>
+                        选择
+                      </p>
+                    </button>
+                  </Link>
                 </div>
               )}
             </div>

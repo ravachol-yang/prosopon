@@ -1,11 +1,48 @@
 import { checkAuth } from "@/lib/auth";
+import Closet from "@/components/closet";
+import { Separator } from "@/components/ui/separator";
+import Link from "next/link";
+import { clsx } from "clsx";
+import { findUserByIdWithProfilesAndTextures } from "@/queries/user";
 
-export default async function ProfilePage() {
-  const user = await checkAuth(false);
+export default async function ProfilePage({ searchParams }) {
+  const currentAuth = await checkAuth(false);
+
+  const user = await findUserByIdWithProfilesAndTextures(currentAuth.id!);
+
+  const params = await searchParams;
+
+  const tab = params.tab;
+
+  const detail = params.detail;
+
   return (
-    <div className="p-6">
-      <h1 className="text-xl font-semibold">我的衣柜</h1>
-      <p className="text-muted-foreground mt-2">user id: {user.id}</p>
-    </div>
+    <>
+      <div className="w-max-200 w-full lg:p-3">
+        <div className="flex h-5 items-center gap-4 text-lg">
+          <Link href="/dashboard/closet?tab=SKIN">
+            <div
+              className={clsx(
+                tab !== "CAPE" ? "font-medium text-foreground" : "text-muted-foreground",
+              )}
+            >
+              我的皮肤
+            </div>
+          </Link>
+          <Separator orientation="vertical" />
+          <Link href="/dashboard/closet?tab=CAPE">
+            <div
+              className={clsx(
+                "font-medium ",
+                tab === "CAPE" ? "font-medium text-foreground" : "text-muted-foreground",
+              )}
+            >
+              我的披风
+            </div>
+          </Link>
+        </div>
+        <Closet tab={tab} user={user} detail={detail} />
+      </div>
+    </>
   );
 }
