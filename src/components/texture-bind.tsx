@@ -1,8 +1,7 @@
 "use client";
 
 import { X, Search, Shirt, Upload } from "lucide-react";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { ChangeEvent, DragEvent, useState } from "react";
 import { clsx } from "clsx";
 import { z } from "zod";
 import { SkinModel, TextureType } from "@/generated/prisma/enums";
@@ -17,33 +16,38 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 
 const textureUploadSchema = z.object({
-  name: z.string().min(1, "不少于1个字符").max(32, "不多于32个字符").optional(),
+  name: z.string().max(32, "不多于32个字符").optional(),
   type: z.enum(TextureType, "类型错误"),
   model: z.enum(SkinModel, "模型错误").optional(),
 });
 
-export default function TextureBind() {
+export default function TextureBind({ profile }) {
   const form = useForm({
     resolver: zodResolver(textureUploadSchema),
     mode: "onBlur",
     defaultValues: {
       name: "",
       type: "SKIN",
+      model: "DEFAULT",
     },
   });
 
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string>("");
+
   const [isDragging, setIsDragging] = useState(false);
 
-  const handleDragOver = (e: React.DragEvent) => {
+  const type = useWatch({ control: form.control, name: "type" });
+
+  const handleDragOver = (e: DragEvent) => {
     e.preventDefault();
     setIsDragging(true);
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
     if (selectedFile) {
       if (selectedFile.type === "image/png") {
@@ -55,9 +59,12 @@ export default function TextureBind() {
     }
   };
 
-  async function handleUpload(data: z.infer<typeof textureUploadSchema>) {}
-
-  const router = useRouter();
+  async function handleUpload(data: z.infer<typeof textureUploadSchema>) {
+    if (data.type === "CAPE") data.model = undefined;
+    if (!data.name) data.name = file?.name;
+    console.log(data);
+    console.log(profile.id);
+  }
 
   return (
     <>
@@ -118,7 +125,7 @@ export default function TextureBind() {
         </div>
       ) : (
         <div>
-          <p>已选择: {file.name}</p>
+          <p className="break-all">已选择: {file.name}</p>
           <button
             className="p-1 rounded-sm h-9 w-20 bg-destructive my-4 text-background hover:bg-destructive/75"
             onClick={() => setFile(null)}
@@ -149,19 +156,50 @@ export default function TextureBind() {
               )}
             />
 
-            <div className="flex gap-3">
-              <Field>
-                <FieldLabel htmlFor="type">材质类型</FieldLabel>
-                <Select defaultValue="SKIN">
-                  <SelectTrigger id="type">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="SKIN">皮肤</SelectItem>
-                    <SelectItem value="CAPE">披风</SelectItem>
-                  </SelectContent>
-                </Select>
-              </Field>
+            <div className="flex gap-3 my-4">
+              <Controller
+                name="type"
+                control={form.control}
+                render={({ field }) => (
+                  <Field className="w-fit">
+                    <FieldLabel htmlFor="type">材质类型</FieldLabel>
+                    <Select name={field.name} value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger id="type">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="SKIN">皮肤</SelectItem>
+                        <SelectItem value="CAPE">披风</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </Field>
+                )}
+              />
+
+              {type === "SKIN" && (
+                <Controller
+                  name="model"
+                  control={form.control}
+                  render={({ field }) => (
+                    <Field className="w-fit">
+                      <FieldLabel htmlFor="model">皮肤模型</FieldLabel>
+                      <Select name={field.name} value={field.value} onValueChange={field.onChange}>
+                        <SelectTrigger id="model">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="DEFAULT">DEFAULT</SelectItem>
+                          <SelectItem value="SLIM">SLIM</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </Field>
+                  )}
+                />
+              )}
+            </div>
+
+            <div className="flex flex-row-reverse">
+              <Button type="submit">提交</Button>
             </div>
           </form>
         </div>

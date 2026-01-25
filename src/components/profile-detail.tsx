@@ -5,7 +5,7 @@ export default async function ProfileDetail({ profile }) {
     <div className="border rounded-md min-h-60 md:min-h-80 p-5 my-4 bg-background">
       <h3>材质预览 {!profile.skin && !profile.cape && "(未绑定)"}</h3>
       <div className="place-items-center flex my-4">
-        {!profile.skin && !profile.cape ? <TextureBind /> : null}
+        {!profile.skin && !profile.cape ? <TextureBind profile={profile} /> : null}
       </div>
 
       <h3 className="mb-2">详细信息</h3>
