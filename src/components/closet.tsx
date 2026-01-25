@@ -1,7 +1,14 @@
 import TextureList from "@/components/texture-list";
+import TextureDetail from "@/components/texture-detail";
+import { findTextureByIdWithOwnProfiles } from "@/queries/texture";
 
-export default function Closet({ tab, user, detail }) {
-  console.log(detail);
+export default async function Closet({ tab, user, detail }) {
+  let texture;
+
+  if (detail) {
+    texture = await findTextureByIdWithOwnProfiles(detail, user.id);
+  }
+
   return (
     <div className=" w-max-200 w-full md:flex md:gap-4">
       <div className="border rounded-md min-h-60 md:min-h-80 p-5 my-4 bg-background w-full">
@@ -9,7 +16,7 @@ export default function Closet({ tab, user, detail }) {
       </div>
       {detail && (
         <div className="border rounded-md min-h-60 md:min-h-80 p-5 my-4 bg-background w-full">
-          {detail}
+          <TextureDetail texture={texture} user={user} />
         </div>
       )}
     </div>
