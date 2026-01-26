@@ -43,5 +43,5 @@ export const bindProfileTextureParams = z.object({
 });
 
 export const createInviteParam = z.object({
-  maxInvites: z.number().min(1).optional(),
+  maxInvites: z.number().min(1, "邀请数量不能小于1").optional(),
 });

@@ -13,7 +13,7 @@ import {
 } from "@/lib/schema";
 import prisma from "@/lib/prisma";
 import { checkPassword, hashPassword } from "@/lib/password";
-import { checkAuth, signin } from "@/lib/auth";
+import { checkAdmin, checkAuth, signin } from "@/lib/auth";
 import { z } from "zod";
 import { getStorage } from "@/lib/storage";
 import { redirect } from "next/navigation";
@@ -340,14 +340,12 @@ export async function bindProfileTexture(data: z.infer<typeof bindProfileTexture
 }
 
 export async function createInvite(data: z.infer<typeof createInviteParam>) {
-  const user = await checkAuth();
+  const user = await checkAdmin();
   if (user.error) return { success: false, message: user.error };
-
-  if (user.role !== "ADMIN") return { success: false, message: "No permission" };
 
   const validated = createInviteParam.safeParse(data);
   if (!validated.success) {
-    return { success: false, message: validated.error.message };
+    return { success: false, message: "Invalid input" };
   }
 
   const { maxInvites } = validated.data;

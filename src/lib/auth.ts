@@ -24,6 +24,20 @@ export async function checkAuth(verify = true) {
   };
 }
 
+export async function checkAdmin() {
+  const user = await checkAuth();
+
+  if (user.error) return { error: user.error };
+
+  if (user.role !== "ADMIN") return { error: "Require Admin" };
+
+  return {
+    id: user.id,
+    role: user.role,
+    verified: user.verified,
+  };
+}
+
 export async function signin({
   id,
   role,

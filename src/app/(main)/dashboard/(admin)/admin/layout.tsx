@@ -5,7 +5,7 @@ export default async function AdminSectionLayout({ children }: { children: React
   return (
     <>
       <PageHeader parent="admin" parentUrl="/admin/content" />
-      {children}
+      <div className="p-6 max-w-400">{children}</div>
     </>
   );
 }
