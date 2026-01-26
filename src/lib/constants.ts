@@ -1,6 +1,9 @@
 export const SITE_DOMAIN = process.env.SITE_DOMAIN!;
+export const SITE_NAME = process.env.SITE_NAME || "Prosopon";
 
 export const TEXTURE_PREFIX = process.env.NEXT_PUBLIC_TEXTURE_PREFIX;
+
+export const TEXTURE_DOMAIN = process.env.TEXTURE_DOMAIN;
 
 export const ENTRIES = {
   dashboard: { id: "/dashboard", title: "仪表盘" },
