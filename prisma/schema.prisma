@@ -14,7 +14,7 @@ datasource db {
 }
 
 model User {
-  id         String   @id @default(cuid())
+  id         String   @id @default(cuid(2))
   email      String   @unique
   name       String?
   password   String
@@ -33,7 +33,7 @@ model User {
 }
 
 model Invite {
-  code       String   @id @default(cuid())
+  code       String   @id @default(cuid(2))
   maxInvites Int      @default(1)
 
   createdBy  User     @relation("creator", fields: [creatorId], references: [id])
@@ -45,7 +45,7 @@ model Invite {
 }
 
 model Profile {
-  id          String   @id @default(uuid(4))
+  id          String   @id @default(cuid(2))
   name        String   @unique
 
   user        User     @relation(fields: [userId], references: [id])
@@ -60,7 +60,7 @@ model Profile {
 }
 
 model Texture {
-  id          String    @id @default(cuid())
+  id          String    @id @default(cuid(2))
   name        String
   type        TextureType
   hash        String
