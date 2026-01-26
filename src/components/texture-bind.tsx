@@ -1,13 +1,8 @@
 "use client";
 
 import { X, Search, Shirt, Upload } from "lucide-react";
-import { ChangeEvent, DragEvent, useState } from "react";
+import { ChangeEvent, DragEvent, FormEvent, useState } from "react";
 import { clsx } from "clsx";
-import { z } from "zod";
-import { SkinModel, TextureType } from "@/generated/prisma/enums";
-import { Controller, useForm, useWatch } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -20,24 +15,12 @@ import { Button } from "@/components/ui/button";
 import { bindProfileTexture, uploadTexture } from "@/lib/actions";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-
-const textureUploadSchema = z.object({
-  name: z.string().max(32, "不多于32个字符").optional(),
-  type: z.enum(TextureType, "类型错误"),
-  model: z.enum(SkinModel, "模型错误").optional(),
-});
+import { SkinModel, TextureType } from "@/generated/prisma/enums";
+import { Label } from "@/components/ui/label";
+import { validateTexture } from "@/lib/client/texture-validate";
+import { uploadTextureParams } from "@/lib/schema";
 
 export default function TextureBind({ profile }) {
-  const form = useForm({
-    resolver: zodResolver(textureUploadSchema),
-    mode: "onBlur",
-    defaultValues: {
-      name: "",
-      type: "SKIN",
-      model: "DEFAULT",
-    },
-  });
-
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string>("");
 
@@ -46,57 +29,84 @@ export default function TextureBind({ profile }) {
 
   const [isDragging, setIsDragging] = useState(false);
 
-  const type = useWatch({ control: form.control, name: "type" });
+  const [name, setName] = useState("");
+  const [type, setType] = useState<TextureType>("SKIN");
+  const [model, setModel] = useState<SkinModel>("DEFAULT");
+  const [autoType, setAutoType] = useState<boolean>(false); // Judge type and model automatically
 
   const handleDragOver = (e: DragEvent) => {
     e.preventDefault();
     setIsDragging(true);
   };
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+  async function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
     const selectedFile = e.target.files?.[0];
     if (selectedFile) {
       if (selectedFile.type === "image/png") {
+        try {
+          const result = await validateTexture(selectedFile);
+          setAutoType(true);
+          setType(result.type);
+          setModel(result.model);
+        } catch (e) {
+          alert(e);
+          return;
+        }
+
         setFile(selectedFile);
         setPreview(URL.createObjectURL(selectedFile));
       } else {
         alert("只允许上传PNG文件");
       }
     }
-  };
+  }
 
   const router = useRouter();
 
-  async function handleUpload(data: z.infer<typeof textureUploadSchema>) {
-    if (!data.name) data.name = file?.name;
-    if (data.type !== "SKIN") data.model = "DEFAULT";
+  async function handleUpload(e: FormEvent) {
+    e.preventDefault();
 
-    const formData = new FormData();
-    formData.append("name", data.name!);
-    formData.append("type", data.type!);
-    formData.append("file", file!);
-
-    formData.append("model", data.model!);
-
-    const result = await uploadTexture(formData);
-
-    if (!result.success) {
+    if (!name) setName(file!.name);
+    const data = {
+      name: name ? name : file!.name,
+      type: type,
+      model: type === TextureType.SKIN ? model : undefined,
+    };
+    console.log(data);
+    const validated = uploadTextureParams.safeParse(data);
+    if (!validated) {
       setStatus(false);
-      setMessage(result.message || "未知错误");
+      setMessage("Invalid input");
     } else {
-      const bindResult = await bindProfileTexture({
-        profileId: profile.id,
-        textureId: result.data!.id,
-        type: data.type,
-      });
+      // Upload
+      const formData = new FormData();
+      const { name, type, model } = validated.data!;
+      formData.append("name", name!);
+      formData.append("type", type);
+      formData.append("model", model!);
+      formData.append("file", file!);
 
-      if (!bindResult.success) {
+      const result = await uploadTexture(formData);
+
+      if (!result.success) {
         setStatus(false);
         setMessage(result.message || "未知错误");
       } else {
-        setStatus(true);
-        setMessage("绑定成功，请刷新");
-        router.refresh();
+        // bind
+        const bindResult = await bindProfileTexture({
+          profileId: profile.id,
+          textureId: result.data!.id,
+          type: result.data!.type,
+        });
+
+        if (!bindResult.success) {
+          setStatus(false);
+          setMessage(bindResult.message || "未知错误");
+        } else {
+          setStatus(true);
+          setMessage("绑定成功，请刷新");
+          router.refresh();
+        }
       }
     }
   }
@@ -165,7 +175,15 @@ export default function TextureBind({ profile }) {
           <p className="break-all">已选择: {file.name}</p>
           <button
             className="p-1 rounded-sm h-9 w-20 bg-destructive my-4 text-background hover:bg-destructive/75"
-            onClick={() => setFile(null)}
+            onClick={() => {
+              setFile(null);
+              setPreview("");
+              setName("");
+              setType("SKIN");
+              setModel("DEFAULT");
+              setAutoType(false);
+              setMessage("");
+            }}
           >
             <p className="w-full">
               <span>
@@ -175,65 +193,75 @@ export default function TextureBind({ profile }) {
             </p>
           </button>
           <img src={preview} alt={file.name} className="h-40 my-4" />
-          <form onSubmit={form.handleSubmit(handleUpload)}>
-            <Controller
-              name="name"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid} className="my-4">
-                  <FieldLabel htmlFor="name">名称 (可选)</FieldLabel>
-                  <Input
-                    {...field}
-                    id="name"
-                    aria-invalid={fieldState.invalid}
-                    placeholder={file?.name}
-                  />
-                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                </Field>
-              )}
+
+          <form onSubmit={handleUpload} className="my-4 gap-2">
+            <Label htmlFor="name" className="my-2">
+              名称 (可选)
+            </Label>
+            <Input
+              id="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder={file?.name}
+              className="my-2"
             />
 
-            <div className="flex gap-3 my-4">
-              <Controller
-                name="type"
-                control={form.control}
-                render={({ field }) => (
-                  <Field className="w-fit">
-                    <FieldLabel htmlFor="type">材质类型</FieldLabel>
-                    <Select name={field.name} value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger id="type">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="SKIN">皮肤</SelectItem>
-                        <SelectItem value="CAPE">披风</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </Field>
-                )}
-              />
+            <div className="flex gap-3 my-2">
+              <div className="w-fit">
+                <Label htmlFor="type" className="mb-2">
+                  材质类型
+                </Label>
+                <Select
+                  name="type"
+                  value={type}
+                  onValueChange={(value) => {
+                    setAutoType(false);
+                    setType(value as TextureType);
+                  }}
+                >
+                  <SelectTrigger id="type">
+                    <SelectValue placeholder="选择类型" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value={TextureType.SKIN}>皮肤</SelectItem>
+                    <SelectItem value={TextureType.CAPE}>披风</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
 
               {type === "SKIN" && (
-                <Controller
-                  name="model"
-                  control={form.control}
-                  render={({ field }) => (
-                    <Field className="w-fit">
-                      <FieldLabel htmlFor="model">皮肤模型</FieldLabel>
-                      <Select name={field.name} value={field.value} onValueChange={field.onChange}>
-                        <SelectTrigger id="model">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="DEFAULT">DEFAULT</SelectItem>
-                          <SelectItem value="SLIM">SLIM</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </Field>
-                  )}
-                />
+                <div className="w-fit">
+                  <Label htmlFor="model" className="mb-2">
+                    皮肤模型
+                  </Label>
+                  <Select
+                    name="model"
+                    value={model}
+                    onValueChange={(value) => {
+                      setAutoType(false);
+                      setModel(value as SkinModel);
+                    }}
+                  >
+                    <SelectTrigger id="model">
+                      <SelectValue placeholder="选择模型" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value={SkinModel.DEFAULT}>DEFAULT</SelectItem>
+                      <SelectItem value={SkinModel.SLIM}>SLIM</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               )}
             </div>
+            {autoType ? (
+              <div className="text-center text-sm text-green-500 my-2">
+                {"已自动判断类型和模型, 如无错误请勿修改"}
+              </div>
+            ) : (
+              <div className="text-center text-sm text-red-500 my-2">
+                {"手动设置类型, 请确保无误"}
+              </div>
+            )}
 
             <div className="flex flex-row-reverse">
               <Button type="submit">提交</Button>
