@@ -16,6 +16,11 @@ export const verifyInviteCodeParam = z.object({
   inviteCode: z.string(),
 });
 
+export const updateUserInfoParams = z.object({
+  name: z.string().min(1, "不少于一个字符").max(32, "不超过32个字符").optional(),
+  email: z.email("邮箱一定要是邮箱!").optional(),
+});
+
 export const createProfileParam = z.object({
   name: z.string().min(2).max(32),
 });

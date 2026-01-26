@@ -6,6 +6,7 @@ import {
   createProfileParam,
   loginParams,
   registerParams,
+  updateUserInfoParams,
   uploadTextureParams,
   verifyInviteCodeParam,
 } from "@/lib/schema";
@@ -139,6 +140,33 @@ export async function verifyInviteCode(data: z.infer<typeof verifyInviteCodePara
   });
 
   redirect("/logout");
+}
+
+export async function updateUserInfo(data: z.infer<typeof updateUserInfoParams>) {
+  const user = await checkAuth();
+
+  if (!user) {
+    return { success: false, message: "Require login" };
+  }
+
+  const validated = updateUserInfoParams.safeParse(data);
+  if (!validated.success) {
+    return { success: false, message: "Invalid Input" };
+  }
+
+  const { name, email } = validated.data;
+
+  await prisma.user.update({
+    where: {
+      id: user.id,
+    },
+    data: {
+      name,
+      email,
+    },
+  });
+
+  return { success: true };
 }
 
 export async function createProfile(data: z.infer<typeof createProfileParam>) {
