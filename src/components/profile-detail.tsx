@@ -15,9 +15,9 @@ export default async function ProfileDetail({ profile }) {
 
       <h3 className="mb-2">详细信息</h3>
       <p className="my-3">
-        角色ID:
+        UUID v5:
         <span className="mx-2">
-          <code className="bg-accent p-1 rounded-sm text-muted-foreground">{profile.id}</code>
+          <code className="bg-accent p-1 rounded-sm text-muted-foreground">{profile.uuid}</code>
         </span>
       </p>
       <p className="my-3">

@@ -1,3 +1,5 @@
+export const SITE_DOMAIN = process.env.SITE_DOMAIN!;
+
 export const TEXTURE_PREFIX = process.env.NEXT_PUBLIC_TEXTURE_PREFIX;
 
 export const ENTRIES = {

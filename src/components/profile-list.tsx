@@ -26,7 +26,7 @@ export default function ProfileList({ profiles, isAdmin, verified, detail }) {
               >
                 <div>
                   <p>{profile.name}</p>
-                  <p className="truncate text-sm text-muted-foreground">{profile.id}</p>
+                  <p className="truncate text-sm text-muted-foreground">{profile.uuid}</p>
                 </div>
                 {detail === profile.id && (
                   <span className="w-full flex flex-row-reverse">

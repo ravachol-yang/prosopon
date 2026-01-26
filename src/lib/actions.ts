@@ -19,6 +19,9 @@ import { getStorage } from "@/lib/storage";
 import { redirect } from "next/navigation";
 import { getContentHash } from "@/lib/crypto";
 import { Buffer } from "node:buffer";
+import { createId } from "@paralleldrive/cuid2";
+import { v5 as uuidv5 } from "uuid";
+import { SITE_DOMAIN } from "@/lib/constants";
 
 const UPLOAD_MAX_SIZE = 1024 * 1024 * 2;
 const ALLOWED_TYPES = ["image/png"];
@@ -235,9 +238,16 @@ export async function createProfile(data: z.infer<typeof createProfileParam>) {
 
   if (existing) return { success: false, message: "Profile already exists" };
 
+  const SITE_NAMESPACE = uuidv5(SITE_DOMAIN, uuidv5.DNS);
+
+  const id = createId();
+  const uuid = uuidv5(id, SITE_NAMESPACE);
+
   const profile = await prisma.profile.create({
     data: {
+      id,
       name,
+      uuid,
       user: {
         connect: { id: user.id },
       },
