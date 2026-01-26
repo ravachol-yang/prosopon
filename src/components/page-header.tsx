@@ -13,8 +13,8 @@ import Link from "next/link";
 import { usePathname } from "next/dist/client/components/navigation";
 import { ENTRIES } from "@/lib/constants";
 
-export function PageHeader() {
-  const pathname = usePathname().split("/");
+export function PageHeader({ parent, parentUrl }) {
+  const pathname = usePathname().split("/").slice(-1)[0];
 
   return (
     <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
@@ -25,14 +25,12 @@ export function PageHeader() {
           {
             <BreadcrumbList className="text-base">
               <BreadcrumbItem className="hidden md:block">
-                {ENTRIES[pathname[1]] && (
-                  <Link href={ENTRIES[pathname[1]].id}>{ENTRIES[pathname[1]].title}</Link>
-                )}
+                <Link href={"/dashboard/" + parentUrl}>{ENTRIES[parent].title}</Link>
               </BreadcrumbItem>
               <BreadcrumbSeparator className="hidden md:block" />
               <BreadcrumbItem>
                 <BreadcrumbPage>
-                  {ENTRIES[pathname[2]] ? ENTRIES[pathname[2]].title : ENTRIES.overview.title}
+                  {pathname !== "dashboard" ? ENTRIES[pathname].title : ENTRIES["overview"].title}
                 </BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>

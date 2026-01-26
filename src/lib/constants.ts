@@ -2,23 +2,23 @@ export const TEXTURE_PREFIX = process.env.NEXT_PUBLIC_TEXTURE_PREFIX;
 
 export const ENTRIES = {
   dashboard: { id: "/dashboard", title: "仪表盘" },
-  overview: { id: "overview", title: "概览", parent: "dashboard" },
-  profile: { id: "profile", title: "角色管理", parent: "dashboard" },
-  closet: { id: "closet", title: "我的衣柜", parent: "dashboard" },
-  account: { id: "account", title: "我的账户", parent: "dashboard" },
-  genconfig: { id: "genconfig", title: "配置生成", parent: "dashboard" },
+  overview: { id: "overview", title: "概览", url: "overview" },
+  profile: { id: "profile", title: "角色管理", url: "profile" },
+  closet: { id: "closet", title: "我的衣柜", url: "closet" },
+  account: { id: "account", title: "我的账户", url: "account" },
+  genconfig: { id: "genconfig", title: "配置生成", url: "genconfig" },
 
   explore: { id: "wild", title: "探索" },
-  textures: { id: "textures", title: "材质列表", parent: "explore" },
+  textures: { id: "textures", title: "材质列表", url: "textures" },
 
   admin: { id: "admin", title: "管理员" },
-  content: { id: "content", title: "内容管理", parent: "admin" },
-  settings: { id: "settings", title: "网站设置", parent: "admin" },
+  content: { id: "content", title: "内容管理", url: "admin/content" },
+  settings: { id: "settings", title: "网站设置", url: "admin/settings" },
 };
 
 export const SIDEBAR_ENTRIES = [
   {
-    title: ENTRIES.overview.title,
+    title: ENTRIES.dashboard.title,
     requireAdmin: false,
     entries: [
       ENTRIES.overview,
