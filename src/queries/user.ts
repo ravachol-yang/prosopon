@@ -28,3 +28,33 @@ export async function findUserByIdWithProfilesAndTextures(id: string) {
     },
   });
 }
+
+export async function findAllUsersWithInfo() {
+  return prisma.user.findMany({
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      verified: true,
+      _count: {
+        select: {
+          profiles: true,
+          closet: true,
+        },
+      },
+      invitedBy: {
+        include: {
+          createdBy: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+        },
+      },
+      createdAt: true,
+    },
+  });
+}

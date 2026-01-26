@@ -2,6 +2,7 @@ import Link from "next/link";
 import { clsx } from "clsx";
 import { Separator } from "@/components/ui/separator";
 import InvitesTab from "@/components/invites-tab";
+import UserTab from "@/components/user-tab";
 
 export default async function ContentPage({ searchParams }) {
   const params = await searchParams;
@@ -57,11 +58,8 @@ export default async function ContentPage({ searchParams }) {
         </Link>
       </div>
       <div className="border rounded-md min-h-60 md:min-h-80 p-5 my-4 bg-background w-full">
-        {tab === "invite" && (
-          <div>
-            <InvitesTab />
-          </div>
-        )}
+        {tab !== "profile" && tab !== "texture" && tab !== "invite" && <UserTab />}
+        {tab === "invite" && <InvitesTab />}
       </div>
     </div>
   );
