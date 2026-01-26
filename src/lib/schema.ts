@@ -21,6 +21,11 @@ export const updateUserInfoParams = z.object({
   email: z.email("邮箱一定要是邮箱!").optional(),
 });
 
+export const updatePasswordParams = z.object({
+  oldPassword: z.string(),
+  newPassword: z.string().min(8, "密码不少于8位"),
+});
+
 export const createProfileParam = z.object({
   name: z.string().min(2).max(32),
 });

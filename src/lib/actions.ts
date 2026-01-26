@@ -6,6 +6,7 @@ import {
   createProfileParam,
   loginParams,
   registerParams,
+  updatePasswordParams,
   updateUserInfoParams,
   uploadTextureParams,
   verifyInviteCodeParam,
@@ -167,6 +168,45 @@ export async function updateUserInfo(data: z.infer<typeof updateUserInfoParams>)
   });
 
   return { success: true };
+}
+
+export async function updatePassword(data: z.infer<typeof updatePasswordParams>) {
+  const auth = await checkAuth();
+  if (!auth) {
+    return { success: false, message: "Require login" };
+  }
+
+  const validated = updatePasswordParams.safeParse(data);
+  if (!validated.success) {
+    return { success: false, message: "Invalid Input" };
+  }
+
+  const { oldPassword, newPassword } = validated.data;
+
+  const user = await prisma.user.findUnique({
+    where: { id: auth.id },
+  });
+
+  if (!user) {
+    return { success: false, message: "Invalid Credentials" };
+  }
+
+  if (!checkPassword(oldPassword, user.password)) {
+    return { success: false, message: "Invalid Credentials" };
+  }
+
+  const updated = await prisma.user.update({
+    where: { id: user.id },
+    data: {
+      password: hashPassword(newPassword),
+    },
+  });
+
+  if (!updated || !checkPassword(newPassword, updated.password)) {
+    return { success: false, message: "update Failed" };
+  }
+
+  redirect("/logout");
 }
 
 export async function createProfile(data: z.infer<typeof createProfileParam>) {
