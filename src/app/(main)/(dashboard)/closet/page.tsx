@@ -5,13 +5,15 @@ import Link from "next/link";
 import { clsx } from "clsx";
 import { findUserByIdWithProfilesAndTextures } from "@/queries/user";
 import { Metadata } from "next";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "我的衣柜",
 };
 
-export default async function ProfilePage({ searchParams }) {
+export default async function ClosetPage({ searchParams }) {
   const currentAuth = await checkAuth(false);
+  if (!currentAuth || currentAuth.error || !currentAuth.id) redirect("/login");
 
   const user = await findUserByIdWithProfilesAndTextures(currentAuth.id!);
 

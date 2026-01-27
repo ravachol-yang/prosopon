@@ -9,6 +9,7 @@
     "build-db": "prisma generate && prisma migrate deploy && prisma db seed",
     "start": "next start",
     "check-env": "node scripts/check-env.js",
+    "postinstall": "prisma generate",
     "lint": "eslint",
     "prepare": "husky",
     "test": "vitest",

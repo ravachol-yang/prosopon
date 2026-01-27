@@ -4,13 +4,15 @@ import InviteCodeVerify from "@/components/invite-code-verify";
 import AccountInfo from "@/components/account-info";
 import { findUserById } from "@/queries/user";
 import { Metadata } from "next";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "我的账户",
 };
 
-export default async function ProfilePage() {
+export default async function AccountPage() {
   const currentAuth = await checkAuth(false);
+  if (!currentAuth || currentAuth.error || !currentAuth.id) redirect("/login");
 
   const user = await findUserById(currentAuth.id!);
 

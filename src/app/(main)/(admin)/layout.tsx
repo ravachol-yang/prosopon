@@ -11,7 +11,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
 
   // check user is Admin
   if (user.role !== "ADMIN") {
-    redirect("/dashboard");
+    redirect("/");
   }
 
   return <div className="min-h-screen">{children}</div>;

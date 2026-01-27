@@ -20,6 +20,7 @@ export async function checkCredentials(email: string, password: string) {
 
 export async function getCurrentUser() {
   const cookieStore = await cookies();
+
   const token = cookieStore.get("prosopon.session")?.value;
   if (!token) return null;
 

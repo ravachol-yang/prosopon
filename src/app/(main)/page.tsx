@@ -7,6 +7,7 @@ import { PageHeader } from "@/components/page-header";
 import Instructions from "@/components/instructions";
 import Announcement from "@/components/announcement";
 import { Metadata } from "next";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "概览",
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
 
 export default async function DashboardPage() {
   const currentAuth = await checkAuth(false);
+  if (!currentAuth || currentAuth.error || !currentAuth.id) redirect("/login");
 
   const user = await findUserByIdWithProfilesAndTextures(currentAuth.id!);
 

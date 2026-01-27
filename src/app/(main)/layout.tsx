@@ -19,6 +19,10 @@ export default async function DashboardLayout({ children }: { children: ReactNod
 
   const user = await findUserById(currentAuth.id!);
 
+  if (!user) {
+    redirect("/logout");
+  }
+
   return (
     <div className="min-h-screen">
       <SidebarProvider>

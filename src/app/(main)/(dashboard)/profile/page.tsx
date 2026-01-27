@@ -4,6 +4,7 @@ import ProfileList from "@/components/profile-list";
 import { findProfileByIdWithTextures } from "@/queries/profile";
 import ProfileDetail from "@/components/profile-detail";
 import { Metadata } from "next";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "角色管理",
@@ -11,8 +12,9 @@ export const metadata: Metadata = {
 
 export default async function ProfilePage({ searchParams }) {
   const currentAuth = await checkAuth(false);
+  if (!currentAuth || currentAuth.error || !currentAuth.id) redirect("/login");
 
-  const user = await findUserByIdWithProfilesAndTextures(currentAuth.id!);
+  const user = await findUserByIdWithProfilesAndTextures(currentAuth.id);
 
   let profile;
 

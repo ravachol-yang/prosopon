@@ -38,7 +38,7 @@ export function AppSidebar({ entries, user }) {
                 </span>
                 <span className="truncate text-muted-foreground">{user.email}</span>
               </div>
-              <Link href="/logout" className="truncate">
+              <Link prefetch={false} href="/logout" className="truncate">
                 <LogOut className="text-muted-foreground hover:text-foreground duration-200" />
               </Link>
             </div>
