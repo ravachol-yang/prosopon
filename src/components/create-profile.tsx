@@ -17,10 +17,7 @@ import { createProfile } from "@/lib/actions";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-
-const createProfileSchema = z.object({
-  name: z.string().min(2, "不少于两个字符").max(32, "不超过32个字符"),
-});
+import { createProfileParam } from "@/lib/schema";
 
 export default function CreateProfile() {
   const router = useRouter();
@@ -30,14 +27,14 @@ export default function CreateProfile() {
   const [open, setOpen] = useState(false);
 
   const form = useForm({
-    resolver: zodResolver(createProfileSchema),
+    resolver: zodResolver(createProfileParam),
     mode: "onBlur",
     defaultValues: {
       name: "",
     },
   });
 
-  async function onSubmit(data: z.infer<typeof createProfileSchema>) {
+  async function onSubmit(data: z.infer<typeof createProfileParam>) {
     const result = await createProfile(data);
     if (result.success) {
       router.refresh();

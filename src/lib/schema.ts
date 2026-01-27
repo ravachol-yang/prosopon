@@ -27,7 +27,11 @@ export const updatePasswordParams = z.object({
 });
 
 export const createProfileParam = z.object({
-  name: z.string().min(2).max(32),
+  name: z
+    .string()
+    .min(2, "至少2个字符")
+    .max(16, "不超过16个字符")
+    .regex(/^[a-zA-Z0-9_]+$/, "只能包含字母、数字和下划线"),
 });
 
 export const uploadTextureParams = z.object({

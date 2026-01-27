@@ -229,7 +229,7 @@ export async function createProfile(data: z.infer<typeof createProfileParam>) {
 
   const validated = createProfileParam.safeParse(data);
   if (!validated.success) {
-    return { success: false, message: validated.error.message };
+    return { success: false, message: "Invalid Input" };
   }
   const { name } = validated.data;
 
