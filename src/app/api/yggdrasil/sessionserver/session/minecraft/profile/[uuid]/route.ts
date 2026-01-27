@@ -7,7 +7,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ uuid
 
   const searchParams = req.nextUrl.searchParams;
 
-  const unsigned = searchParams.get("unsigned") !== "false";
+  const unsigned = searchParams.get("unsigned") === "true";
 
   const profile = await findProfileByUuidWithTextures(untrimUuid(uuid));
 

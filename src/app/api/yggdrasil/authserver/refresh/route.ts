@@ -2,7 +2,7 @@ import { createAccessToken, verifyAccessToken } from "@/lib/yggdrasil/jwt";
 import { NextResponse } from "next/server";
 import { ForbiddenOperationException, IllegalArgumentException } from "@/lib/yggdrasil/exception";
 import { findProfileByUuidAndUserId } from "@/queries/profile";
-import { buildProfile, untrimUuid } from "@/lib/yggdrasil/utils";
+import { buildProfile, trimUuid, untrimUuid } from "@/lib/yggdrasil/utils";
 
 export async function POST(req: Request) {
   const { accessToken, clientToken, requestUser, selectedProfile } = await req.json();
@@ -38,7 +38,7 @@ export async function POST(req: Request) {
   const newToken = await createAccessToken(
     userId,
     clientToken,
-    selectedProfile ? profile.id : undefined,
+    selectedProfile ? trimUuid(profile.uuid) : undefined,
   );
 
   return NextResponse.json({

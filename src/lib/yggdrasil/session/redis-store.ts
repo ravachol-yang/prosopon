@@ -13,12 +13,13 @@ export class RedisStore implements SessionStore {
   }
 
   async get(serverId: string) {
-    const result = (await this.client.get(SESSION_PREFIX + ":session:" + serverId)) as string;
-    if (!result) {
+    const session = await this.client.get<Session>(SESSION_PREFIX + ":session:" + serverId);
+
+    if (!session) {
       return null;
     }
     await this.client.del(serverId);
-    return JSON.parse(result) as Session;
+    return session;
   }
 
   async save(serverId: string, profileId: string, profileName: string, ip?: string) {
