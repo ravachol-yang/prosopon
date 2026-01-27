@@ -36,7 +36,7 @@ export async function verifyAccessToken(token: string, clientToken?: string) {
       valid: true,
       semiExpire,
       clientMatch,
-      payload,
+      payload: payload as { userId: string; clientToken: string; profileId: string },
     };
   } catch (e) {
     return { valid: false };
