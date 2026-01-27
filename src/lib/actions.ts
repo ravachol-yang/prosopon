@@ -22,6 +22,7 @@ import { Buffer } from "node:buffer";
 import { createId } from "@paralleldrive/cuid2";
 import { v5 as uuidv5 } from "uuid";
 import { SITE_DOMAIN } from "@/lib/constants";
+import { TextureType } from "@/generated/prisma/enums";
 
 const UPLOAD_MAX_SIZE = 1024 * 1024 * 2;
 const ALLOWED_TYPES = ["image/png"];
@@ -264,7 +265,7 @@ export async function uploadTexture(formData: FormData) {
   const raw = {
     name: formData.get("name"),
     type: formData.get("type"),
-    model: formData.get("model"),
+    model: formData.get("type") === TextureType.SKIN ? formData.get("model") : undefined,
   };
 
   const file = formData.get("file") as File | null;
