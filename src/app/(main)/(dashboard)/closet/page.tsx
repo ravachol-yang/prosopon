@@ -20,7 +20,7 @@ export default async function ProfilePage({ searchParams }) {
     <>
       <div className="w-max-200 w-full lg:p-3">
         <div className="flex h-5 items-center gap-4 text-lg">
-          <Link href="/dashboard/closet?tab=SKIN">
+          <Link href="?tab=SKIN">
             <div
               className={clsx(
                 tab !== "CAPE" ? "font-medium text-foreground" : "text-muted-foreground",
@@ -30,7 +30,7 @@ export default async function ProfilePage({ searchParams }) {
             </div>
           </Link>
           <Separator orientation="vertical" />
-          <Link href="/dashboard/closet?tab=CAPE">
+          <Link href="?tab=CAPE">
             <div
               className={clsx(
                 "font-medium ",

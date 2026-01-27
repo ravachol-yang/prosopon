@@ -23,7 +23,7 @@ export default function LoginForm() {
 
     const validated = loginSchema.safeParse({ email, password });
     if (!validated.success) {
-      setMessage(validated.error.message);
+      setMessage("Invalid input");
       return;
     }
 

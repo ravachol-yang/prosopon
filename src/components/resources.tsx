@@ -24,7 +24,7 @@ export default function Resources({ profiles, closet, isAdmin }) {
               </span>
             </p>
             <div className="w-full flex flex-col-reverse flex-auto">
-              <Link href="/dashboard/profile" className="hover:text-sky-700 text-lg text-center">
+              <Link href="profile" className="hover:text-sky-700 text-lg text-center">
                 管理角色
                 <ChevronRight className="inline" />
               </Link>
@@ -40,7 +40,7 @@ export default function Resources({ profiles, closet, isAdmin }) {
               <span className="text-2xl text-muted-foreground">/&infin;</span>
             </p>
             <div className="w-full flex flex-col-reverse flex-auto">
-              <Link href="/dashboard/closet" className="hover:text-sky-700 text-lg text-center">
+              <Link href="closet" className="hover:text-sky-700 text-lg text-center">
                 管理材质
                 <ChevronRight className="inline" />
               </Link>

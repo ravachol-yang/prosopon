@@ -18,7 +18,7 @@ export default function ProfileList({ profiles, isAdmin, verified, detail }) {
             <strong className="underline">{profiles.length}</strong> 个角色
           </p>
           {profiles.map((profile) => (
-            <Link href={`/dashboard/profile?detail=${profile.id}`} key={profile.id}>
+            <Link href={`?detail=${profile.id}`} key={profile.id}>
               <div
                 className={clsx(
                   "flex flex-auto rounded-sm border-gray-200 border p-6 w-full hover:bg-accent hover:border-accent min-h-20 my-2",

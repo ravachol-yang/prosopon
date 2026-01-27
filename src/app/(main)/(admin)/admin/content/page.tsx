@@ -12,7 +12,7 @@ export default async function ContentPage({ searchParams }) {
   return (
     <div className="w-max-200 w-full lg:p-3">
       <div className="flex h-5 items-center gap-4 text-lg">
-        <Link href="/dashboard/admin/content?tab=user">
+        <Link href="?tab=user">
           <div
             className={clsx(
               tab !== "profile" && tab !== "texture" && tab !== "invite"
@@ -24,7 +24,7 @@ export default async function ContentPage({ searchParams }) {
           </div>
         </Link>
         <Separator orientation="vertical" />
-        <Link href="/dashboard/admin/content?tab=profile">
+        <Link href="?tab=profile">
           <div
             className={clsx(
               "font-medium",
@@ -35,7 +35,7 @@ export default async function ContentPage({ searchParams }) {
           </div>
         </Link>
         <Separator orientation="vertical" />
-        <Link href="/dashboard/admin/content?tab=texture">
+        <Link href="?tab=texture">
           <div
             className={clsx(
               "font-medium",
@@ -46,7 +46,7 @@ export default async function ContentPage({ searchParams }) {
           </div>
         </Link>
         <Separator orientation="vertical" />
-        <Link href="/dashboard/admin/content?tab=invite">
+        <Link href="?tab=invite">
           <div
             className={clsx(
               "font-medium",

@@ -13,7 +13,7 @@ export const MAX_PROFILES = +(process.env.NEXT_PUBLIC_MAX_PROFILES || 3);
 export const YGG_API_PREFIX = "https://" + SITE_DOMAIN + "/api/yggdrasil";
 
 export const ENTRIES = {
-  dashboard: { id: "/dashboard", title: "仪表盘" },
+  dashboard: { id: "/", title: "仪表盘" },
   overview: { id: "overview", title: "概览", url: "overview" },
   profile: { id: "profile", title: "角色管理", url: "profile" },
   closet: { id: "closet", title: "我的衣柜", url: "closet" },

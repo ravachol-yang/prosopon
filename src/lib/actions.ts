@@ -77,7 +77,7 @@ export async function register(data: z.infer<typeof registerParams>) {
 
   await signin({ id: user.id, role: user.role, verified: user.verified });
 
-  redirect("/dashboard");
+  redirect("/");
 }
 
 export async function login(data: z.infer<typeof loginParams>) {
@@ -103,7 +103,7 @@ export async function login(data: z.infer<typeof loginParams>) {
 
   await signin({ id: user.id, role: user.role, verified: user.verified });
 
-  redirect("/dashboard");
+  redirect("/");
 }
 
 export async function verifyInviteCode(data: z.infer<typeof verifyInviteCodeParam>) {

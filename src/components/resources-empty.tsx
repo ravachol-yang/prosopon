@@ -13,7 +13,7 @@ export default function ResourcesEmpty() {
           <p className="text-muted-foreground text-center break-all max-w-60 my-1.5">
             创建角色, 上传材质和披风
           </p>
-          <Link href="/dashboard/profile">
+          <Link href="profile">
             <button className="p-1 rounded-sm h-9 w-30 bg-foreground my-4 text-background hover:bg-gray-800">
               <p className="w-full">创建角色</p>
             </button>

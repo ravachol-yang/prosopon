@@ -8,7 +8,7 @@ export default function TextureList({ closet, type, detail }) {
       {closet
         .filter((texture) => texture.type === type)
         .map((texture) => (
-          <Link href={"/dashboard/closet?tab=" + type + "&detail=" + texture.id} key={texture.id}>
+          <Link href={"?tab=" + type + "&detail=" + texture.id} key={texture.id}>
             <div
               className={clsx(
                 "flex flex-col items-center w-50 p-3 rounded-sm hover:bg-muted",

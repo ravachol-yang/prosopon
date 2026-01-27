@@ -28,7 +28,7 @@ export default function SidebarEntry({ entry }) {
           pathname[0] === entry.id || ("/" + pathname[0] === ENTRIES.dashboard.id && isOverview)
         }
       >
-        <Link href={"/dashboard/" + (isOverview ? "" : entry.url)}>
+        <Link href={"/" + (isOverview ? "" : entry.url)}>
           {entry.id === "overview" && <Compass />}
           {entry.id === "profile" && <Smile />}
           {entry.id === "closet" && <Shirt />}

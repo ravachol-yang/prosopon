@@ -25,12 +25,12 @@ export function PageHeader({ parent, parentUrl }) {
           {
             <BreadcrumbList className="text-base">
               <BreadcrumbItem className="hidden md:block">
-                <Link href={"/dashboard/" + parentUrl}>{ENTRIES[parent].title}</Link>
+                <Link href={"/" + parentUrl}>{ENTRIES[parent].title}</Link>
               </BreadcrumbItem>
               <BreadcrumbSeparator className="hidden md:block" />
               <BreadcrumbItem>
                 <BreadcrumbPage>
-                  {pathname !== "dashboard" ? ENTRIES[pathname].title : ENTRIES["overview"].title}
+                  {ENTRIES[pathname] ? ENTRIES[pathname].title : ENTRIES["overview"].title}
                 </BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
