@@ -13,6 +13,16 @@ export async function findUserById(id: string) {
   });
 }
 
+export async function findUserByIdWithProfiles(id: string) {
+  return prisma.user.findUnique({
+    where: { id },
+    select: {
+      id: true,
+      profiles: true,
+    },
+  });
+}
+
 export async function findUserByIdWithProfilesAndTextures(id: string) {
   return prisma.user.findUnique({
     where: { id },

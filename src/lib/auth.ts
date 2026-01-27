@@ -1,6 +1,22 @@
 import { cookies } from "next/headers";
 import { createToken, parseToken } from "@/lib/jwt";
 import { Role } from "@/generated/prisma/enums";
+import prisma from "@/lib/prisma";
+import { checkPassword } from "@/lib/password";
+
+export async function checkCredentials(email: string, password: string) {
+  const user = await prisma.user.findUnique({
+    where: { email },
+    select: {
+      id: true,
+      password: true,
+      verified: true,
+    },
+  });
+
+  if (!user || !checkPassword(password, user.password)) return false;
+  return user;
+}
 
 export async function getCurrentUser() {
   const cookieStore = await cookies();
