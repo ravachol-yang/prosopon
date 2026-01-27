@@ -3,6 +3,11 @@ import { clsx } from "clsx";
 import { Separator } from "@/components/ui/separator";
 import InvitesTab from "@/components/invites-tab";
 import UserTab from "@/components/user-tab";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "内容管理",
+};
 
 export default async function ContentPage({ searchParams }) {
   const params = await searchParams;

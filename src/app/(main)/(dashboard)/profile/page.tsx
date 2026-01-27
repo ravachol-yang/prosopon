@@ -3,6 +3,11 @@ import { findUserByIdWithProfilesAndTextures } from "@/queries/user";
 import ProfileList from "@/components/profile-list";
 import { findProfileByIdWithTextures } from "@/queries/profile";
 import ProfileDetail from "@/components/profile-detail";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "角色管理",
+};
 
 export default async function ProfilePage({ searchParams }) {
   const currentAuth = await checkAuth(false);

@@ -6,6 +6,11 @@ import Resources from "@/components/resources";
 import { PageHeader } from "@/components/page-header";
 import Instructions from "@/components/instructions";
 import Announcement from "@/components/announcement";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "概览",
+};
 
 export default async function DashboardPage() {
   const currentAuth = await checkAuth(false);

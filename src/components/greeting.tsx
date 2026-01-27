@@ -3,6 +3,7 @@ import { Separator } from "@/components/ui/separator";
 import { useMemo } from "react";
 import { createAvatar } from "@dicebear/core";
 import { lorelei } from "@dicebear/collection";
+import { SITE_NAME } from "@/lib/constants";
 
 export default function Greeting({ user }) {
   const avatar = useMemo(() => {
@@ -18,7 +19,7 @@ export default function Greeting({ user }) {
     <div className="border rounded-md min-h-60 md:min-h-80 p-5 mb-4 bg-background">
       <h1 className="text-lg md:text-2xl my-3 text-foreground break-all">
         你好, {user.name ?? user.email.split("@")[0]}, 欢迎使用{" "}
-        <strong className="underline">Prosopon</strong> !
+        <strong className="underline">{SITE_NAME}</strong> !
       </h1>
       <Separator className="my-3" />
       <div className="md:flex">

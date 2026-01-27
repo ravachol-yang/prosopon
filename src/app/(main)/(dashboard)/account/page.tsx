@@ -3,6 +3,11 @@ import { BadgeCheck, BadgeX } from "lucide-react";
 import InviteCodeVerify from "@/components/invite-code-verify";
 import AccountInfo from "@/components/account-info";
 import { findUserById } from "@/queries/user";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "我的账户",
+};
 
 export default async function ProfilePage() {
   const currentAuth = await checkAuth(false);

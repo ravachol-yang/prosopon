@@ -4,6 +4,11 @@ import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import { clsx } from "clsx";
 import { findUserByIdWithProfilesAndTextures } from "@/queries/user";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "我的衣柜",
+};
 
 export default async function ProfilePage({ searchParams }) {
   const currentAuth = await checkAuth(false);
