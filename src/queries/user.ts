@@ -18,7 +18,12 @@ export async function findUserByIdWithProfiles(id: string) {
     where: { id },
     select: {
       id: true,
-      profiles: true,
+      profiles: {
+        include: {
+          cape: true,
+          skin: true,
+        },
+      },
     },
   });
 }

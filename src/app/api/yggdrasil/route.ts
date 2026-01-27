@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { SITE_NAME, TEXTURE_DOMAIN } from "@/lib/constants";
+import { RSA_PUBKEY } from "@/lib/crypto";
 
 export async function GET() {
   return NextResponse.json({
@@ -9,5 +10,6 @@ export async function GET() {
       implementationVersion: "1.0.0",
     },
     skinDomains: [TEXTURE_DOMAIN],
+    signaturePublicKey: RSA_PUBKEY,
   });
 }
