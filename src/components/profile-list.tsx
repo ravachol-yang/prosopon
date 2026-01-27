@@ -3,6 +3,7 @@ import AccountConfig from "@/components/account-config";
 import Link from "next/link";
 import { clsx } from "clsx";
 import { ChevronRight } from "lucide-react";
+import { MAX_PROFILES } from "@/lib/constants";
 
 export default function ProfileList({ profiles, isAdmin, verified, detail }) {
   return (
@@ -13,7 +14,7 @@ export default function ProfileList({ profiles, isAdmin, verified, detail }) {
         <>
           <p className="text-muted-foreground mb-4">
             *您的身份为 <strong className="underline">{isAdmin ? "管理员" : "用户"}</strong>, 可创建{" "}
-            <strong className="underline">{isAdmin ? "无限" : 3}</strong> 个角色, 已创建{" "}
+            <strong className="underline">{isAdmin ? "无限" : MAX_PROFILES}</strong> 个角色, 已创建{" "}
             <strong className="underline">{profiles.length}</strong> 个角色
           </p>
           {profiles.map((profile) => (
@@ -43,7 +44,7 @@ export default function ProfileList({ profiles, isAdmin, verified, detail }) {
                 <p className="w-full">管理角色</p>
               </button>
             )}
-            {(isAdmin || profiles.length < 3) && <CreateProfile />}
+            {(isAdmin || profiles.length < MAX_PROFILES) && <CreateProfile />}
           </div>
         </>
       )}

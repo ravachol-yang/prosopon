@@ -21,7 +21,7 @@ import { getContentHash } from "@/lib/crypto";
 import { Buffer } from "node:buffer";
 import { createId } from "@paralleldrive/cuid2";
 import { v5 as uuidv5 } from "uuid";
-import { SITE_DOMAIN } from "@/lib/constants";
+import { MAX_PROFILES, SITE_DOMAIN } from "@/lib/constants";
 import { TextureType } from "@/generated/prisma/enums";
 
 const UPLOAD_MAX_SIZE = 1024 * 1024 * 2;
@@ -222,7 +222,7 @@ export async function createProfile(data: z.infer<typeof createProfileParam>) {
       where: { userId: user.id },
     });
 
-    if (profiles.length >= 3) {
+    if (profiles.length >= MAX_PROFILES) {
       return { success: false, message: "Too many profiles" };
     }
   }

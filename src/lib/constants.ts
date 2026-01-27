@@ -8,6 +8,8 @@ export const TEXTURE_DOMAIN = process.env.TEXTURE_DOMAIN;
 
 export const TOKEN_HALF_LIFE = 6 * 60 * 60;
 
+export const MAX_PROFILES = +(process.env.NEXT_PUBLIC_MAX_PROFILES || 3);
+
 export const ENTRIES = {
   dashboard: { id: "/dashboard", title: "仪表盘" },
   overview: { id: "overview", title: "概览", url: "overview" },

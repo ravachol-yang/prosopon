@@ -52,7 +52,7 @@ export default function CreateProfile() {
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>创建角色</DialogTitle>
-          <DialogDescription>角色名称建议使用英文, 不少于两个字母</DialogDescription>
+          <DialogDescription>角色名称为2-16个英文字母,数字或下划线</DialogDescription>
         </DialogHeader>
         <div className="grid gap-4">
           <form onSubmit={form.handleSubmit(onSubmit)}>

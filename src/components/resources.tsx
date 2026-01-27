@@ -1,6 +1,7 @@
 import ResourcesEmpty from "@/components/resources-empty";
 import { ChevronRight, Shirt, Smile } from "lucide-react";
 import Link from "next/link";
+import { MAX_PROFILES } from "@/lib/constants";
 
 export default function Resources({ profiles, closet, isAdmin }) {
   return (
@@ -18,7 +19,9 @@ export default function Resources({ profiles, closet, isAdmin }) {
             </div>
             <p className="text-7xl w-full text-center my-13">
               {profiles.length}
-              <span className="text-2xl text-muted-foreground">/{isAdmin ? "\u221e" : 3}</span>
+              <span className="text-2xl text-muted-foreground">
+                /{isAdmin ? "\u221e" : MAX_PROFILES}
+              </span>
             </p>
             <div className="w-full flex flex-col-reverse flex-auto">
               <Link href="/dashboard/profile" className="hover:text-sky-700 text-lg text-center">
