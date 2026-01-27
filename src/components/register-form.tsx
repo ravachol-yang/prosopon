@@ -8,16 +8,11 @@ import { Input } from "@/components/ui/input";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
-
-const registerSchema = z.object({
-  email: z.email("邮箱必须是邮箱！"),
-  password: z.string().min(8, "密码不少于8个字符"),
-  inviteCode: z.string().optional(),
-});
+import { registerParams } from "@/lib/schema";
 
 export default function RegisterForm() {
   const form = useForm({
-    resolver: zodResolver(registerSchema),
+    resolver: zodResolver(registerParams),
     mode: "onBlur",
     defaultValues: {
       email: "",
@@ -28,7 +23,7 @@ export default function RegisterForm() {
   const [message, setMessage] = useState<string | null>(null);
   const [status, setStatus] = useState(false);
 
-  async function onSubmit(data: z.infer<typeof registerSchema>) {
+  async function onSubmit(data: z.infer<typeof registerParams>) {
     const result = await register(data);
     if (result.success) {
       setStatus(true);

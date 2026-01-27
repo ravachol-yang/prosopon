@@ -1,6 +1,7 @@
 import { TEXTURE_PREFIX } from "@/lib/constants";
 import { Separator } from "@/components/ui/separator";
 import ProfileBind from "@/components/profile-bind";
+import { SkinModel, TextureType } from "@/generated/prisma/enums";
 
 export default function TextureDetail({ texture, user }) {
   let profiles;
@@ -42,10 +43,20 @@ export default function TextureDetail({ texture, user }) {
         材质类型:
         <span className="mx-2">
           <code className="bg-accent p-1 rounded-sm text-muted-foreground break-all">
-            {texture.type === "SKIN" ? "皮肤" : "披风"}
+            {texture.type === TextureType.SKIN ? "皮肤" : "披风"}
           </code>
         </span>
       </p>
+      {texture.type === TextureType.SKIN && (
+        <p className="my-3">
+          皮肤模型:
+          <span className="mx-2">
+            <code className="bg-accent p-1 rounded-sm text-muted-foreground break-all">
+              {texture.model === SkinModel.DEFAULT ? "DEFAULT" : "SLIM"}
+            </code>
+          </span>
+        </p>
+      )}
       <p className="my-3">
         创建于:
         <span className="mx-2">

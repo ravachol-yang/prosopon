@@ -2,8 +2,8 @@ import { z } from "zod";
 import { SkinModel, TextureType } from "@/generated/prisma/enums";
 
 export const registerParams = z.object({
-  email: z.email(),
-  password: z.string().min(8),
+  email: z.email("邮箱一定要是邮箱!"),
+  password: z.string().min(8, "密码不少于8个字符"),
   inviteCode: z.string().optional(),
 });
 

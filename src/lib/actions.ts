@@ -31,7 +31,7 @@ export async function register(data: z.infer<typeof registerParams>) {
   const validated = registerParams.safeParse(data);
 
   if (!validated.success) {
-    return { success: false, message: validated.error.message };
+    return { success: false, message: "Invalid input" };
   }
 
   const { email, password, inviteCode } = validated.data;
@@ -84,7 +84,7 @@ export async function login(data: z.infer<typeof loginParams>) {
   const validated = loginParams.safeParse(data);
 
   if (!validated.success) {
-    return { success: false, message: validated.error.message };
+    return { success: false, message: "Invalid input" };
   }
 
   const { email, password } = validated.data;
@@ -274,7 +274,7 @@ export async function uploadTexture(formData: FormData) {
 
   const validated = uploadTextureParams.safeParse(raw);
   if (!validated.success) {
-    return { success: false, message: validated.error.message };
+    return { success: false, message: "Invalid input" };
   }
   const { name, type, model } = validated.data;
 
@@ -297,10 +297,10 @@ export async function uploadTexture(formData: FormData) {
   if (!existingPersonal) {
     const texture = await prisma.texture.create({
       data: {
-        name: name ? name : hash,
+        name: name || hash,
         type,
         hash,
-        model: type === "SKIN" ? model : undefined,
+        model: type === TextureType.SKIN ? model : undefined,
         uploader: { connect: { id: user.id } },
       },
     });
@@ -308,7 +308,16 @@ export async function uploadTexture(formData: FormData) {
     return { success: true, data: texture };
   }
 
-  return { success: true, data: existingPersonal };
+  const updated = await prisma.texture.update({
+    where: { id: existingPersonal.id },
+    data: {
+      name: name || hash,
+      type,
+      model: type === TextureType.SKIN ? model : undefined,
+    },
+  });
+
+  return { success: true, data: updated };
 }
 
 export async function bindProfileTexture(data: z.infer<typeof bindProfileTextureParams>) {

@@ -46,7 +46,7 @@ export default function ProfileBind({ texture, user }) {
           <Field className="w-fit">
             <Select name={field.name} value={field.value} onValueChange={field.onChange}>
               <SelectTrigger id="type">
-                <SelectValue />
+                <SelectValue placeholder="选择角色..." />
               </SelectTrigger>
               <SelectContent>
                 {user.profiles.map((profile) => (

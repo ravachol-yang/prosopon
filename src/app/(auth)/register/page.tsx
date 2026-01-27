@@ -14,7 +14,7 @@ export default function RegisterPage() {
     <>
       <CardHeader>
         <CardTitle>注册账号</CardTitle>
-        <CardDescription>*输入验证码以跳过邮箱验证</CardDescription>
+        <CardDescription>*输入邀请码以验证身份</CardDescription>
         <CardAction>
           <Button variant="link" asChild>
             <Link href="/login">登录</Link>
