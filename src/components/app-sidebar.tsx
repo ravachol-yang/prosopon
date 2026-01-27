@@ -14,6 +14,8 @@ import { useMemo } from "react";
 import { createAvatar } from "@dicebear/core";
 import { lorelei } from "@dicebear/collection";
 import SidebarEntry from "@/components/sidebar-entry";
+import { LogOut } from "lucide-react";
+import Link from "next/link";
 
 export function AppSidebar({ entries, user }) {
   const avatar = useMemo(() => {
@@ -36,6 +38,9 @@ export function AppSidebar({ entries, user }) {
                 </span>
                 <span className="truncate text-muted-foreground">{user.email}</span>
               </div>
+              <Link href="/logout" className="truncate">
+                <LogOut className="text-muted-foreground hover:text-foreground duration-200" />
+              </Link>
             </div>
           </SidebarMenuItem>
         </SidebarMenu>

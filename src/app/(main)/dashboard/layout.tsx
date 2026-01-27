@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/AppSidebar";
+import { AppSidebar } from "@/components/app-sidebar";
 import { checkAuth } from "@/lib/auth";
 import { SIDEBAR_ENTRIES } from "@/lib/constants";
 import { findUserById } from "@/queries/user";

@@ -4,6 +4,8 @@ import { findUserByIdWithProfilesAndTextures } from "@/queries/user";
 import AccountConfig from "@/components/account-config";
 import Resources from "@/components/resources";
 import { PageHeader } from "@/components/page-header";
+import Instructions from "@/components/instructions";
+import Announcement from "@/components/announcement";
 
 export default async function DashboardPage() {
   const currentAuth = await checkAuth(false);
@@ -25,7 +27,11 @@ export default async function DashboardPage() {
               isAdmin={user!.role === "ADMIN"}
             />
           </div>
-          <div className=" w-max-200 w-full lg:p-3"></div>
+          <div className=" w-max-200 w-full lg:p-3">
+            <Announcement />
+            <h3 className="text-lg my-3">使用指南</h3>
+            <Instructions />
+          </div>
         </div>
       </div>
     </>

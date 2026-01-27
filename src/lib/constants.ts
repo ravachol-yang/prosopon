@@ -1,4 +1,4 @@
-export const SITE_DOMAIN = process.env.SITE_DOMAIN!;
+export const SITE_DOMAIN = process.env.NEXT_PUBLIC_SITE_DOMAIN!;
 export const SITE_NAME = process.env.SITE_NAME || "Prosopon";
 export const SESSION_PREFIX = process.env.SESSION_PREFIX || "prosopon";
 
@@ -9,6 +9,8 @@ export const TEXTURE_DOMAIN = process.env.TEXTURE_DOMAIN;
 export const TOKEN_HALF_LIFE = 6 * 60 * 60;
 
 export const MAX_PROFILES = +(process.env.NEXT_PUBLIC_MAX_PROFILES || 3);
+
+export const YGG_API_PREFIX = "https://" + SITE_DOMAIN + "/api/yggdrasil";
 
 export const ENTRIES = {
   dashboard: { id: "/dashboard", title: "仪表盘" },
