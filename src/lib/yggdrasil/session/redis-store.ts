@@ -18,7 +18,7 @@ export class RedisStore implements SessionStore {
     if (!session) {
       return null;
     }
-    await this.client.del(serverId);
+    await this.client.del(SESSION_PREFIX + ":session:" + serverId);
     return session;
   }
 
