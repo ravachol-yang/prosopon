@@ -21,7 +21,7 @@ export function buildProfile(profile, unsigned?: boolean) {
     skin = {
       url: TEXTURE_PREFIX + profile.skin.hash,
       metadata: {
-        model: profile.skin.model,
+        model: profile.skin.model.toString().toLowerCase(),
       },
     };
   }
