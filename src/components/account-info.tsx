@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { ChevronLeft, Pencil } from "lucide-react";
+import { ChevronLeft, LoaderCircle, Pencil } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { updatePasswordParams, updateUserInfoParams } from "@/lib/schema";
@@ -18,10 +18,12 @@ export default function AccountInfo({ user }) {
 
   const [status, setStatus] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
+  const [infoPending, setInfoPending] = useState<boolean>(false);
 
   const router = useRouter();
 
   async function handleUpdateUserInfo(e: FormEvent) {
+    setInfoPending(true);
     e.preventDefault();
 
     const data = {
@@ -37,12 +39,14 @@ export default function AccountInfo({ user }) {
       const result = await updateUserInfo(validated.data);
       if (result.success) {
         setStatus(true);
+        router.refresh();
         setEditingName(false);
         setEditingEmail(false);
-        router.refresh();
+        setInfoPending(false);
       } else {
         setStatus(false);
         setMessage(result.message!);
+        setInfoPending(false);
       }
     }
   }
@@ -52,8 +56,10 @@ export default function AccountInfo({ user }) {
   const [newPassword, setNewPassword] = useState<string>("");
 
   const [passwordMessage, setPasswordMessage] = useState<string>("");
+  const [passwordPending, setPasswordPending] = useState<boolean>(false);
 
   async function handleUpdatePassword(e: FormEvent) {
+    setPasswordPending(true);
     e.preventDefault();
     const validated = updatePasswordParams.safeParse({
       oldPassword,
@@ -66,6 +72,7 @@ export default function AccountInfo({ user }) {
       const result = await updatePassword(validated.data);
       if (!result.success) {
         setPasswordMessage(result.message!);
+        setPasswordPending(false);
       }
     }
   }
@@ -115,7 +122,10 @@ export default function AccountInfo({ user }) {
         </p>
         {(editingName || editingEmail) && (
           <div className="flex justify-end">
-            <Button type="submit">提交更改</Button>
+            <Button type="submit" disabled={infoPending}>
+              {infoPending && <LoaderCircle className="animate-spin" />}
+              {infoPending ? "正在处理..." : "提交更改"}
+            </Button>
           </div>
         )}
         {!status && message && <div className="text-center text-sm text-red-500">{message}</div>}
@@ -158,8 +168,10 @@ export default function AccountInfo({ user }) {
           <Button
             type="submit"
             className="bg-destructive hover:bg-destructive/75 text-background my-2"
+            disabled={passwordPending}
           >
-            修改并重新登录
+            {passwordPending && <LoaderCircle className="animate-spin" />}
+            {passwordPending ? "正在处理..." : "修改并重新登录"}
           </Button>
           {passwordMessage && (
             <div className="text-center text-sm text-red-500">{passwordMessage}</div>

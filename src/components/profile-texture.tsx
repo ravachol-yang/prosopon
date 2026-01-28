@@ -4,7 +4,7 @@ import { TEXTURE_PREFIX } from "@/lib/constants";
 import { useState } from "react";
 import TextureBind from "@/components/texture-bind";
 import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
+import { LoaderCircle, X } from "lucide-react";
 import { bindProfileTexture } from "@/lib/actions";
 import { useRouter } from "next/navigation";
 
@@ -12,9 +12,12 @@ export default function ProfileTexture({ profile }) {
   const [upload, setUpload] = useState(false);
   const [detach, setDetach] = useState(false);
 
+  const [pending, setPending] = useState(false);
+
   const router = useRouter();
 
   async function handleDetach(type) {
+    setPending(true);
     const result = await bindProfileTexture({
       profileId: profile.id,
       type: type,
@@ -23,6 +26,7 @@ export default function ProfileTexture({ profile }) {
     if (result.success) {
       router.refresh();
     }
+    setPending(false);
   }
 
   return (
@@ -77,8 +81,10 @@ export default function ProfileTexture({ profile }) {
             <Button
               className="bg-destructive hover:bg-destructive/75"
               onClick={() => setDetach(!detach)}
+              disabled={pending}
             >
-              解绑
+              {pending && <LoaderCircle className="animate-spin" />}
+              {pending ? "正在解绑..." : "解绑"}
             </Button>
             <Button className="bg-primary hover:bg-primary/75" onClick={() => setUpload(true)}>
               修改

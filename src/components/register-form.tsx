@@ -9,6 +9,7 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { registerParams } from "@/lib/schema";
+import { LoaderCircle } from "lucide-react";
 
 export default function RegisterForm() {
   const form = useForm({
@@ -22,15 +23,19 @@ export default function RegisterForm() {
   });
   const [message, setMessage] = useState<string | null>(null);
   const [status, setStatus] = useState(false);
+  const [pending, setPending] = useState(false);
 
   async function onSubmit(data: z.infer<typeof registerParams>) {
+    setPending(true);
     const result = await register(data);
     if (result.success) {
       setStatus(true);
       setMessage("注册成功，等待跳转...");
+      setPending(false);
     } else {
       setStatus(false);
       setMessage(result.message || "未知错误");
+      setPending(false);
     }
   }
 
@@ -64,6 +69,7 @@ export default function RegisterForm() {
               {...field}
               id="password"
               aria-invalid={fieldState.invalid}
+              type="password"
               placeholder="password"
               required
             />
@@ -89,7 +95,8 @@ export default function RegisterForm() {
         )}
       />
 
-      <Button type="submit" className="w-full">
+      <Button type="submit" className="w-full" disabled={pending}>
+        {pending && <LoaderCircle className="animate-spin" />}
         注册
       </Button>
       {!status && message && <div className="text-center text-sm text-red-500">{message}</div>}

@@ -18,6 +18,7 @@ import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { createProfileParam } from "@/lib/schema";
+import { LoaderCircle } from "lucide-react";
 
 export default function CreateProfile() {
   const router = useRouter();
@@ -25,6 +26,8 @@ export default function CreateProfile() {
   const [message, setMessage] = useState<string | null>(null);
 
   const [open, setOpen] = useState(false);
+
+  const [pending, setPending] = useState<boolean>(false);
 
   const form = useForm({
     resolver: zodResolver(createProfileParam),
@@ -35,11 +38,16 @@ export default function CreateProfile() {
   });
 
   async function onSubmit(data: z.infer<typeof createProfileParam>) {
+    setPending(true);
     const result = await createProfile(data);
     if (result.success) {
       router.refresh();
+      setPending(false);
       setOpen(false);
-    } else setMessage(result.message || "未知错误");
+    } else {
+      setMessage(result.message || "未知错误");
+      setPending(false);
+    }
   }
 
   return (
@@ -77,7 +85,10 @@ export default function CreateProfile() {
             />
             <div className="h-5"></div>
             <DialogFooter className="m:justify-end">
-              <Button type="submit">创建</Button>
+              <Button type="submit" disabled={pending}>
+                {pending && <LoaderCircle className="animate-spin" />}
+                {pending ? "正在创建..." : "创建"}
+              </Button>
             </DialogFooter>
             {message && (
               <>

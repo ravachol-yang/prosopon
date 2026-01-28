@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { LoaderCircle, Plus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -20,10 +20,12 @@ export default function InvitesList({ invites }) {
   const [maxInvites, setMaxInvites] = useState(1);
   const [status, setStatus] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
+  const [pending, setPending] = useState<boolean>(false);
 
   const router = useRouter();
 
   async function handleCreateInvite(e) {
+    setPending(true);
     e.preventDefault();
     if (maxInvites === 0) {
       setMaxInvites(1);
@@ -39,9 +41,11 @@ export default function InvitesList({ invites }) {
         setStatus(true);
         setMessage("");
         router.refresh();
+        setPending(false);
       } else {
         setStatus(false);
         setMessage(result.message || "未知错误");
+        setPending(false);
       }
     }
   }
@@ -78,9 +82,9 @@ export default function InvitesList({ invites }) {
           value={maxInvites}
           onChange={(e) => setMaxInvites(+e.target.value >= 0 ? +e.target.value : -e.target.value)}
         />
-        <Button onClick={handleCreateInvite}>
+        <Button onClick={handleCreateInvite} disabled={pending}>
           <span>创建</span>
-          <Plus className="inline" />
+          {pending ? <LoaderCircle className="animate-spin" /> : <Plus className="inline" />}
         </Button>
       </div>
       {!status && message && <div className="text-center text-sm text-red-500">{message}</div>}

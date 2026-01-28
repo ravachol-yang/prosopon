@@ -13,6 +13,7 @@ import { Controller, useForm } from "react-hook-form";
 import { bindProfileTexture } from "@/lib/actions";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { LoaderCircle } from "lucide-react";
 
 export default function ProfileBind({ texture, user }) {
   const form = useForm();
@@ -21,8 +22,10 @@ export default function ProfileBind({ texture, user }) {
 
   const [message, setMessage] = useState<string | null>(null);
   const [status, setStatus] = useState(false);
+  const [pending, setPending] = useState(false);
 
   async function onSubmit(data) {
+    setPending(true);
     const result = await bindProfileTexture({
       profileId: data.profileId,
       textureId: texture.id,
@@ -31,9 +34,11 @@ export default function ProfileBind({ texture, user }) {
 
     if (result.success) {
       router.refresh();
+      setPending(false);
     } else {
       setStatus(false);
       setMessage(result.message || "未知错误");
+      setPending(false);
     }
   }
 
@@ -60,7 +65,10 @@ export default function ProfileBind({ texture, user }) {
         )}
       />
       <div className="flex flex-row-reverse w-full">
-        <Button type="submit">绑定</Button>
+        <Button type="submit" disabled={pending}>
+          {pending && <LoaderCircle className="animate-spin" />}
+          {pending ? "正在绑定..." : "绑定"}
+        </Button>
       </div>
       {!status && message && <div className="text-center text-sm text-red-500">{message}</div>}
       {status && message && <div className="text-center text-sm text-green-500">{message}</div>}

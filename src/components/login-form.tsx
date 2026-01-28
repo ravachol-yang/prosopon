@@ -6,6 +6,7 @@ import { login } from "@/lib/actions";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { LoaderCircle } from "lucide-react";
 
 const loginSchema = z.object({
   email: z.email(),
@@ -17,8 +18,10 @@ export default function LoginForm() {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState<string | null>(null);
   const [status, setStatus] = useState(false);
+  const [pending, setPending] = useState<boolean>(false);
 
   async function handleSubmit(e: FormEvent) {
+    setPending(true);
     e.preventDefault();
 
     const validated = loginSchema.safeParse({ email, password });
@@ -31,9 +34,11 @@ export default function LoginForm() {
     if (result.success) {
       setStatus(true);
       setMessage("登录成功，等待跳转...");
+      setPending(false);
     } else {
       setStatus(false);
       setMessage(result.message || "未知错误");
+      setPending(false);
     }
   }
 
@@ -59,7 +64,8 @@ export default function LoginForm() {
         className="input input-bordered w-full"
         required
       />
-      <Button onClick={handleSubmit} type="submit" className="w-full">
+      <Button onClick={handleSubmit} type="submit" className="w-full" disabled={pending}>
+        {pending && <LoaderCircle className="animate-spin" />}
         登录
       </Button>
       {!status && message && <div className="text-center text-sm text-red-500">{message}</div>}

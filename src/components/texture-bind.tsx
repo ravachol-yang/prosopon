@@ -1,6 +1,6 @@
 "use client";
 
-import { X, Search, Shirt, Upload } from "lucide-react";
+import { X, Search, Shirt, Upload, LoaderCircle } from "lucide-react";
 import { ChangeEvent, DragEvent, FormEvent, useState } from "react";
 import { clsx } from "clsx";
 import { Input } from "@/components/ui/input";
@@ -26,6 +26,7 @@ export default function TextureBind({ profile }) {
 
   const [message, setMessage] = useState<string | null>(null);
   const [status, setStatus] = useState(false);
+  const [pending, setPending] = useState(false);
 
   const [isDragging, setIsDragging] = useState(false);
 
@@ -65,6 +66,7 @@ export default function TextureBind({ profile }) {
 
   async function handleUpload(e: FormEvent) {
     e.preventDefault();
+    setPending(true);
 
     if (!name) setName(file!.name);
     const data = {
@@ -102,10 +104,12 @@ export default function TextureBind({ profile }) {
         if (!bindResult.success) {
           setStatus(false);
           setMessage(bindResult.message || "未知错误");
+          setPending(false);
         } else {
           setStatus(true);
           setMessage("绑定成功，请刷新");
           router.refresh();
+          setPending(false);
         }
       }
     }
@@ -264,7 +268,10 @@ export default function TextureBind({ profile }) {
             )}
 
             <div className="flex flex-row-reverse">
-              <Button type="submit">提交</Button>
+              <Button type="submit" disabled={pending}>
+                {pending && <LoaderCircle className="animate-spin" />}
+                {pending ? "正在处理..." : "提交"}
+              </Button>
             </div>
 
             {!status && message && (

@@ -6,13 +6,16 @@ import { Button } from "@/components/ui/button";
 import { FormEvent, useState } from "react";
 import { verifyInviteCode } from "@/lib/actions";
 import { useRouter } from "next/navigation";
+import { LoaderCircle } from "lucide-react";
 
 export default function InviteCodeVerify() {
   const [inviteCode, setInviteCode] = useState("");
   const [message, setMessage] = useState<string | null>(null);
   const [status, setStatus] = useState(false);
+  const [pending, setPending] = useState<boolean>(false);
 
   async function handleSubmit(e: FormEvent) {
+    setPending(true);
     e.preventDefault();
 
     if (!inviteCode) {
@@ -25,9 +28,11 @@ export default function InviteCodeVerify() {
     console.log(result);
 
     if (result.success) {
+      setPending(false);
     } else {
       setStatus(false);
       setMessage(result.message || "未知错误");
+      setPending(false);
     }
   }
 
@@ -43,7 +48,8 @@ export default function InviteCodeVerify() {
         required
       />
       <div className="w-full flex flex-row-reverse">
-        <Button type="submit" className="">
+        <Button type="submit" disabled={pending}>
+          {pending && <LoaderCircle className="animate-spin" />}
           验证
         </Button>
       </div>
