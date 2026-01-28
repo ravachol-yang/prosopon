@@ -1,10 +1,11 @@
 import { checkAuth } from "@/lib/auth";
 import { findUserByIdWithProfilesAndTextures } from "@/queries/user";
 import ProfileList from "@/components/profile-list";
-import { findProfileByIdWithTextures } from "@/queries/profile";
 import ProfileDetail from "@/components/profile-detail";
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
+import LoadingSpin from "@/components/loading-spin";
 
 export const metadata: Metadata = {
   title: "角色管理",
@@ -16,13 +17,9 @@ export default async function ProfilePage({ searchParams }) {
 
   const user = await findUserByIdWithProfilesAndTextures(currentAuth.id);
 
-  let profile;
-
   const params = await searchParams;
 
-  if (params.detail) profile = await findProfileByIdWithTextures(params.detail);
-
-  if (user && profile?.userId !== user.id) profile = undefined;
+  const profileId = params.detail;
 
   return (
     <>
@@ -38,10 +35,12 @@ export default async function ProfilePage({ searchParams }) {
         </div>
 
         <div className=" w-max-200 w-full lg:p-3">
-          {profile && (
+          {profileId && (
             <>
               <h3 className="text-lg">角色信息</h3>
-              <ProfileDetail profile={profile} />
+              <Suspense fallback={<LoadingSpin />}>
+                <ProfileDetail profileId={profileId} userId={user!.id} />
+              </Suspense>
             </>
           )}
         </div>

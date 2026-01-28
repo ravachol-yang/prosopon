@@ -74,7 +74,6 @@ export default function TextureBind({ profile }) {
       type: type,
       model: type === TextureType.SKIN ? model : undefined,
     };
-    console.log(data);
     const validated = uploadTextureParams.safeParse(data);
     if (!validated) {
       setStatus(false);

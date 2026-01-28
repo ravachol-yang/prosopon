@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { FormEvent, useState } from "react";
 import { verifyInviteCode } from "@/lib/actions";
-import { useRouter } from "next/navigation";
 import { LoaderCircle } from "lucide-react";
 
 export default function InviteCodeVerify() {
@@ -24,8 +23,6 @@ export default function InviteCodeVerify() {
     const result = await verifyInviteCode({
       inviteCode,
     });
-
-    console.log(result);
 
     if (result.success) {
       setPending(false);

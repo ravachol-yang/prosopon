@@ -1,7 +1,20 @@
 import TextureBind from "@/components/texture-bind";
 import ProfileTexture from "@/components/profile-texture";
+import { findProfileByIdWithTextures } from "@/queries/profile";
 
-export default async function ProfileDetail({ profile }) {
+export default async function ProfileDetail({
+  profileId,
+  userId,
+}: {
+  profileId: string;
+  userId: string;
+}) {
+  const profile = await findProfileByIdWithTextures(profileId);
+
+  if (!profile || profile?.userId !== userId) {
+    return <></>;
+  }
+
   return (
     <div className="border rounded-md min-h-60 md:min-h-80 p-5 my-4 bg-background">
       <h3>材质预览 {!profile.skin && !profile.cape && "(未绑定)"}</h3>

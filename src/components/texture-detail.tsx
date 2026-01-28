@@ -12,8 +12,6 @@ export default function TextureDetail({ texture, user }) {
     profiles = texture.profileCape;
   }
 
-  console.log(profiles);
-
   return (
     <div>
       <img src={TEXTURE_PREFIX + texture.hash} alt={texture.name} width={400} className="my-5" />
