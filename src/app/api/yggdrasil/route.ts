@@ -10,6 +10,6 @@ export async function GET() {
       implementationVersion: "1.0.0",
     },
     skinDomains: [TEXTURE_DOMAIN],
-    signaturePublicKey: RSA_PUBKEY,
+    signaturePublickey: RSA_PUBKEY,
   });
 }
