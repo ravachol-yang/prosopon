@@ -16,23 +16,32 @@ export async function POST(req: Request) {
     });
   }
 
-  let profile;
+  let targetProfileId: string;
   const { userId, profileId } = verified.payload!;
   if (selectedProfile) {
     // Can't rebind profile
-    if (profileId) {
+    if (profileId && profileId !== selectedProfile.id) {
       return NextResponse.json(new IllegalArgumentException(), {
-        status: ForbiddenOperationException.status,
+        status: IllegalArgumentException.status,
       });
     }
 
-    profile = await findProfileByUuidAndUserId(untrimUuid(selectedProfile.id), userId);
-    // Can only bind own profile
-    if (!profile) {
-      return NextResponse.json(new ForbiddenOperationException("Invalid profile"), {
-        status: ForbiddenOperationException.status,
+    targetProfileId = selectedProfile.id;
+  } else {
+    if (!profileId) {
+      return NextResponse.json(new ForbiddenOperationException("Invalid token"), {
+        status: IllegalArgumentException.status,
       });
     }
+    targetProfileId = profileId;
+  }
+
+  const profile = await findProfileByUuidAndUserId(untrimUuid(targetProfileId), userId);
+  // Can only bind own profile
+  if (!profile) {
+    return NextResponse.json(new ForbiddenOperationException("Invalid profile"), {
+      status: ForbiddenOperationException.status,
+    });
   }
 
   const newToken = await createAccessToken(
@@ -44,7 +53,7 @@ export async function POST(req: Request) {
   return NextResponse.json({
     accessToken: newToken,
     clientToken,
-    selectedProfile: selectedProfile ? buildProfile(profile) : undefined,
+    selectedProfile: buildProfile(profile),
     user: requestUser ? { id: userId } : undefined,
   });
 }
