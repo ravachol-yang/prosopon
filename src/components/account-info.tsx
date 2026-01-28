@@ -42,13 +42,12 @@ export default function AccountInfo({ user }) {
         router.refresh();
         setEditingName(false);
         setEditingEmail(false);
-        setInfoPending(false);
       } else {
         setStatus(false);
         setMessage(result.message!);
-        setInfoPending(false);
       }
     }
+    setInfoPending(false);
   }
 
   const [editingPassword, setEditingPassword] = useState<boolean>(false);
@@ -72,9 +71,9 @@ export default function AccountInfo({ user }) {
       const result = await updatePassword(validated.data);
       if (!result.success) {
         setPasswordMessage(result.message!);
-        setPasswordPending(false);
       }
     }
+    setPasswordPending(false);
   }
 
   return (

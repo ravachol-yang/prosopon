@@ -31,12 +31,11 @@ export default function RegisterForm() {
     if (result.success) {
       setStatus(true);
       setMessage("注册成功，等待跳转...");
-      setPending(false);
     } else {
       setStatus(false);
       setMessage(result.message || "未知错误");
-      setPending(false);
     }
+    setPending(false);
   }
 
   return (

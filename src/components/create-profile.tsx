@@ -42,12 +42,11 @@ export default function CreateProfile() {
     const result = await createProfile(data);
     if (result.success) {
       router.refresh();
-      setPending(false);
       setOpen(false);
     } else {
       setMessage(result.message || "未知错误");
-      setPending(false);
     }
+    setPending(false);
   }
 
   return (

@@ -103,15 +103,14 @@ export default function TextureBind({ profile }) {
         if (!bindResult.success) {
           setStatus(false);
           setMessage(bindResult.message || "未知错误");
-          setPending(false);
         } else {
           setStatus(true);
           setMessage("绑定成功，请刷新");
           router.refresh();
-          setPending(false);
         }
       }
     }
+    setPending(false);
   }
 
   return (

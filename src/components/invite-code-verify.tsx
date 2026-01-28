@@ -18,19 +18,18 @@ export default function InviteCodeVerify() {
     e.preventDefault();
 
     if (!inviteCode) {
+      setPending(false);
       return;
     }
     const result = await verifyInviteCode({
       inviteCode,
     });
 
-    if (result.success) {
-      setPending(false);
-    } else {
+    if (!result.success) {
       setStatus(false);
       setMessage(result.message || "未知错误");
-      setPending(false);
     }
+    setPending(false);
   }
 
   return (

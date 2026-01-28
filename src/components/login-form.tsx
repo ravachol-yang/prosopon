@@ -27,6 +27,7 @@ export default function LoginForm() {
     const validated = loginSchema.safeParse({ email, password });
     if (!validated.success) {
       setMessage("Invalid input");
+      setPending(false);
       return;
     }
 
@@ -34,12 +35,11 @@ export default function LoginForm() {
     if (result.success) {
       setStatus(true);
       setMessage("登录成功，等待跳转...");
-      setPending(false);
     } else {
       setStatus(false);
       setMessage(result.message || "未知错误");
-      setPending(false);
     }
+    setPending(false);
   }
 
   return (

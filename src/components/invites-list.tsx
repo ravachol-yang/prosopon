@@ -41,13 +41,12 @@ export default function InvitesList({ invites }) {
         setStatus(true);
         setMessage("");
         router.refresh();
-        setPending(false);
       } else {
         setStatus(false);
         setMessage(result.message || "未知错误");
-        setPending(false);
       }
     }
+    setPending(false);
   }
 
   return (
