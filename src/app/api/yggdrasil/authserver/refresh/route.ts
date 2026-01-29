@@ -10,7 +10,7 @@ export async function POST(req: Request) {
   const verified = await verifyAccessToken(accessToken, clientToken);
 
   // Check if fully expired, semi expired token can be refreshed
-  if (!verified.valid) {
+  if (!verified.valid || (clientToken && !verified.clientMatch)) {
     return NextResponse.json(new ForbiddenOperationException("Invalid token"), {
       status: ForbiddenOperationException.status,
     });
@@ -28,32 +28,30 @@ export async function POST(req: Request) {
 
     targetProfileId = selectedProfile.id;
   } else {
-    if (!profileId) {
-      return NextResponse.json(new ForbiddenOperationException("Invalid token"), {
-        status: IllegalArgumentException.status,
-      });
-    }
     targetProfileId = profileId;
   }
 
-  const profile = await findProfileByUuidAndUserId(untrimUuid(targetProfileId), userId);
-  // Can only bind own profile
-  if (!profile) {
-    return NextResponse.json(new ForbiddenOperationException("Invalid profile"), {
-      status: ForbiddenOperationException.status,
-    });
+  let profile;
+  if (targetProfileId) {
+    profile = await findProfileByUuidAndUserId(untrimUuid(targetProfileId), userId);
+    // Can only bind own profile
+    if (!profile) {
+      return NextResponse.json(new ForbiddenOperationException("Invalid profile"), {
+        status: ForbiddenOperationException.status,
+      });
+    }
   }
 
   const newToken = await createAccessToken(
     userId,
     clientToken,
-    selectedProfile ? trimUuid(profile.uuid) : undefined,
+    targetProfileId ? trimUuid(profile.uuid) : undefined,
   );
 
   return NextResponse.json({
     accessToken: newToken,
     clientToken,
-    selectedProfile: buildProfile(profile),
+    selectedProfile: profile ? buildProfile(profile) : undefined,
     user: requestUser ? { id: userId } : undefined,
   });
 }
