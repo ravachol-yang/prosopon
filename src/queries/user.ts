@@ -13,21 +13,6 @@ export async function findUserById(id: string) {
   });
 }
 
-export async function findUserByIdWithProfiles(id: string) {
-  return prisma.user.findUnique({
-    where: { id },
-    select: {
-      id: true,
-      profiles: {
-        include: {
-          cape: true,
-          skin: true,
-        },
-      },
-    },
-  });
-}
-
 export async function findUserByIdWithProfilesAndTextures(id: string) {
   return prisma.user.findUnique({
     where: { id },

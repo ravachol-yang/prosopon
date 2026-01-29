@@ -8,6 +8,7 @@ export async function GET() {
       serverName: SITE_NAME,
       implementationName: "prosopon-yggdrasil",
       implementationVersion: "1.0.0",
+      "feature.non_email_login": true,
       links: {
         homepage: "https://" + SITE_DOMAIN,
         register: "https://" + SITE_DOMAIN + "/register",
