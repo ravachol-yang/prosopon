@@ -17,10 +17,14 @@ export default function Instructions() {
         <strong>本站的Yggdrasil API地址:</strong>{" "}
         <code className="bg-destructive/1 text-destructive">{YGG_API_PREFIX}</code>
         <br />
-        <strong>使用方法</strong>: 将下方按钮拖到支持的启动器完成自动设置
+        <strong>本站已在全站开启ALI:</strong>
+        API 地址指示（API Location Indication）, 其作用是只要在启动器中输入本站
+        <strong>任意地址</strong>,启动器就能自动发现Yggdrasil API端点
+        <br />
+        <strong>使用方法</strong>: <u>将下方按钮拖到支持的启动器完成自动设置</u>
         <br />
         <strong>手动设置:</strong> <br />
-        HMCL: 账户 -{">"} 添加认证服务器 -{">"} 输入上方的地址
+        HMCL: 账户 -{">"} 添加认证服务器 -{">"} 输入上方的地址（或本站任意地址）
       </p>
       <Separator className="my-2" />
       <div className="flex flex-row-reverse w-full">
