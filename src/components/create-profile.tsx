@@ -52,9 +52,7 @@ export default function CreateProfile() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="rounded-sm h-10 w-30 bg-foreground m-2 mr-0 text-background hover:bg-gray-800">
-          创建角色
-        </Button>
+        <Button>创建角色</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>

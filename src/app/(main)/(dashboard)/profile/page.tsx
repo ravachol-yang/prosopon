@@ -1,5 +1,4 @@
 import { checkAuth } from "@/lib/auth";
-import { findUserByIdWithProfilesAndTextures } from "@/queries/user";
 import ProfileList from "@/components/profile-list";
 import ProfileDetail from "@/components/profile-detail";
 import { Metadata } from "next";
@@ -15,8 +14,6 @@ export default async function ProfilePage({ searchParams }) {
   const currentAuth = await checkAuth(false);
   if (!currentAuth || currentAuth.error || !currentAuth.id) redirect("/login");
 
-  const user = await findUserByIdWithProfilesAndTextures(currentAuth.id);
-
   const params = await searchParams;
 
   const profileId = params.detail;
@@ -27,9 +24,9 @@ export default async function ProfilePage({ searchParams }) {
         <div className="w-max-200 w-full lg:p-3">
           <h3 className="text-lg">我的角色</h3>
           <ProfileList
-            profiles={user!.profiles}
-            isAdmin={user!.role === "ADMIN"}
-            verified={user!.verified}
+            userId={currentAuth.id}
+            isAdmin={currentAuth.role === "ADMIN"}
+            verified={currentAuth.verified}
             detail={params.detail}
           />
         </div>
@@ -39,7 +36,7 @@ export default async function ProfilePage({ searchParams }) {
             <>
               <h3 className="text-lg">角色信息</h3>
               <Suspense fallback={<LoadingSpin />}>
-                <ProfileDetail profileId={profileId} userId={user!.id} />
+                <ProfileDetail profileId={profileId} userId={currentAuth.id} />
               </Suspense>
             </>
           )}

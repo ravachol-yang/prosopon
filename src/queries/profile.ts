@@ -29,3 +29,9 @@ export async function findProfileByIdWithTextures(id: string) {
     },
   });
 }
+
+export async function findProfileByUserId(userId: string) {
+  return prisma.profile.findMany({
+    where: { userId },
+  });
+}
