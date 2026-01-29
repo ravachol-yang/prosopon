@@ -1,19 +1,18 @@
-import { checkAuth } from "@/lib/auth";
 import Greeting from "@/components/greeting";
-import { findUserByIdWithProfilesAndTextures } from "@/queries/user";
 import AccountConfig from "@/components/account-config";
 import Resources from "@/components/resources";
-import { PageHeader } from "@/components/page-header";
-import Instructions from "@/components/instructions";
 import Announcement from "@/components/announcement";
-import { Metadata } from "next";
+import Instructions from "@/components/instructions";
+import { checkAuth } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import { findUserByIdWithProfilesAndTextures } from "@/queries/user";
+import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "概览",
 };
 
-export default async function DashboardPage() {
+export default async function OverviewPage() {
   const currentAuth = await checkAuth(false);
   if (!currentAuth || currentAuth.error || !currentAuth.id) redirect("/login");
 
@@ -21,8 +20,7 @@ export default async function DashboardPage() {
 
   return (
     <>
-      <PageHeader parent="dashboard" parentUrl="" />
-      <div className="p-6 max-w-400">
+      <div className="max-w-400">
         <div className="lg:flex">
           <div className="w-max-200 w-full lg:p-3">
             <Greeting user={user} />
