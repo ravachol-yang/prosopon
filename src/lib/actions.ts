@@ -258,6 +258,27 @@ export async function createProfile(data: z.infer<typeof createProfileParam>) {
   return { success: true, data: profile };
 }
 
+export async function updateProfileName(id: string, data: z.infer<typeof createProfileParam>) {
+  const user = await checkAuth();
+  if (user.error) return { success: false, message: user.error };
+
+  const validated = createProfileParam.safeParse(data);
+  if (!validated.success) {
+    return { success: false, message: "Invalid Input" };
+  }
+  const { name } = validated.data;
+
+  const profile = await prisma.profile.update({
+    where: { id },
+    data: {
+      name,
+    },
+  });
+
+  if (!profile) return { success: false, message: "Update failed" };
+  return { success: true, data: profile };
+}
+
 export async function uploadTexture(formData: FormData) {
   const user = await checkAuth();
   if (user.error) return { success: false, message: user.error };

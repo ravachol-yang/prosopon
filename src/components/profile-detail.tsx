@@ -1,6 +1,8 @@
 import TextureBind from "@/components/texture-bind";
 import ProfileTexture from "@/components/profile-texture";
 import { findProfileByIdWithTextures } from "@/queries/profile";
+import { Separator } from "@/components/ui/separator";
+import ProfileName from "@/components/profile-name";
 
 export default async function ProfileDetail({
   profileId,
@@ -16,9 +18,8 @@ export default async function ProfileDetail({
   }
 
   return (
-    <div className="border rounded-md min-h-60 md:min-h-80 p-5 my-4 bg-background">
-      <h3>材质预览 {!profile.skin && !profile.cape && "(未绑定)"}</h3>
-      <div className="place-items-center flex my-4">
+    <div className="border rounded-md min-h-60 md:min-h-80 py-2 px-6 my-4 bg-background">
+      <div className="place-items-center flex mb-4">
         {!profile.skin && !profile.cape ? (
           <TextureBind profile={profile} />
         ) : (
@@ -26,17 +27,13 @@ export default async function ProfileDetail({
         )}
       </div>
 
-      <h3 className="mb-2">详细信息</h3>
+      <h3 className="mb-2">详细信息:</h3>
+      <ProfileName id={profile.id} name={profile.name} />
+      <Separator className="mt-2" />
       <p className="my-3">
         UUID v5:
         <span className="mx-2">
           <code className="bg-accent p-1 rounded-sm text-muted-foreground">{profile.uuid}</code>
-        </span>
-      </p>
-      <p className="my-3">
-        角色名称:
-        <span className="mx-2">
-          <code className="bg-accent p-1 rounded-sm text-muted-foreground">{profile.name}</code>
         </span>
       </p>
       <p className="my-3">
