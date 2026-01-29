@@ -37,13 +37,7 @@ export default function ProfileList({ profiles, isAdmin, verified, detail }) {
               </div>
             </Link>
           ))}
-          <div className="flex">
-            <div className="w-full"></div>
-            {profiles.length !== 0 && (
-              <button className="rounded-sm h-10 w-30 bg-background m-2 text-foreground hover:bg-accent border border-gray-300">
-                <p className="w-full">管理角色</p>
-              </button>
-            )}
+          <div className="flex justify-end">
             {(isAdmin || profiles.length < MAX_PROFILES) && <CreateProfile />}
           </div>
         </>

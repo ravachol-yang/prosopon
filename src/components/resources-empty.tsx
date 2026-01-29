@@ -1,5 +1,6 @@
 import { FolderSearch } from "lucide-react";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export default function ResourcesEmpty() {
   return (
@@ -14,9 +15,9 @@ export default function ResourcesEmpty() {
             创建角色, 上传材质和披风
           </p>
           <Link href="profile">
-            <button className="p-1 rounded-sm h-9 w-30 bg-foreground my-4 text-background hover:bg-gray-800">
-              <p className="w-full">创建角色</p>
-            </button>
+            <Button className="p-1 rounded-sm h-9 w-30 bg-foreground my-4 text-background hover:bg-gray-800">
+              创建角色
+            </Button>
           </Link>
         </div>
       </div>

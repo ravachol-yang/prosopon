@@ -29,7 +29,7 @@ export default function Instructions() {
       <Separator className="my-2" />
       <div className="flex flex-row-reverse w-full">
         <span id="dndLabel" draggable="true" onDragStart={() => dndLabel_dragstart(event)}>
-          <Button className="my-1 bg-sky-600 rounded-xs h-12 text-base hover:bg-sky-500 hover:scale-110">
+          <Button className="my-1 bg-sky-600 rounded-xs h-12 text-base hover:bg-sky-500 hover:scale-110 transition duration-200 ease-in-out">
             自动设置
           </Button>
         </span>
