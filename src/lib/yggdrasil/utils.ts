@@ -58,6 +58,10 @@ export function buildProfile(profile, unsigned?: boolean) {
         value: texturesValue,
         signature: signature || "",
       },
+      {
+        name: "uploadableTextures",
+        value: "skin,cape",
+      },
     ],
   };
 }

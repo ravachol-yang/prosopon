@@ -23,6 +23,7 @@ import { createId } from "@paralleldrive/cuid2";
 import { v5 as uuidv5 } from "uuid";
 import { MAX_PROFILES, SITE_DOMAIN } from "@/lib/constants";
 import { TextureType } from "@/generated/prisma/enums";
+import { processTexture } from "@/lib/server/texture-process";
 
 const UPLOAD_MAX_SIZE = 1024 * 1024 * 2;
 const ALLOWED_TYPES = ["image/png"];
@@ -300,7 +301,14 @@ export async function uploadTexture(formData: FormData) {
   const { name, type, model } = validated.data;
 
   const storage = getStorage();
-  const buffer = Buffer.from(await file.arrayBuffer());
+
+  let buffer;
+  try {
+    buffer = await processTexture(Buffer.from(await file.arrayBuffer()), type);
+  } catch (e) {
+    return { success: false, message: "Invalid Input" };
+  }
+
   const hash = getContentHash(buffer);
 
   const existing = await prisma.texture.findFirst({ where: { hash } });
