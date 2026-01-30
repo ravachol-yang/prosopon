@@ -1,7 +1,10 @@
+"use client";
+
 import { TEXTURE_PREFIX } from "@/lib/constants";
 import { Separator } from "@/components/ui/separator";
 import ProfileBind from "@/components/profile-bind";
 import { SkinModel, TextureType } from "@/generated/prisma/enums";
+import TexturePreview from "@/components/texture-preview";
 
 export default function TextureDetail({ texture, user }) {
   let profiles;
@@ -14,7 +17,13 @@ export default function TextureDetail({ texture, user }) {
 
   return (
     <div>
-      <img src={TEXTURE_PREFIX + texture.hash} alt={texture.name} width={400} className="my-5" />
+      <div className="flex justify-center">
+        <TexturePreview
+          skinUrl={texture.type === TextureType.SKIN ? TEXTURE_PREFIX + texture.hash : null}
+          capeUrl={texture.type === TextureType.CAPE ? TEXTURE_PREFIX + texture.hash : null}
+          noRender={false}
+        />
+      </div>
 
       <p className="my-3">
         绑定的角色:
