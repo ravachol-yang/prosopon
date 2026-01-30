@@ -26,11 +26,9 @@ export default async function ProfileList({ userId, isAdmin, verified, detail })
         <>
           <Table className="text-base">
             <TableCaption>
-              <p className="text-muted-foreground mb-4">
-                *您的身份为 <strong className="underline">{isAdmin ? "管理员" : "用户"}</strong>,
-                可创建 <strong className="underline">{isAdmin ? "无限" : MAX_PROFILES}</strong>{" "}
-                个角色, 已创建 <strong className="underline">{profiles.length}</strong> 个角色
-              </p>
+              *您的身份为 <strong className="underline">{isAdmin ? "管理员" : "用户"}</strong>,
+              可创建 <strong className="underline">{isAdmin ? "无限" : MAX_PROFILES}</strong>{" "}
+              个角色, 已创建 <strong className="underline">{profiles.length}</strong> 个角色
             </TableCaption>
             <TableHeader>
               <TableRow>

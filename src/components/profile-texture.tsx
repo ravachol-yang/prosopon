@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { LoaderCircle, X } from "lucide-react";
 import { bindProfileTexture } from "@/lib/actions";
 import { useRouter } from "next/navigation";
+import TexturePreview from "@/components/texture-preview";
 
 export default function ProfileTexture({ profile }) {
   const [upload, setUpload] = useState(false);
@@ -24,6 +25,7 @@ export default function ProfileTexture({ profile }) {
     });
 
     if (result.success) {
+      setDetach(false);
       router.refresh();
     }
     setPending(false);
@@ -33,49 +35,35 @@ export default function ProfileTexture({ profile }) {
     <>
       {!upload ? (
         <div className="w-full">
-          <div className="flex flex-auto gap-6 my-4">
-            <div className="w-full p-0">
-              {profile.skin && (
-                <>
-                  <p className="mb-3">
-                    <span>皮肤</span>
-                    {detach && (
-                      <X
-                        onClick={() => handleDetach("SKIN")}
-                        className="inline text-muted-foreground hover:text-destructive hover:scale-110"
-                      />
-                    )}
-                  </p>
-                  <img
-                    src={TEXTURE_PREFIX + profile.skin.hash}
-                    alt={profile.skin.name}
-                    className="w-full h-full"
-                  />
-                </>
-              )}
-            </div>
-
-            <div className="w-full">
-              {profile.cape && (
-                <>
-                  <p className="mb-3">
-                    <span>披风</span>
-                    {detach && (
-                      <X
-                        onClick={() => handleDetach("CAPE")}
-                        className="inline text-muted-foreground hover:text-destructive hover:scale-110"
-                      />
-                    )}
-                  </p>
-                  <img
-                    src={TEXTURE_PREFIX + profile.cape.hash}
-                    alt={profile.cape.name}
-                    className="w-full"
-                  />
-                </>
-              )}
-            </div>
+          <div className="flex justify-center">
+            <TexturePreview
+              skinUrl={profile.skin && TEXTURE_PREFIX + profile.skin.hash}
+              capeUrl={profile.cape && TEXTURE_PREFIX + profile.cape.hash}
+              noRender={false}
+            />
           </div>
+          {detach && (
+            <div className="flex gap-2">
+              {profile.skin && (
+                <Button
+                  className="bg-destructive hover:bg-destructive/75"
+                  onClick={() => handleDetach("SKIN")}
+                >
+                  皮肤
+                  <X />
+                </Button>
+              )}
+              {profile.cape && (
+                <Button
+                  className="bg-destructive hover:bg-destructive/75"
+                  onClick={() => handleDetach("CAPE")}
+                >
+                  披风
+                  <X />
+                </Button>
+              )}
+            </div>
+          )}
 
           <div className="flex flex-row-reverse my-4 gap-3">
             <Button
