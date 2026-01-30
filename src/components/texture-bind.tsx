@@ -157,7 +157,7 @@ export default function TextureBind({ profile }) {
                       上传
                     </p>
                   </button>
-                  <Link href="/dashboard/closet" className="z-11">
+                  <Link href="closet" className="z-11">
                     <button className="p-1 rounded-sm h-9 w-20 bg-background my-4  border border-foreground hover:bg-gray-100 z-11">
                       <p className="w-full">
                         <span>
