@@ -39,7 +39,6 @@ export default function ProfileTexture({ profile }) {
             <TexturePreview
               skinUrl={profile.skin && TEXTURE_PREFIX + profile.skin.hash}
               capeUrl={profile.cape && TEXTURE_PREFIX + profile.cape.hash}
-              noRender={false}
             />
           </div>
           {detach && (

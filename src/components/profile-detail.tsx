@@ -18,7 +18,7 @@ export default async function ProfileDetail({
   }
 
   return (
-    <div className="border rounded-md min-h-60 md:min-h-80 py-2 px-6 my-4 bg-background">
+    <div className="border rounded-md min-h-60 md:min-h-80 p-6 my-4 bg-background">
       <div className="place-items-center flex mb-4">
         {!profile.skin && !profile.cape ? (
           <TextureBind profile={profile} />

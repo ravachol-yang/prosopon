@@ -4,11 +4,9 @@ import { IdleAnimation, SkinViewer } from "skinview3d";
 export default function TexturePreview({
   skinUrl,
   capeUrl,
-  noRender,
 }: {
   skinUrl: string | null;
   capeUrl: string | null;
-  noRender: boolean;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -20,7 +18,6 @@ export default function TexturePreview({
       width: 300,
       height: 400,
       skin: "img/steve.png",
-      renderPaused: noRender || false,
     });
 
     if (skinUrl) viewer.loadSkin(skinUrl);
@@ -33,7 +30,7 @@ export default function TexturePreview({
     viewer.camera.position.z = capeUrl && !skinUrl ? -42.0 : 42.0;
 
     return () => viewer.dispose();
-  }, [capeUrl, skinUrl, noRender]);
+  }, [capeUrl, skinUrl]);
 
   return <canvas ref={canvasRef} className="rounded-lg shadow-inner" />;
 }

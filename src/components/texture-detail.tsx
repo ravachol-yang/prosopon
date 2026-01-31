@@ -21,7 +21,6 @@ export default function TextureDetail({ texture, user }) {
         <TexturePreview
           skinUrl={texture.type === TextureType.SKIN ? TEXTURE_PREFIX + texture.hash : null}
           capeUrl={texture.type === TextureType.CAPE ? TEXTURE_PREFIX + texture.hash : null}
-          noRender={false}
         />
       </div>
 

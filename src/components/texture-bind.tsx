@@ -19,6 +19,7 @@ import { SkinModel, TextureType } from "@/generated/prisma/enums";
 import { Label } from "@/components/ui/label";
 import { validateTexture } from "@/lib/client/texture-validate";
 import { uploadTextureParams } from "@/lib/schema";
+import TexturePreview from "@/components/texture-preview";
 
 export default function TextureBind({ profile }) {
   const [file, setFile] = useState<File | null>(null);
@@ -194,7 +195,13 @@ export default function TextureBind({ profile }) {
               清除
             </p>
           </button>
-          <img src={preview} alt={file.name} className="h-40 my-4" />
+
+          <div className="flex justify-center">
+            <TexturePreview
+              skinUrl={type === TextureType.SKIN ? preview : null}
+              capeUrl={type === TextureType.SKIN ? null : preview}
+            />
+          </div>
 
           <form onSubmit={handleUpload} className="my-4 gap-2">
             <Label htmlFor="name" className="my-2">
