@@ -14,6 +14,14 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async rewrites() {
+    return [
+      {
+        source: "/user/closet",
+        destination: "/closet",
+      },
+    ];
+  },
 };
 
 export default nextConfig;

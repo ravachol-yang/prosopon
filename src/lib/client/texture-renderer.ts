@@ -5,7 +5,7 @@ export async function renderTexture(skinUrl, capeUrl) {
   const skinViewer = new SkinViewer({
     width: 150,
     height: 200,
-    skin: "img/steve.png",
+    skin: "/img/steve.png",
     renderPaused: true,
   });
 

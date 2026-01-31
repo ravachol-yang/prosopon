@@ -17,7 +17,7 @@ export default function TexturePreview({
       canvas: canvasRef.current,
       width: 300,
       height: 400,
-      skin: "img/steve.png",
+      skin: "/img/steve.png",
     });
 
     if (skinUrl) viewer.loadSkin(skinUrl);
