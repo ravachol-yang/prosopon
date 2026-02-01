@@ -1,36 +1,116 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Prosopon
+
+<i>Prosopon is a lightweight Minecraft identity manager</i>
 
 ## Getting Started
 
-First, run the development server:
+Prosopon is a Minecraft identity manager with multi-profile, texture (both skin and cape) management and yggdrasil api compatibility based on NextJS.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+It's designed for small community and fast, serverless deployment
+
+## Configuration
+
+Requirements:
+
+- a PostgreSQL database
+- an S3-compatible object storage
+- an Upstash Redis storage
+- an RSA keypair (see [authlib-injector docs](https://github.com/yushijinhun/authlib-injector/wiki/%E7%AD%BE%E5%90%8D%E5%AF%86%E9%92%A5%E5%AF%B9))
+
+All **required environment variables**:
+
+Site info:
+
+```dotenv
+# (Required) your site domain, required for profile uuid generation
+NEXT_PUBLIC_SITE_DOMAIN=""
+
+# (Required) prefix of your texture url, starts with 'https://' and ends with '/'
+NEXT_PUBLIC_TEXTURE_PREFIX=""
+
+# (Required) domain of your texture host. see Yggdrasil docs
+TEXTURE_DOMAIN=""
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Database:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```dotenv
+# (Required) Postgres database url
+DATABASE_URL=""
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Session storage:
 
-## Learn More
+```dotenv
+# (Required) Upstash Redis credentials, for session storage
+UPSTASH_REDIS_REST_URL=""
+UPSTASH_REDIS_REST_TOKEN=""
+```
 
-To learn more about Next.js, take a look at the following resources:
+Texture storage:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```dotenv
+# (Required) S3-compatible storage credentials, for storing textures
+S3_ENDPOINT=""
+S3_ACCESS_KEY_ID=""
+S3_SECRET_ACCESS_KEY=""
+S3_BUCKET_NAME=""
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Cryptography:
+
+```dotenv
+# (Required) secret for jwt signing
+APP_SECRET=""
+
+# (Required) RSA key pair in base64, for yggdrasil texture signing
+RSA_PUBKEY_B64=""
+RSA_PRIVKEY_B64=""
+```
+
+> [!TIP]
+> see `.env.example` for all supported environment variables.
 
 ## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+You can deploy this application by forking this repo and importing it into Vercel.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Download`.env.example`, fill in it and upload to vercel (or manually fill in the environment variables) before deploying.
+
+## Manually Build
+
+Preparing.
+
+```bash
+git clone https://github.com/ravachol-yang/prosopon.git
+cd prosopon
+pnpm install
+cp .env.exmaple .env
+```
+
+Fill in the `.env`and build the app.
+
+```bash
+pnpm run build
+```
+
+Running.
+
+```bash
+pnpm run start
+```
+
+## Usage
+
+First deployment creates a default `ADMIN` with email `prosopon@example.com` and password `prosopon`, log into the dashboard, create your first `Profile` and upload `Texture`s for it, `ADMIN`s can create `Invite`s for their friends to join.
+
+> [!NOTE]
+> This project is designed for personal community, invite verification is required\*
+
+See [authlib-injector](https://github.com/yushijinhun/authlib-injector) docs for integration with supported launchers and usage on Minecraft servers.
+
+## See also
+
+[Yggdrasil Server-side Specs](https://github.com/yushijinhun/authlib-injector/wiki/Yggdrasil-%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%8A%80%E6%9C%AF%E8%A7%84%E8%8C%83)
+
+[Use authlib-injector on Minecraft servers](https://github.com/yushijinhun/authlib-injector/wiki/%E5%9C%A8-Minecraft-%E6%9C%8D%E5%8A%A1%E7%AB%AF%E4%BD%BF%E7%94%A8-authlib-injector)
