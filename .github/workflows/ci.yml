@@ -1,0 +1,63 @@
+name: Node.js CI
+
+on:
+  push:
+    branches: [ "main", "dev" ]
+  pull_request:
+    branches: [ "main", "dev" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+        
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: dummy
+          POSTGRES_PASSWORD: dummy
+          POSTGRES_DB: dummy
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - uses: actions/checkout@v4
+    - uses: pnpm/action-setup@v4
+      with:
+        version: 10
+
+    - name: Use Node.js 22
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22
+        cache: 'pnpm'
+    
+    - name: Build and test
+      env:
+        NEXT_PUBLIC_SITE_DOMAIN: exmaple.com
+        NEXT_PUBLIC_TEXTURE_PREFIX: https://example.com/
+        TEXTURE_DOMAIN: example.com
+        
+        DATABASE_URL: postgresql://dummy:dummy@localhost:5432/dummy
+
+        UPSTASH_REDIS_REST_URL: https://example.com
+        UPSTASH_REDIS_REST_TOKEN: dummy
+
+        S3_ENDPOINT: https://example.com
+        S3_ACCESS_KEY_ID: dummy
+        S3_SECRET_ACCESS_KEY: dummy
+        S3_BUCKET_NAME: dummy
+
+        APP_SECRET: dummy
+        RSA_PUBKEY_B64: dummy
+        RSA_PRIVKEY_B64: dummy
+      run: |
+        pnpm install --frozen-lockfile
+        pnpm test
+        pnpm build
