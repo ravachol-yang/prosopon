@@ -1,0 +1,16 @@
+changelog:
+  categories:
+    - title: "Features"
+      labels: ["enhancement","feat"]
+    - title: "Bug Fixes"
+      labels: ["bugfix","fix", "perf"]
+    - title: "Maintenance"
+      labels: ["chore", "refactor", "style"]
+    - title: "Documentation"
+      labels: ["docs"]
+
+  exclude:
+    labels:
+      - "ignore"
+    authors:
+      - "dependabot"
