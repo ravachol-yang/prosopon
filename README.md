@@ -2,6 +2,10 @@
 
 <i>Prosopon is a lightweight Minecraft identity manager</i>
 
+![GitHub Release](https://img.shields.io/github/v/release/ravachol-yang/prosopon)
+![GitHub License](https://img.shields.io/github/license/ravachol-yang/prosopon)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/ravachol-yang/prosopon/ci.yml)
+
 ## Getting Started
 
 Prosopon is a Minecraft identity manager with multi-profile, texture (both skin and cape) management and yggdrasil api compatibility based on NextJS.
