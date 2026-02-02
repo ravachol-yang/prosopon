@@ -33,10 +33,7 @@ export default function SidebarEntry({ entry }) {
           {entry.id === "profile" && <Smile />}
           {entry.id === "closet" && <Shirt />}
           {entry.id === "account" && <UserRound />}
-          {entry.id === "textures" && <Boxes />}
-          {entry.id === "genconfig" && <File />}
           {entry.id === "content" && <TableOfContents />}
-          {entry.id === "settings" && <Settings />}
           <span className="text-base">{entry.title}</span>
         </Link>
       </SidebarMenuButton>
