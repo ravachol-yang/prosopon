@@ -5,7 +5,7 @@ import { Buffer } from "node:buffer";
 import { SkinModel, TextureType } from "@/generated/prisma/enums";
 import { getContentHash } from "@/lib/crypto";
 import prisma from "@/lib/prisma";
-import { getStorage } from "@/lib/storage";
+import { storage } from "@/lib/storage";
 import { untrimUuid } from "@/lib/yggdrasil/utils";
 
 export async function PUT(req: NextRequest, { params }) {
@@ -38,8 +38,6 @@ export async function PUT(req: NextRequest, { params }) {
   }
 
   const hash = getContentHash(buffer);
-
-  const storage = getStorage();
   const existing = await prisma.texture.findFirst({ where: { hash } });
   if (!existing) {
     await storage.put(hash, buffer, file.type);
