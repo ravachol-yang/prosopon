@@ -56,7 +56,20 @@ export default function AdminUserList({ users, where }) {
             <TableCell>{user.email}</TableCell>
             <TableCell>{user.verified ? "是" : "否"}</TableCell>
             <TableCell>{user.role}</TableCell>
-            <TableCell>{user.invitedBy ? user.invitedBy.createdBy.name : ""}</TableCell>
+            <TableCell>
+              <Link
+                className="text-blue-700"
+                href={{
+                  pathname: "",
+                  query: {
+                    tab: "user",
+                    id: user.invitedBy ? user.invitedBy.createdBy.id : undefined,
+                  },
+                }}
+              >
+                <u>{user.invitedBy ? user.invitedBy.createdBy.name : ""}</u>
+              </Link>
+            </TableCell>
             <TableCell>
               <Link
                 className="text-blue-700"

@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { createInviteParam } from "@/lib/schema";
 import { createInvite } from "@/lib/actions";
+import Link from "next/link";
 
 export default function InvitesList({ invites }) {
   const [maxInvites, setMaxInvites] = useState(1);
@@ -66,7 +67,24 @@ export default function InvitesList({ invites }) {
             <TableRow key={invite.code}>
               <TableCell className="font-medium">{invite.code}</TableCell>
               <TableCell>{invite.maxInvites}</TableCell>
-              <TableCell>{invite.creatorId}</TableCell>
+              <TableCell>
+                <Link
+                  className="text-blue-700"
+                  href={{
+                    pathname: "",
+                    query: {
+                      tab: "user",
+                      id: invite.creatorId ? invite.creatorId : undefined,
+                    },
+                  }}
+                >
+                  <u>
+                    {invite.creatorId
+                      ? (invite.createdBy.name ?? invite.createdBy.email.split("@")[0])
+                      : ""}
+                  </u>
+                </Link>
+              </TableCell>
               <TableCell>{invite.usedBy ? invite.usedBy.length : 0}</TableCell>
               <TableCell>{new Date(invite.createdAt).toLocaleString()}</TableCell>
             </TableRow>
