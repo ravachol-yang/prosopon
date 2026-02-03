@@ -3,6 +3,7 @@
 import {
   Table,
   TableBody,
+  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -11,10 +12,25 @@ import {
 import { clsx } from "clsx";
 import { createAvatar } from "@dicebear/core";
 import { lorelei } from "@dicebear/collection";
+import Link from "next/link";
+import { SquareArrowOutUpRight } from "lucide-react";
 
-export default function AdminUserList({ users }) {
+export default function AdminUserList({ users, where }) {
   return (
     <Table>
+      <TableCaption>
+        已显示{" "}
+        {where ? (
+          <>
+            {where.id && `ID为${where.id} `}
+            {where.role && `权限为${where.role} `}
+            {where.inviteId && `邀请码为${where.inviteId} `}
+          </>
+        ) : (
+          "全部 "
+        )}
+        的用户
+      </TableCaption>
       <TableHeader>
         <TableRow>
           <TableHead></TableHead>
@@ -50,10 +66,75 @@ export default function AdminUserList({ users }) {
             <TableCell>{user.name}</TableCell>
             <TableCell>{user.email}</TableCell>
             <TableCell>{user.verified ? "是" : "否"}</TableCell>
-            <TableCell>{user.role}</TableCell>
-            <TableCell>{user.invitedBy ? user.invitedBy.createdBy.name : ""}</TableCell>
-            <TableCell>{user._count.profiles}</TableCell>
-            <TableCell>{user._count.closet}</TableCell>
+            <TableCell>
+              <Link
+                className="text-blue-700"
+                href={{
+                  pathname: "",
+                  query: {
+                    tab: "user",
+                    role: user.role,
+                  },
+                }}
+              >
+                <u>{user.role}</u>
+              </Link>
+            </TableCell>
+            <TableCell>
+              {user.invitedBy && (
+                <div className="flex gap-1 group">
+                  {user.invitedBy.createdBy.name
+                    ? user.invitedBy.createdBy.name
+                    : user.invitedBy.createdBy.email.split("@")[0]}
+                  <Link
+                    href={{
+                      pathname: "",
+                      query: {
+                        tab: "invite",
+                        code: user.invitedBy.code,
+                      },
+                    }}
+                  >
+                    <SquareArrowOutUpRight
+                      size={15}
+                      className="opacity-0 group-hover:opacity-100"
+                    />
+                  </Link>
+                </div>
+              )}
+            </TableCell>
+            <TableCell>
+              <div className="flex gap-1 group">
+                {user._count.profiles}
+                <Link
+                  href={{
+                    pathname: "",
+                    query: {
+                      tab: "profile",
+                      userId: user.id,
+                    },
+                  }}
+                >
+                  <SquareArrowOutUpRight size={15} className="opacity-0 group-hover:opacity-100" />
+                </Link>
+              </div>
+            </TableCell>
+            <TableCell>
+              <div className="flex gap-1 group">
+                {user._count.closet}
+                <Link
+                  href={{
+                    pathname: "",
+                    query: {
+                      tab: "texture",
+                      uploaderId: user.id,
+                    },
+                  }}
+                >
+                  <SquareArrowOutUpRight size={15} className="opacity-0 group-hover:opacity-100" />
+                </Link>
+              </div>
+            </TableCell>
             <TableCell>{new Date(user.createdAt).toLocaleString()}</TableCell>
           </TableRow>
         ))}

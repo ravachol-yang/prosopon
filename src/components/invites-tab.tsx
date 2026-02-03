@@ -1,12 +1,12 @@
-import { findAllInvitesWithUsedBy } from "@/queries/invite";
+import { findAllInvitesWithInfo } from "@/queries/invite";
 import InvitesList from "@/components/invites-list";
 
-export default async function InvitesTab() {
-  const invites = await findAllInvitesWithUsedBy();
+export default async function InvitesTab({ where }) {
+  const invites = await findAllInvitesWithInfo(where);
 
   return (
     <div>
-      <InvitesList invites={invites} />
+      <InvitesList invites={invites} where={where} />
     </div>
   );
 }

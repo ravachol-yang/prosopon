@@ -20,3 +20,24 @@ export async function findTextureByIdWithOwnProfiles(id: string, userId: string)
     },
   });
 }
+
+export async function findAllTextureWithInfo(where?) {
+  return prisma.texture.findMany({
+    where,
+    include: {
+      _count: {
+        select: {
+          profileSkin: true,
+          profileCape: true,
+        },
+      },
+      uploader: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+        },
+      },
+    },
+  });
+}

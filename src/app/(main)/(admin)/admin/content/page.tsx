@@ -4,6 +4,8 @@ import { Separator } from "@/components/ui/separator";
 import InvitesTab from "@/components/invites-tab";
 import UserTab from "@/components/user-tab";
 import { Metadata } from "next";
+import ProfileTab from "@/components/profile-tab";
+import TextureTab from "@/components/texture-tab";
 
 export const metadata: Metadata = {
   title: "内容管理",
@@ -13,6 +15,21 @@ export default async function ContentPage({ searchParams }) {
   const params = await searchParams;
 
   const tab = params.tab;
+
+  const id = params.id;
+
+  const role = params.role;
+  const inviteId = params.inviteId;
+
+  const userId = params.userId;
+  const tid = params.tid;
+
+  const uploaderId = params.uploaderId;
+  const type = params.type;
+  const model = params.model;
+
+  const code = params.code;
+  const creatorId = params.creatorId;
 
   return (
     <div className="w-max-200 w-full lg:p-3">
@@ -63,8 +80,28 @@ export default async function ContentPage({ searchParams }) {
         </Link>
       </div>
       <div className="border rounded-md min-h-60 md:min-h-80 p-5 my-4 bg-background w-full">
-        {tab !== "profile" && tab !== "texture" && tab !== "invite" && <UserTab />}
-        {tab === "invite" && <InvitesTab />}
+        {tab !== "profile" && tab !== "texture" && tab !== "invite" && (
+          <UserTab
+            where={id || role || inviteId ? { id: id, role: role, inviteId: inviteId } : undefined}
+          />
+        )}
+        {tab === "profile" && (
+          <ProfileTab where={userId || tid ? { userId: userId, tid: tid } : undefined} />
+        )}
+        {tab === "texture" && (
+          <TextureTab
+            where={
+              id || uploaderId || type || model
+                ? { id: id, uploaderId: uploaderId, type: type, model: model }
+                : undefined
+            }
+          />
+        )}
+        {tab === "invite" && (
+          <InvitesTab
+            where={code || creatorId ? { code: code, creatorId: creatorId } : undefined}
+          />
+        )}
       </div>
     </div>
   );
