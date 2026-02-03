@@ -15,7 +15,7 @@ import prisma from "@/lib/prisma";
 import { checkPassword, hashPassword } from "@/lib/password";
 import { checkAdmin, checkAuth, signin } from "@/lib/auth";
 import { z } from "zod";
-import { getStorage } from "@/lib/storage";
+import { storage } from "@/lib/storage";
 import { redirect } from "next/navigation";
 import { getContentHash } from "@/lib/crypto";
 import { Buffer } from "node:buffer";
@@ -299,8 +299,6 @@ export async function uploadTexture(formData: FormData) {
     return { success: false, message: "Invalid input" };
   }
   const { name, type, model } = validated.data;
-
-  const storage = getStorage();
 
   let buffer;
   try {
