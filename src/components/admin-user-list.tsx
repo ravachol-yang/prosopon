@@ -13,6 +13,7 @@ import { clsx } from "clsx";
 import { createAvatar } from "@dicebear/core";
 import { lorelei } from "@dicebear/collection";
 import Link from "next/link";
+import { SquareArrowOutUpRight } from "lucide-react";
 
 export default function AdminUserList({ users, where }) {
   return (
@@ -84,7 +85,22 @@ export default function AdminUserList({ users, where }) {
                 <u>{user._count.profiles}</u>
               </Link>
             </TableCell>
-            <TableCell>{user._count.closet}</TableCell>
+            <TableCell>
+              <div className="flex gap-1 group">
+                {user._count.closet}
+                <Link
+                  href={{
+                    pathname: "",
+                    query: {
+                      tab: "texture",
+                      uploaderId: user.id,
+                    },
+                  }}
+                >
+                  <SquareArrowOutUpRight size={15} className="opacity-0 group-hover:opacity-100" />
+                </Link>
+              </div>
+            </TableCell>
             <TableCell>{new Date(user.createdAt).toLocaleString()}</TableCell>
           </TableRow>
         ))}

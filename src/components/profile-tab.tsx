@@ -9,14 +9,28 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import Link from "next/link";
+import { SquareArrowOutUpRight } from "lucide-react";
 
 export default async function ProfileTab({ where }) {
-  const profiles = await findProfilesWithInfo(where);
+  const profiles = await findProfilesWithInfo(
+    where
+      ? { ...where, tid: undefined, OR: [{ skinId: where.tid }, { capeId: where.tid }] }
+      : undefined,
+  );
 
   return (
     <Table>
       <TableCaption>
-        {`已显示 ${where ? where.userId && `创建者为 ${where.userId}` : "全部"} 的角色`}
+        已显示{" "}
+        {where ? (
+          <>
+            {where.userId && `创建者为 ${where.userId}`}
+            {where.tid && `绑定材质ID为 ${where.tid}`}
+          </>
+        ) : (
+          "全部"
+        )}{" "}
+        的角色
       </TableCaption>
       <TableHeader>
         <TableRow>
@@ -46,8 +60,38 @@ export default async function ProfileTab({ where }) {
                 <u>{profile.user.name ?? profile.user.email.split("@")[0]}</u>
               </Link>
             </TableCell>
-            <TableCell>{profile.skinId && "✅"}</TableCell>
-            <TableCell>{profile.capeId && "✅"}</TableCell>
+            <TableCell>
+              <div className="flex gap-1 group">
+                {profile.skinId && "✅"}
+                <Link
+                  href={{
+                    pathname: "",
+                    query: {
+                      tab: "texture",
+                      id: profile.skinId,
+                    },
+                  }}
+                >
+                  <SquareArrowOutUpRight size={15} className="opacity-0 group-hover:opacity-100" />
+                </Link>
+              </div>
+            </TableCell>
+            <TableCell>
+              <div className="flex gap-1 group">
+                {profile.capeId && "✅"}
+                <Link
+                  href={{
+                    pathname: "",
+                    query: {
+                      tab: "texture",
+                      id: profile.capeId,
+                    },
+                  }}
+                >
+                  <SquareArrowOutUpRight size={15} className="opacity-0 group-hover:opacity-100" />
+                </Link>
+              </div>
+            </TableCell>
             <TableCell>{new Date(profile.createdAt).toLocaleString()}</TableCell>
           </TableRow>
         ))}

@@ -5,6 +5,7 @@ import InvitesTab from "@/components/invites-tab";
 import UserTab from "@/components/user-tab";
 import { Metadata } from "next";
 import ProfileTab from "@/components/profile-tab";
+import TextureTab from "@/components/texture-tab";
 
 export const metadata: Metadata = {
   title: "内容管理",
@@ -14,8 +15,15 @@ export default async function ContentPage({ searchParams }) {
   const params = await searchParams;
 
   const tab = params.tab;
+
   const id = params.id;
+
   const owner = params.owner;
+  const tid = params.tid;
+
+  const uploaderId = params.uploaderId;
+  const type = params.type;
+  const model = params.model;
 
   return (
     <div className="w-max-200 w-full lg:p-3">
@@ -69,7 +77,18 @@ export default async function ContentPage({ searchParams }) {
         {tab !== "profile" && tab !== "texture" && tab !== "invite" && (
           <UserTab where={id ? { id: id } : undefined} />
         )}
-        {tab === "profile" && <ProfileTab where={owner ? { userId: owner } : undefined} />}
+        {tab === "profile" && (
+          <ProfileTab where={owner || tid ? { userId: owner, tid: tid } : undefined} />
+        )}
+        {tab === "texture" && (
+          <TextureTab
+            where={
+              id || uploaderId || type || model
+                ? { id: id, uploaderId: uploaderId, type: type, model: model }
+                : undefined
+            }
+          />
+        )}
         {tab === "invite" && <InvitesTab />}
       </div>
     </div>
