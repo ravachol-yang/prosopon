@@ -174,7 +174,7 @@ export default function TextureBind({ profile }) {
           </div>
         </div>
       ) : (
-        <div>
+        <div className="w-full">
           <p className="break-all">已选择: {file.name}</p>
           <button
             className="p-1 rounded-sm h-9 w-20 bg-destructive my-4 text-background hover:bg-destructive/75"
