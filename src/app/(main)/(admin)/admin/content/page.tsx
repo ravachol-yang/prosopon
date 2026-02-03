@@ -4,6 +4,7 @@ import { Separator } from "@/components/ui/separator";
 import InvitesTab from "@/components/invites-tab";
 import UserTab from "@/components/user-tab";
 import { Metadata } from "next";
+import ProfileTab from "@/components/profile-tab";
 
 export const metadata: Metadata = {
   title: "内容管理",
@@ -64,6 +65,7 @@ export default async function ContentPage({ searchParams }) {
       </div>
       <div className="border rounded-md min-h-60 md:min-h-80 p-5 my-4 bg-background w-full">
         {tab !== "profile" && tab !== "texture" && tab !== "invite" && <UserTab />}
+        {tab === "profile" && <ProfileTab />}
         {tab === "invite" && <InvitesTab />}
       </div>
     </div>
