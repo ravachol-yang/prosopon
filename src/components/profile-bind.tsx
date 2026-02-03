@@ -7,32 +7,32 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Field } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
-import { Controller, useForm } from "react-hook-form";
 import { bindProfileTexture } from "@/lib/actions";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { LoaderCircle } from "lucide-react";
 
 export default function ProfileBind({ texture, user }) {
-  const form = useForm();
-
   const router = useRouter();
+
+  const [profileId, setProfileId] = useState<string>("");
 
   const [message, setMessage] = useState<string | null>(null);
   const [status, setStatus] = useState(false);
   const [pending, setPending] = useState(false);
 
-  async function onSubmit(data) {
+  async function handleSubmit(e) {
+    e.preventDefault();
     setPending(true);
     const result = await bindProfileTexture({
-      profileId: data.profileId,
+      profileId: profileId,
       textureId: texture.id,
       type: texture.type,
     });
 
     if (result.success) {
+      setProfileId("");
       router.refresh();
     } else {
       setStatus(false);
@@ -42,29 +42,22 @@ export default function ProfileBind({ texture, user }) {
   }
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full">
-      <Controller
-        name="profileId"
-        control={form.control}
-        render={({ field }) => (
-          <Field className="w-fit">
-            <Select name={field.name} value={field.value} onValueChange={field.onChange}>
-              <SelectTrigger id="type">
-                <SelectValue placeholder="选择角色..." />
-              </SelectTrigger>
-              <SelectContent>
-                {user.profiles.map((profile) => (
-                  <SelectItem key={profile.id} value={profile.id}>
-                    {profile.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </Field>
-        )}
-      />
+    <form onSubmit={handleSubmit} className="flex w-full">
+      <Select name="profileId" value={profileId} onValueChange={(value) => setProfileId(value)}>
+        <SelectTrigger id="type">
+          <SelectValue placeholder="选择角色..." />
+        </SelectTrigger>
+        <SelectContent>
+          {user.profiles.map((profile) => (
+            <SelectItem key={profile.id} value={profile.id}>
+              {profile.name}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
       <div className="flex flex-row-reverse w-full">
-        <Button type="submit" disabled={pending}>
+        <Button type="submit" disabled={pending || !profileId}>
           {pending && <LoaderCircle className="animate-spin" />}
           {pending ? "正在绑定..." : "绑定"}
         </Button>
