@@ -14,7 +14,11 @@ import { SquareArrowOutUpRight } from "lucide-react";
 export default async function ProfileTab({ where }) {
   const profiles = await findProfilesWithInfo(
     where
-      ? { ...where, tid: undefined, OR: [{ skinId: where.tid }, { capeId: where.tid }] }
+      ? {
+          ...where,
+          tid: undefined,
+          OR: where.tid ? [{ skinId: where.tid }, { capeId: where.tid }] : undefined,
+        }
       : undefined,
   );
 
@@ -24,12 +28,12 @@ export default async function ProfileTab({ where }) {
         已显示{" "}
         {where ? (
           <>
-            {where.userId && `创建者为 ${where.userId}`}
-            {where.tid && `绑定材质ID为 ${where.tid}`}
+            {where.userId && `创建者为${where.userId} `}
+            {where.tid && `绑定材质ID为${where.tid} `}
           </>
         ) : (
-          "全部"
-        )}{" "}
+          "全部 "
+        )}
         的角色
       </TableCaption>
       <TableHeader>
@@ -46,19 +50,34 @@ export default async function ProfileTab({ where }) {
       <TableBody>
         {profiles.map((profile) => (
           <TableRow key={profile.id}>
-            <TableCell>{profile.id}</TableCell>
+            <TableCell>
+              <strong>{profile.id}</strong>
+            </TableCell>
             <TableCell>{profile.name}</TableCell>
             <TableCell>{profile.uuid}</TableCell>
             <TableCell>
-              <Link
-                className="text-blue-700"
-                href={{
-                  pathname: "",
-                  query: { tab: "user", id: profile.userId },
-                }}
-              >
-                <u>{profile.user.name ?? profile.user.email.split("@")[0]}</u>
-              </Link>
+              <div className="flex gap-1 group">
+                <Link
+                  className="text-blue-700"
+                  href={{
+                    pathname: "",
+                    query: { tab: "profile", userId: profile.userId },
+                  }}
+                >
+                  <u>{profile.user.name ?? profile.user.email.split("@")[0]}</u>
+                </Link>
+                <Link
+                  href={{
+                    pathname: "",
+                    query: {
+                      tab: "user",
+                      id: profile.userId,
+                    },
+                  }}
+                >
+                  <SquareArrowOutUpRight size={15} className="opacity-0 group-hover:opacity-100" />
+                </Link>
+              </div>
             </TableCell>
             <TableCell>
               <div className="flex gap-1 group">

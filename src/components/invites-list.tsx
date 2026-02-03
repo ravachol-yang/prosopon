@@ -3,13 +3,14 @@
 import {
   Table,
   TableBody,
+  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { LoaderCircle, Plus } from "lucide-react";
+import { LoaderCircle, Plus, SquareArrowOutUpRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -17,7 +18,7 @@ import { createInviteParam } from "@/lib/schema";
 import { createInvite } from "@/lib/actions";
 import Link from "next/link";
 
-export default function InvitesList({ invites }) {
+export default function InvitesList({ invites, where }) {
   const [maxInvites, setMaxInvites] = useState(1);
   const [status, setStatus] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
@@ -41,7 +42,7 @@ export default function InvitesList({ invites }) {
       if (result.success) {
         setStatus(true);
         setMessage("");
-        router.refresh();
+        router.replace("?tab=invite");
       } else {
         setStatus(false);
         setMessage(result.message || "未知错误");
@@ -53,6 +54,18 @@ export default function InvitesList({ invites }) {
   return (
     <div>
       <Table>
+        <TableCaption>
+          已显示{" "}
+          {where ? (
+            <>
+              {where.code && `ID为${where.code} `}
+              {where.creatorId && `创建者为${where.creatorId} `}
+            </>
+          ) : (
+            "全部 "
+          )}
+          的邀请码
+        </TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead className="w-25">邀请码</TableHead>
@@ -68,24 +81,58 @@ export default function InvitesList({ invites }) {
               <TableCell className="font-medium">{invite.code}</TableCell>
               <TableCell>{invite.maxInvites}</TableCell>
               <TableCell>
-                <Link
-                  className="text-blue-700"
-                  href={{
-                    pathname: "",
-                    query: {
-                      tab: "user",
-                      id: invite.creatorId ? invite.creatorId : undefined,
-                    },
-                  }}
-                >
-                  <u>
-                    {invite.creatorId
-                      ? (invite.createdBy.name ?? invite.createdBy.email.split("@")[0])
-                      : ""}
-                  </u>
-                </Link>
+                <div className="flex gap-1 group">
+                  <Link
+                    className="text-blue-700"
+                    href={{
+                      pathname: "",
+                      query: {
+                        tab: "invite",
+                        creatorId: invite.creatorId,
+                      },
+                    }}
+                  >
+                    <u>
+                      {invite.creatorId
+                        ? (invite.createdBy.name ?? invite.createdBy.email.split("@")[0])
+                        : ""}
+                    </u>
+                  </Link>
+                  <Link
+                    href={{
+                      pathname: "",
+                      query: {
+                        tab: "user",
+                        id: invite.creatorId,
+                      },
+                    }}
+                  >
+                    <SquareArrowOutUpRight
+                      size={15}
+                      className="opacity-0 group-hover:opacity-100"
+                    />
+                  </Link>
+                </div>
               </TableCell>
-              <TableCell>{invite.usedBy ? invite.usedBy.length : 0}</TableCell>
+              <TableCell>
+                <div className="flex gap-1 group">
+                  {invite.usedBy ? invite.usedBy.length : 0}
+                  <Link
+                    href={{
+                      pathname: "",
+                      query: {
+                        tab: "user",
+                        inviteId: invite.code,
+                      },
+                    }}
+                  >
+                    <SquareArrowOutUpRight
+                      size={15}
+                      className="opacity-0 group-hover:opacity-100"
+                    />
+                  </Link>
+                </div>
+              </TableCell>
               <TableCell>{new Date(invite.createdAt).toLocaleString()}</TableCell>
             </TableRow>
           ))}

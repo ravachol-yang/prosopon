@@ -1,7 +1,8 @@
 import prisma from "@/lib/prisma";
 
-export async function findAllInvitesWithInfo() {
+export async function findAllInvitesWithInfo(where?) {
   return prisma.invite.findMany({
+    where,
     include: {
       createdBy: {
         select: {

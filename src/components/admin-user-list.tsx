@@ -19,7 +19,17 @@ export default function AdminUserList({ users, where }) {
   return (
     <Table>
       <TableCaption>
-        {`已显示 ${where ? where.id && `ID为 ${where.id}` : "全部"} 的用户`}
+        已显示{" "}
+        {where ? (
+          <>
+            {where.id && `ID为${where.id} `}
+            {where.role && `权限为${where.role} `}
+            {where.inviteId && `邀请码为${where.inviteId} `}
+          </>
+        ) : (
+          "全部 "
+        )}
+        的用户
       </TableCaption>
       <TableHeader>
         <TableRow>
@@ -56,7 +66,6 @@ export default function AdminUserList({ users, where }) {
             <TableCell>{user.name}</TableCell>
             <TableCell>{user.email}</TableCell>
             <TableCell>{user.verified ? "是" : "否"}</TableCell>
-            <TableCell>{user.role}</TableCell>
             <TableCell>
               <Link
                 className="text-blue-700"
@@ -64,26 +73,51 @@ export default function AdminUserList({ users, where }) {
                   pathname: "",
                   query: {
                     tab: "user",
-                    id: user.invitedBy ? user.invitedBy.createdBy.id : undefined,
+                    role: user.role,
                   },
                 }}
               >
-                <u>{user.invitedBy ? user.invitedBy.createdBy.name : ""}</u>
+                <u>{user.role}</u>
               </Link>
             </TableCell>
             <TableCell>
-              <Link
-                className="text-blue-700"
-                href={{
-                  pathname: "",
-                  query: {
-                    tab: "profile",
-                    owner: user.id,
-                  },
-                }}
-              >
-                <u>{user._count.profiles}</u>
-              </Link>
+              {user.invitedBy && (
+                <div className="flex gap-1 group">
+                  {user.invitedBy.createdBy.name
+                    ? user.invitedBy.createdBy.name
+                    : user.invitedBy.createdBy.email.split("@")[0]}
+                  <Link
+                    href={{
+                      pathname: "",
+                      query: {
+                        tab: "invite",
+                        code: user.invitedBy.code,
+                      },
+                    }}
+                  >
+                    <SquareArrowOutUpRight
+                      size={15}
+                      className="opacity-0 group-hover:opacity-100"
+                    />
+                  </Link>
+                </div>
+              )}
+            </TableCell>
+            <TableCell>
+              <div className="flex gap-1 group">
+                {user._count.profiles}
+                <Link
+                  href={{
+                    pathname: "",
+                    query: {
+                      tab: "profile",
+                      userId: user.id,
+                    },
+                  }}
+                >
+                  <SquareArrowOutUpRight size={15} className="opacity-0 group-hover:opacity-100" />
+                </Link>
+              </div>
             </TableCell>
             <TableCell>
               <div className="flex gap-1 group">
