@@ -2,17 +2,22 @@ import { findProfilesWithInfo } from "@/queries/profile";
 import {
   Table,
   TableBody,
+  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import Link from "next/link";
 
-export default async function ProfileTab() {
-  const profiles = await findProfilesWithInfo();
+export default async function ProfileTab({ where }) {
+  const profiles = await findProfilesWithInfo(where);
 
   return (
     <Table>
+      <TableCaption>
+        {`已显示 ${where ? where.userId && `创建者为 ${where.userId}` : "全部"} 的角色`}
+      </TableCaption>
       <TableHeader>
         <TableRow>
           <TableHead>ID</TableHead>
@@ -30,7 +35,17 @@ export default async function ProfileTab() {
             <TableCell>{profile.id}</TableCell>
             <TableCell>{profile.name}</TableCell>
             <TableCell>{profile.uuid}</TableCell>
-            <TableCell>{profile.user.name ?? profile.user.email.split("@")[0]}</TableCell>
+            <TableCell>
+              <Link
+                className="text-blue-700"
+                href={{
+                  pathname: "",
+                  query: { tab: "user", id: profile.userId },
+                }}
+              >
+                <u>{profile.user.name ?? profile.user.email.split("@")[0]}</u>
+              </Link>
+            </TableCell>
             <TableCell>{profile.skinId && "✅"}</TableCell>
             <TableCell>{profile.capeId && "✅"}</TableCell>
             <TableCell>{new Date(profile.createdAt).toLocaleString()}</TableCell>

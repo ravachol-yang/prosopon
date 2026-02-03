@@ -14,6 +14,8 @@ export default async function ContentPage({ searchParams }) {
   const params = await searchParams;
 
   const tab = params.tab;
+  const id = params.id;
+  const owner = params.owner;
 
   return (
     <div className="w-max-200 w-full lg:p-3">
@@ -64,8 +66,10 @@ export default async function ContentPage({ searchParams }) {
         </Link>
       </div>
       <div className="border rounded-md min-h-60 md:min-h-80 p-5 my-4 bg-background w-full">
-        {tab !== "profile" && tab !== "texture" && tab !== "invite" && <UserTab />}
-        {tab === "profile" && <ProfileTab />}
+        {tab !== "profile" && tab !== "texture" && tab !== "invite" && (
+          <UserTab where={id ? { id: id } : undefined} />
+        )}
+        {tab === "profile" && <ProfileTab where={owner ? { userId: owner } : undefined} />}
         {tab === "invite" && <InvitesTab />}
       </div>
     </div>

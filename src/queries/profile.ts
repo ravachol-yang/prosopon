@@ -36,8 +36,9 @@ export async function findProfileByUserId(userId: string) {
   });
 }
 
-export async function findProfilesWithInfo() {
+export async function findProfilesWithInfo(where?) {
   return prisma.profile.findMany({
+    where,
     include: {
       user: {
         select: {

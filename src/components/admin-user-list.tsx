@@ -3,6 +3,7 @@
 import {
   Table,
   TableBody,
+  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -11,10 +12,14 @@ import {
 import { clsx } from "clsx";
 import { createAvatar } from "@dicebear/core";
 import { lorelei } from "@dicebear/collection";
+import Link from "next/link";
 
-export default function AdminUserList({ users }) {
+export default function AdminUserList({ users, where }) {
   return (
     <Table>
+      <TableCaption>
+        {`已显示 ${where ? where.id && `ID为 ${where.id}` : "全部"} 的用户`}
+      </TableCaption>
       <TableHeader>
         <TableRow>
           <TableHead></TableHead>
@@ -52,7 +57,20 @@ export default function AdminUserList({ users }) {
             <TableCell>{user.verified ? "是" : "否"}</TableCell>
             <TableCell>{user.role}</TableCell>
             <TableCell>{user.invitedBy ? user.invitedBy.createdBy.name : ""}</TableCell>
-            <TableCell>{user._count.profiles}</TableCell>
+            <TableCell>
+              <Link
+                className="text-blue-700"
+                href={{
+                  pathname: "",
+                  query: {
+                    tab: "profile",
+                    owner: user.id,
+                  },
+                }}
+              >
+                <u>{user._count.profiles}</u>
+              </Link>
+            </TableCell>
             <TableCell>{user._count.closet}</TableCell>
             <TableCell>{new Date(user.createdAt).toLocaleString()}</TableCell>
           </TableRow>
