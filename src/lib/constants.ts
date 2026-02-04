@@ -2,6 +2,8 @@ export const SITE_DOMAIN = process.env.NEXT_PUBLIC_SITE_DOMAIN!;
 export const SITE_NAME = process.env.NEXT_PUBLIC_SITE_NAME || "Prosopon";
 export const SESSION_PREFIX = process.env.SESSION_PREFIX || "prosopon";
 
+export const ANNOUNCEMENT = process.env.ANNOUNCEMENT || "";
+
 export const TEXTURE_PREFIX = process.env.NEXT_PUBLIC_TEXTURE_PREFIX;
 
 export const TEXTURE_DOMAIN = process.env.TEXTURE_DOMAIN;
