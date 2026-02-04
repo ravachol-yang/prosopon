@@ -3,11 +3,13 @@ changelog:
     - title: "Features"
       labels: ["enhancement","feat"]
     - title: "Bug Fixes"
-      labels: ["bugfix","fix", "perf"]
+      labels: ["bugfix","fix", "perf","bug"]
     - title: "Maintenance"
-      labels: ["chore", "refactor", "style"]
+      labels: ["chore", "refactor", "style", "ci", "build"]
+    - title: "Optimizations"
+      labels: ["perf", "performance", "optimization"]
     - title: "Documentation"
-      labels: ["docs"]
+      labels: ["docs", "documentation"]
 
   exclude:
     labels:
