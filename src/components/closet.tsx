@@ -1,6 +1,7 @@
 import TextureList from "@/components/texture-list";
 import TextureDetail from "@/components/texture-detail";
 import { findTextureByIdWithOwnProfiles } from "@/queries/texture";
+import { TEXTURE_PREFIX } from "@/lib/constants";
 
 export default async function Closet({ tab, user, detail }) {
   let texture;
@@ -16,7 +17,7 @@ export default async function Closet({ tab, user, detail }) {
       </div>
       {detail && (
         <div className="border rounded-md min-h-60 md:min-h-80 p-5 my-4 bg-background w-full h-fit">
-          <TextureDetail texture={texture} user={user} />
+          <TextureDetail texture={texture} user={user} texturePrefix={TEXTURE_PREFIX} />
         </div>
       )}
     </div>

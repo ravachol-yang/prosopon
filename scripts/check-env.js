@@ -16,8 +16,8 @@ const requiredEnvVars = [
   "RSA_PRIVKEY_B64",
 
   "TEXTURE_DOMAIN",
-  "NEXT_PUBLIC_TEXTURE_PREFIX",
-  "NEXT_PUBLIC_SITE_DOMAIN",
+  "TEXTURE_PREFIX",
+  "SITE_DOMAIN",
 ];
 
 const missingVars = requiredEnvVars.filter((varName) => !process.env[varName]);

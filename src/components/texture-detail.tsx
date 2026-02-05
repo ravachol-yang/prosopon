@@ -1,12 +1,11 @@
 "use client";
 
-import { TEXTURE_PREFIX } from "@/lib/constants";
 import { Separator } from "@/components/ui/separator";
 import ProfileBind from "@/components/profile-bind";
 import { SkinModel, TextureType } from "@/generated/prisma/enums";
 import TexturePreview from "@/components/texture-preview";
 
-export default function TextureDetail({ texture, user }) {
+export default function TextureDetail({ texture, user, texturePrefix }) {
   let profiles;
 
   if (texture.type === "SKIN") {
@@ -19,8 +18,8 @@ export default function TextureDetail({ texture, user }) {
     <div>
       <div className="flex justify-center">
         <TexturePreview
-          skinUrl={texture.type === TextureType.SKIN ? TEXTURE_PREFIX + texture.hash : null}
-          capeUrl={texture.type === TextureType.CAPE ? TEXTURE_PREFIX + texture.hash : null}
+          skinUrl={texture.type === TextureType.SKIN ? texturePrefix + texture.hash : null}
+          capeUrl={texture.type === TextureType.CAPE ? texturePrefix + texture.hash : null}
         />
       </div>
 
