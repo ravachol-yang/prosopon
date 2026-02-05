@@ -4,9 +4,9 @@ export const SESSION_PREFIX = process.env.SESSION_PREFIX || "prosopon";
 
 export const ANNOUNCEMENT = process.env.ANNOUNCEMENT || "";
 
-export const TEXTURE_PREFIX = process.env.TEXTURE_PREFIX;
-
 export const TEXTURE_DOMAIN = process.env.TEXTURE_DOMAIN;
+
+export const TEXTURE_PREFIX = process.env.TEXTURE_PREFIX || `https://${TEXTURE_DOMAIN}/`;
 
 export const TOKEN_HALF_LIFE = 6 * 60 * 60;
 

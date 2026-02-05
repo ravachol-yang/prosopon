@@ -16,7 +16,6 @@ const requiredEnvVars = [
   "RSA_PRIVKEY_B64",
 
   "TEXTURE_DOMAIN",
-  "TEXTURE_PREFIX",
   "SITE_DOMAIN",
 ];
 
