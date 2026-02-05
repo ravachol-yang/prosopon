@@ -20,9 +20,9 @@ export default async function OverviewPage() {
 
   return (
     <>
-      <div className="max-w-400">
-        <div className="lg:flex">
-          <div className="w-max-200 w-full lg:p-3">
+      <div className="max-w-400 md:overflow-hidden md:p-3 md:h-[calc(100vh-7rem)]">
+        <div className="lg:flex h-full gap-6">
+          <div className="md:w-1/2">
             <Greeting user={user} />
             <AccountConfig verified={user!.verified} />
             <h3 className="text-lg">我的资源</h3>
@@ -32,10 +32,12 @@ export default async function OverviewPage() {
               isAdmin={user!.role === "ADMIN"}
             />
           </div>
-          <div className=" w-max-200 w-full lg:p-3">
-            <Announcement />
-            <h3 className="text-lg my-3">使用指南</h3>
-            <Instructions />
+          <div className="flex flex-col md:w-1/2 h-full">
+            <Announcement verified={currentAuth.verified} />
+            <div className="flex-none">
+              <h3 className="text-lg my-3">使用指南</h3>
+              <Instructions />
+            </div>
           </div>
         </div>
       </div>
