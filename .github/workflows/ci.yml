@@ -40,8 +40,8 @@ jobs:
     
     - name: Build and test
       env:
-        NEXT_PUBLIC_SITE_DOMAIN: exmaple.com
-        NEXT_PUBLIC_TEXTURE_PREFIX: https://example.com/
+        SITE_DOMAIN: exmaple.com
+        TEXTURE_PREFIX: https://example.com/
         TEXTURE_DOMAIN: example.com
         
         DATABASE_URL: postgresql://dummy:dummy@localhost:5432/dummy
