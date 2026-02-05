@@ -33,7 +33,7 @@ export default async function OverviewPage() {
             />
           </div>
           <div className="flex flex-col md:w-1/2 h-full">
-            <Announcement />
+            <Announcement verified={currentAuth.verified} />
             <div className="flex-none">
               <h3 className="text-lg my-3">使用指南</h3>
               <Instructions />
