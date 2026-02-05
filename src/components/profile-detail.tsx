@@ -3,6 +3,7 @@ import ProfileTexture from "@/components/profile-texture";
 import { findProfileByIdWithTextures } from "@/queries/profile";
 import { Separator } from "@/components/ui/separator";
 import ProfileName from "@/components/profile-name";
+import { TEXTURE_PREFIX } from "@/lib/constants";
 
 export default async function ProfileDetail({
   profileId,
@@ -23,7 +24,7 @@ export default async function ProfileDetail({
         {!profile.skin && !profile.cape ? (
           <TextureBind profile={profile} />
         ) : (
-          <ProfileTexture profile={profile} />
+          <ProfileTexture profile={profile} texturePrefix={TEXTURE_PREFIX} />
         )}
       </div>
 

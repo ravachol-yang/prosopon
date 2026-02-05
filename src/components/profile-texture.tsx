@@ -1,6 +1,5 @@
 "use client";
 
-import { TEXTURE_PREFIX } from "@/lib/constants";
 import { useState } from "react";
 import TextureBind from "@/components/texture-bind";
 import { Button } from "@/components/ui/button";
@@ -9,7 +8,7 @@ import { bindProfileTexture } from "@/lib/actions";
 import { useRouter } from "next/navigation";
 import TexturePreview from "@/components/texture-preview";
 
-export default function ProfileTexture({ profile }) {
+export default function ProfileTexture({ profile, texturePrefix }) {
   const [upload, setUpload] = useState(false);
   const [detach, setDetach] = useState(false);
 
@@ -37,8 +36,8 @@ export default function ProfileTexture({ profile }) {
         <div className="w-full">
           <div className="flex justify-center">
             <TexturePreview
-              skinUrl={profile.skin && TEXTURE_PREFIX + profile.skin.hash}
-              capeUrl={profile.cape && TEXTURE_PREFIX + profile.cape.hash}
+              skinUrl={profile.skin && texturePrefix + profile.skin.hash}
+              capeUrl={profile.cape && texturePrefix + profile.cape.hash}
             />
           </div>
           {detach && (

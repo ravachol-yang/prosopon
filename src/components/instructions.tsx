@@ -1,12 +1,11 @@
 "use client";
 
-import { YGG_API_PREFIX } from "@/lib/constants";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 
-export default function Instructions() {
+export default function Instructions({ yggUrl }) {
   function dndLabel_dragstart(event) {
-    const uri = "authlib-injector:yggdrasil-server:" + encodeURIComponent(YGG_API_PREFIX);
+    const uri = "authlib-injector:yggdrasil-server:" + encodeURIComponent(yggUrl);
     event.dataTransfer.setData("text/plain", uri);
     event.dataTransfer.dropEffect = "copy";
   }
@@ -15,7 +14,7 @@ export default function Instructions() {
     <div className="border rounded-md p-5 mb-4 bg-background">
       <p className="text-base leading-10">
         <strong>本站的Yggdrasil API地址:</strong>{" "}
-        <code className="bg-destructive/1 text-destructive">{YGG_API_PREFIX}</code>
+        <code className="bg-destructive/1 text-destructive">{yggUrl}</code>
         <br />
         <strong>本站已在全站开启ALI:</strong>
         API 地址指示（API Location Indication）, 其作用是只要在启动器中输入本站

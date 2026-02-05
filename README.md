@@ -8,7 +8,7 @@
 
 ## Getting Started
 
-Prosopon is a Minecraft identity manager with multi-profile, texture (both skin and cape) management and yggdrasil api compatibility based on NextJS.
+Prosopon is a Minecraft identity manager with multiprofile, texture (both skin and cape) management and Yggdrasil api compatibility based on Next.js.
 
 It's designed for small community and fast, serverless deployment
 
@@ -17,7 +17,7 @@ It's designed for small community and fast, serverless deployment
 Requirements:
 
 - a PostgreSQL database
-- an S3-compatible object storage
+- an S3-compatible object storage (Remember to configure CORS policy)
 - an Upstash Redis storage
 - an RSA keypair (see [authlib-injector docs](https://github.com/yushijinhun/authlib-injector/wiki/%E7%AD%BE%E5%90%8D%E5%AF%86%E9%92%A5%E5%AF%B9))
 
@@ -27,10 +27,7 @@ Site info:
 
 ```dotenv
 # (Required) your site domain, required for profile uuid generation
-NEXT_PUBLIC_SITE_DOMAIN=""
-
-# (Required) prefix of your texture url, starts with 'https://' and ends with '/'
-NEXT_PUBLIC_TEXTURE_PREFIX=""
+SITE_DOMAIN=""
 
 # (Required) domain of your texture host. see Yggdrasil docs
 TEXTURE_DOMAIN=""
