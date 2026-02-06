@@ -45,9 +45,6 @@ jobs:
         
         DATABASE_URL: postgresql://dummy:dummy@localhost:5432/dummy
 
-        UPSTASH_REDIS_REST_URL: https://example.com
-        UPSTASH_REDIS_REST_TOKEN: dummy
-
         S3_ENDPOINT: https://example.com
         S3_ACCESS_KEY_ID: dummy
         S3_SECRET_ACCESS_KEY: dummy

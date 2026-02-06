@@ -77,6 +77,14 @@ model Texture {
   updatedAt   DateTime  @updatedAt
 }
 
+model YggSession {
+  id          String  @id
+  profileId   String
+  profileName String
+  ip          String?
+  createdAt   DateTime @default(now())
+}
+
 enum Role {
   ADMIN
   USER

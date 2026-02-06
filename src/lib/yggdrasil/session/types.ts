@@ -8,4 +8,5 @@ export interface Session {
   profileId: string;
   profileName: string;
   ip?: string;
+  createdAt?: Date;
 }
