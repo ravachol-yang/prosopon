@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { sessionStore } from "@/lib/yggdrasil/session";
 import { findProfileByUuidWithTextures } from "@/queries/profile";
 import { buildProfile, untrimUuid } from "@/lib/yggdrasil/utils";
+import { trimIp } from "@/lib/yggdrasil/ip";
 
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
@@ -15,7 +16,11 @@ export async function GET(req: NextRequest) {
 
   const session = await sessionStore.get(serverId);
 
-  if (session && session.profileName === username) {
+  if (
+    session &&
+    session.profileName === username &&
+    (ip ? trimIp(session.ip) === trimIp(ip) : true)
+  ) {
     const profile = await findProfileByUuidWithTextures(untrimUuid(session.profileId));
 
     if (profile) {

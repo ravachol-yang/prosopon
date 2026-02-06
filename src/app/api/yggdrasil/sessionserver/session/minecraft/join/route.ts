@@ -4,9 +4,11 @@ import { ForbiddenOperationException } from "@/lib/yggdrasil/exception";
 import prisma from "@/lib/prisma";
 import { trimUuid, untrimUuid } from "@/lib/yggdrasil/utils";
 import { sessionStore } from "@/lib/yggdrasil/session";
+import { getClientIp } from "@/lib/yggdrasil/ip";
 
 export async function POST(req: Request) {
   const { accessToken, selectedProfile, serverId } = await req.json();
+  const ip = getClientIp(req.headers);
 
   const auth = await verifyAccessToken(accessToken);
 
@@ -30,7 +32,7 @@ export async function POST(req: Request) {
     });
   }
 
-  await sessionStore.save(serverId, trimUuid(profile.uuid), profile.name);
+  await sessionStore.save(serverId, trimUuid(profile.uuid), profile.name, ip);
 
   return new NextResponse(null, { status: 204 });
 }
