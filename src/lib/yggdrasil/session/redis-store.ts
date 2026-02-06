@@ -13,13 +13,23 @@ export class RedisStore implements SessionStore {
   }
 
   async get(serverId: string) {
-    const session = await this.client.get<Session>(SESSION_PREFIX + ":session:" + serverId);
+    const script = `
+      local data = redis.call('GET', KEYS[1])
+      if data then
+        redis.call('DEL', KEYS[1])
+      end
+      return data
+    `;
 
-    if (!session) {
-      return null;
-    }
-    await this.client.del(SESSION_PREFIX + ":session:" + serverId);
-    return session;
+    const result = await this.client.eval(script, [SESSION_PREFIX + ":session:" + serverId], []);
+
+    if (typeof result === "object") {
+      try {
+        return result as Session;
+      } catch {
+        return null;
+      }
+    } else return null;
   }
 
   async save(serverId: string, profileId: string, profileName: string, ip?: string) {
