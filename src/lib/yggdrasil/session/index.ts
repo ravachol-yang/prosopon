@@ -1,5 +1,6 @@
 import { SessionStore } from "@/lib/yggdrasil/session/types";
 import { RedisStore } from "@/lib/yggdrasil/session/redis-store";
+import { DbStore } from "@/lib/yggdrasil/session/db-store";
 
 let store: SessionStore;
 
@@ -11,7 +12,7 @@ if (useRedis) {
     process.env.UPSTASH_REDIS_REST_TOKEN as string,
   );
 } else {
-  throw new Error("Redis configuration missing.");
+  store = new DbStore();
 }
 
 export { store as sessionStore };
