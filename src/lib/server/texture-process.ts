@@ -1,8 +1,9 @@
 import sharp from "sharp";
 import { TextureType } from "@/generated/prisma/enums";
+import { UPLOAD_MAX_SIZE } from "@/lib/constants";
 
 export async function processTexture(fileBuffer: Buffer, textureType: TextureType) {
-  if (fileBuffer.length > 1024 * 1024) {
+  if (fileBuffer.length > UPLOAD_MAX_SIZE) {
     throw new Error("Too large");
   }
 

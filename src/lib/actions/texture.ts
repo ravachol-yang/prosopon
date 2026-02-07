@@ -9,13 +9,13 @@ import { getContentHash } from "@/lib/crypto";
 import { z } from "zod";
 import prisma from "@/lib/prisma";
 import { storage } from "@/lib/storage";
+import { UPLOAD_MAX_SIZE } from "@/lib/constants";
 
-const UPLOAD_MAX_SIZE = 1024 * 1024 * 2;
 const ALLOWED_TYPES = ["image/png"];
 
 export async function uploadTexture(formData: FormData) {
   const user = await checkAuth();
-  if (user.error) return { success: false, message: user.error };
+  if (user.error || !user.id) return { success: false, message: user.error };
 
   const raw = {
     name: formData.get("name"),
@@ -42,21 +42,26 @@ export async function uploadTexture(formData: FormData) {
 
   const hash = getContentHash(buffer);
 
-  const existing = await prisma.texture.findFirst({ where: { hash } });
-  if (!existing) {
-    await storage.put(hash, buffer, file.type);
-  }
+  try {
+    const existing = await prisma.texture.findFirst({ where: { hash }, select: { id: true } });
+    if (!existing) {
+      console.log("not existing");
+      await storage.put(hash, buffer, file.type);
+    }
 
-  const existingPersonal = await prisma.texture.findFirst({
-    where: {
-      uploaderId: user.id,
-      hash,
-    },
-  });
-
-  if (!existingPersonal) {
-    const texture = await prisma.texture.create({
-      data: {
+    const result = await prisma.texture.upsert({
+      where: {
+        uploaderId_hash: {
+          uploaderId: user.id,
+          hash,
+        },
+      },
+      update: {
+        name: name || hash,
+        type,
+        model: type === TextureType.SKIN ? model : undefined,
+      },
+      create: {
         name: name || hash,
         type,
         hash,
@@ -65,19 +70,10 @@ export async function uploadTexture(formData: FormData) {
       },
     });
 
-    return { success: true, data: texture };
+    return { success: true, data: result };
+  } catch (e) {
+    return { success: false, message: "Internal Error" };
   }
-
-  const updated = await prisma.texture.update({
-    where: { id: existingPersonal.id },
-    data: {
-      name: name || hash,
-      type,
-      model: type === TextureType.SKIN ? model : undefined,
-    },
-  });
-
-  return { success: true, data: updated };
 }
 
 export async function bindProfileTexture(data: z.infer<typeof bindProfileTextureParams>) {

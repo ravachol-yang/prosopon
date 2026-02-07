@@ -14,6 +14,8 @@ export const MAX_PROFILES = +(process.env.MAX_PROFILES || 3);
 
 export const YGG_API_PREFIX = `https://${SITE_DOMAIN}/api/yggdrasil`;
 
+export const UPLOAD_MAX_SIZE = 1024 * 1024 * 2;
+
 export const ENTRIES = {
   dashboard: { id: "/", title: "仪表盘" },
   overview: { id: "overview", title: "概览", url: "overview" },

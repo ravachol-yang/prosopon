@@ -38,44 +38,44 @@ export async function PUT(req: NextRequest, { params }) {
   }
 
   const hash = getContentHash(buffer);
-  const existing = await prisma.texture.findFirst({ where: { hash } });
-  if (!existing) {
-    await storage.put(hash, buffer, file.type);
-  }
 
-  const existingPersonal = await prisma.texture.findFirst({
-    where: {
-      uploaderId: verified.payload.userId,
-      hash,
-    },
-  });
-
-  let texture;
-  if (!existingPersonal) {
-    texture = await prisma.texture.create({
-      data: {
-        name: file.name,
-        type: textureType === "skin" ? TextureType.SKIN : TextureType.CAPE,
-        hash: hash,
-        model: textureType === "skin" ? finalModel : undefined,
-        uploader: { connect: { id: verified.payload.userId } },
-      },
-    });
-  } else texture = existingPersonal;
-
-  if (texture) {
-    const profile = await prisma.profile.update({
-      where: { uuid: untrimUuid(uuid) },
-      data: {
-        skin: textureType === "skin" ? { connect: { id: texture.id } } : undefined,
-        cape: textureType === "cape" ? { connect: { id: texture.id } } : undefined,
-      },
-    });
-    if (profile) {
-      return new NextResponse(null, { status: 204 });
+  try {
+    const existing = await prisma.texture.findFirst({ where: { hash }, select: { id: true } });
+    if (!existing) {
+      await storage.put(hash, buffer, file.type);
     }
+
+    const connectTexture = {
+      connectOrCreate: {
+        create: {
+          name: file.name,
+          type: textureType === "skin" ? TextureType.SKIN : TextureType.CAPE,
+          hash: hash,
+          model: textureType === "skin" ? finalModel : undefined,
+          uploader: { connect: { id: verified.payload.userId } },
+        },
+        where: {
+          uploaderId_hash: {
+            uploaderId: verified.payload.userId,
+            hash,
+          },
+        },
+      },
+    };
+
+    await prisma.profile.update({
+      where: {
+        uuid: untrimUuid(uuid),
+      },
+      data: {
+        skin: textureType === "skin" ? connectTexture : undefined,
+        cape: textureType === "cape" ? connectTexture : undefined,
+      },
+    });
+    return new NextResponse(null, { status: 204 });
+  } catch (e) {
+    return new NextResponse(null, { status: 500 });
   }
-  return new NextResponse(null, { status: 500 });
 }
 
 export async function DELETE(req: NextRequest, { params }) {
@@ -88,16 +88,17 @@ export async function DELETE(req: NextRequest, { params }) {
     return new NextResponse(null, { status: 401 });
   }
 
-  const profile = await prisma.profile.update({
-    where: { uuid: untrimUuid(uuid) },
-    data: {
-      skin: textureType === "skin" ? { disconnect: true } : undefined,
-      cape: textureType === "cape" ? { disconnect: true } : undefined,
-    },
-  });
+  try {
+    await prisma.profile.update({
+      where: { uuid: untrimUuid(uuid) },
+      data: {
+        skin: textureType === "skin" ? { disconnect: true } : undefined,
+        cape: textureType === "cape" ? { disconnect: true } : undefined,
+      },
+    });
 
-  if (profile) {
     return new NextResponse(null, { status: 204 });
+  } catch (e) {
+    return new NextResponse(null, { status: 500 });
   }
-  return new NextResponse(null, { status: 500 });
 }

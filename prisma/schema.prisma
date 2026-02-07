@@ -75,6 +75,8 @@ model Texture {
 
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+
+  @@unique([uploaderId, hash])
 }
 
 model YggSession {
