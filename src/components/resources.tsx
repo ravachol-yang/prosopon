@@ -6,7 +6,7 @@ import { MAX_PROFILES } from "@/lib/constants";
 export default function Resources({ profiles, closet, isAdmin }) {
   return (
     <>
-      {profiles.length === 0 && closet.length === 0 ? (
+      {profiles === 0 && closet === 0 ? (
         <div className="border rounded-md md:min-h-50 p-5 my-4 bg-background">
           <ResourcesEmpty />
         </div>
@@ -18,13 +18,17 @@ export default function Resources({ profiles, closet, isAdmin }) {
               <span className="text-lg font-bold">角色</span>
             </div>
             <p className="text-7xl w-full text-center my-13">
-              {profiles.length}
+              {profiles}
               <span className="text-2xl text-muted-foreground">
                 /{isAdmin ? "\u221e" : MAX_PROFILES}
               </span>
             </p>
             <div className="w-full flex flex-col-reverse flex-auto">
-              <Link href="profile" className="hover:text-sky-700 text-lg text-center">
+              <Link
+                prefetch={false}
+                href={{ pathname: "profile" }}
+                className="hover:text-sky-700 text-lg text-center"
+              >
                 管理角色
                 <ChevronRight className="inline" />
               </Link>
@@ -36,11 +40,15 @@ export default function Resources({ profiles, closet, isAdmin }) {
               <span className="text-lg font-bold">材质</span>
             </div>
             <p className="text-7xl w-full text-center my-13">
-              {closet.length}
+              {closet}
               <span className="text-2xl text-muted-foreground">/&infin;</span>
             </p>
             <div className="w-full flex flex-col-reverse flex-auto">
-              <Link href="closet" className="hover:text-sky-700 text-lg text-center">
+              <Link
+                prefetch={false}
+                href={{ pathname: "closet" }}
+                className="hover:text-sky-700 text-lg text-center"
+              >
                 管理材质
                 <ChevronRight className="inline" />
               </Link>

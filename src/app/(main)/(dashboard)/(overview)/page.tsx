@@ -5,7 +5,7 @@ import Announcement from "@/components/announcement";
 import Instructions from "@/components/instructions";
 import { checkAuth } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { findUserByIdWithProfilesAndTextures } from "@/queries/user";
+import { findUserByIdWithResourceCount } from "@/queries/user";
 import { Metadata } from "next";
 import { SITE_NAME, YGG_API_PREFIX } from "@/lib/constants";
 
@@ -17,7 +17,7 @@ export default async function OverviewPage() {
   const currentAuth = await checkAuth(false);
   if (!currentAuth || currentAuth.error || !currentAuth.id) redirect("/login");
 
-  const user = await findUserByIdWithProfilesAndTextures(currentAuth.id!);
+  const user = await findUserByIdWithResourceCount(currentAuth.id!);
 
   return (
     <>
@@ -28,8 +28,8 @@ export default async function OverviewPage() {
             <AccountConfig verified={user?.verified} />
             <h3 className="text-lg">我的资源</h3>
             <Resources
-              profiles={user?.profiles}
-              closet={user?.closet}
+              profiles={user?._count.profiles}
+              closet={user?._count.closet}
               isAdmin={user?.role === "ADMIN"}
             />
           </div>

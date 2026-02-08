@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function AccountConfig({ verified }) {
   return (
-    <Link href="account">
+    <Link prefetch={false} href={{ pathname: "account" }}>
       <div className="group border rounded-md h-12 p-3 my-4 flex bg-background hover:bg-accent transition-colors duration-300 ease-out">
         {verified ? (
           <BadgeCheck
