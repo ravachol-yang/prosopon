@@ -1,7 +1,7 @@
 "use client";
 
-import { FormEvent, useState } from "react";
-import { ChevronLeft, LoaderCircle, Pencil } from "lucide-react";
+import { useState } from "react";
+import { ChevronLeft, LoaderCircle, SquarePen } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { updatePasswordParams, updateUserInfoParams } from "@/lib/schema";
@@ -22,7 +22,7 @@ export default function AccountInfo({ user }) {
 
   const router = useRouter();
 
-  async function handleUpdateUserInfo(e: FormEvent) {
+  async function handleUpdateUserInfo(e) {
     setInfoPending(true);
     e.preventDefault();
 
@@ -57,7 +57,7 @@ export default function AccountInfo({ user }) {
   const [passwordMessage, setPasswordMessage] = useState<string>("");
   const [passwordPending, setPasswordPending] = useState<boolean>(false);
 
-  async function handleUpdatePassword(e: FormEvent) {
+  async function handleUpdatePassword(e) {
     setPasswordPending(true);
     e.preventDefault();
     const validated = updatePasswordParams.safeParse({
@@ -91,10 +91,10 @@ export default function AccountInfo({ user }) {
           ) : (
             <span className="mx-2">{user.name}</span>
           )}
-          <Pencil
+          <SquarePen
             onClick={() => setEditingName(!editingName)}
-            size={15}
-            className="hover:scale-110"
+            size={20}
+            className={clsx("hover:scale-110", !editingName && "text-muted-foreground")}
           />
         </p>
         <p className="my-3 flex">
@@ -113,10 +113,10 @@ export default function AccountInfo({ user }) {
               <code className="bg-accent p-1 rounded-sm text-muted-foreground">{user.email}</code>
             </span>
           )}
-          <Pencil
+          <SquarePen
             onClick={() => setEditingEmail(!editingEmail)}
-            size={15}
-            className="hover:scale-110"
+            size={20}
+            className={clsx("hover:scale-110", !editingEmail && "text-muted-foreground")}
           />
         </p>
         {(editingName || editingEmail) && (

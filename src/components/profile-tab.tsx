@@ -50,9 +50,7 @@ export default async function ProfileTab({ where }) {
       <TableBody>
         {profiles.map((profile) => (
           <TableRow key={profile.id}>
-            <TableCell>
-              <strong>{profile.id}</strong>
-            </TableCell>
+            <TableCell className="font-medium">{profile.id}</TableCell>
             <TableCell>{profile.name}</TableCell>
             <TableCell>{profile.uuid}</TableCell>
             <TableCell>

@@ -25,12 +25,12 @@ export default async function OverviewPage() {
         <div className="lg:flex h-full gap-6">
           <div className="md:w-1/2">
             <Greeting user={user} siteName={SITE_NAME} />
-            <AccountConfig verified={user!.verified} />
+            <AccountConfig verified={user?.verified} />
             <h3 className="text-lg">我的资源</h3>
             <Resources
-              profiles={user!.profiles}
-              closet={user!.closet}
-              isAdmin={user!.role === "ADMIN"}
+              profiles={user?.profiles}
+              closet={user?.closet}
+              isAdmin={user?.role === "ADMIN"}
             />
           </div>
           <div className="flex flex-col md:w-1/2 h-full">
