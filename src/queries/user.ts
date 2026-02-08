@@ -13,6 +13,26 @@ export async function findUserById(id: string) {
   });
 }
 
+export async function findUserByIdWithResourceCount(id: string) {
+  return prisma.user.findUnique({
+    where: { id },
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      role: true,
+      verified: true,
+      createdAt: true,
+      _count: {
+        select: {
+          closet: true,
+          profiles: true,
+        },
+      },
+    },
+  });
+}
+
 export async function findUserByIdWithProfilesAndTextures(id: string) {
   return prisma.user.findUnique({
     where: { id },
