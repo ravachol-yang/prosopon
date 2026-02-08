@@ -7,6 +7,7 @@ import { MAX_PROFILES, SITE_DOMAIN } from "@/lib/constants";
 import { z } from "zod";
 import { v5 as uuidv5 } from "uuid";
 import { createId } from "@paralleldrive/cuid2";
+import { Prisma } from "@/generated/prisma/client";
 
 export async function createProfile(data: z.infer<typeof createProfileParam>) {
   const user = await checkAuth();
@@ -39,18 +40,28 @@ export async function createProfile(data: z.infer<typeof createProfileParam>) {
   const id = createId();
   const uuid = uuidv5(id, SITE_NAMESPACE);
 
-  const profile = await prisma.profile.create({
-    data: {
-      id,
-      name,
-      uuid,
-      user: {
-        connect: { id: user.id },
+  try {
+    const profile = await prisma.profile.create({
+      data: {
+        id,
+        name,
+        uuid,
+        user: {
+          connect: { id: user.id },
+        },
       },
-    },
-  });
+    });
 
-  return { success: true, data: profile };
+    return { success: true, data: profile };
+  } catch (e) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      if (e.code === "P2002") {
+        return { success: false, message: "Profile already exists" };
+      }
+    }
+    console.error(e);
+    return { success: false, message: "Something went wrong" };
+  }
 }
 
 export async function updateProfileName(id: string, data: z.infer<typeof createProfileParam>) {
