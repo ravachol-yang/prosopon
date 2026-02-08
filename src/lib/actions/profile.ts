@@ -16,6 +16,7 @@ export async function createProfile(data: z.infer<typeof createProfileParam>) {
   if (user.role !== "ADMIN") {
     const profiles = await prisma.profile.findMany({
       where: { userId: user.id },
+      select: { id: true },
     });
 
     if (profiles.length >= MAX_PROFILES) {
@@ -28,12 +29,6 @@ export async function createProfile(data: z.infer<typeof createProfileParam>) {
     return { success: false, message: "Invalid Input" };
   }
   const { name } = validated.data;
-
-  const existing = await prisma.profile.findUnique({
-    where: { name },
-  });
-
-  if (existing) return { success: false, message: "Profile already exists" };
 
   const SITE_NAMESPACE = uuidv5(SITE_DOMAIN, uuidv5.DNS);
 
