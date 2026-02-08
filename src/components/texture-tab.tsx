@@ -46,9 +46,7 @@ export default async function TextureTab({ where }) {
       <TableBody>
         {textures.map((texture) => (
           <TableRow key={texture.id}>
-            <TableCell>
-              <strong>{texture.id}</strong>
-            </TableCell>
+            <TableCell className="font-medium">{texture.id}</TableCell>
             <TableCell className="max-w-30">
               <p className="truncate" title={texture.name}>
                 {texture.name}

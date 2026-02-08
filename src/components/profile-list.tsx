@@ -40,9 +40,7 @@ export default async function ProfileList({ userId, isAdmin, verified, detail })
             <TableBody>
               {profiles.map((profile) => (
                 <TableRow key={profile.id} className={clsx(detail === profile.id && "bg-muted")}>
-                  <TableCell>
-                    <strong>{profile.name}</strong>
-                  </TableCell>
+                  <TableCell className="font-medium">{profile.name}</TableCell>
                   <TableCell>
                     <code>{profile.uuid}</code>
                   </TableCell>
