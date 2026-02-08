@@ -12,6 +12,7 @@ import { z } from "zod";
 import { checkPassword, hashPassword } from "@/lib/password";
 import { checkAuth, signin } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import { Prisma } from "@/generated/prisma/client";
 
 export async function register(data: z.infer<typeof registerParams>) {
   const validated = registerParams.safeParse(data);
@@ -21,14 +22,6 @@ export async function register(data: z.infer<typeof registerParams>) {
   }
 
   const { email, password, inviteCode } = validated.data;
-
-  const existing = await prisma.user.findUnique({
-    where: { email },
-  });
-
-  if (existing) {
-    return { success: false, message: `User with email: ${email} already exists` };
-  }
 
   let verified = false;
   let inviteId;
@@ -52,16 +45,26 @@ export async function register(data: z.infer<typeof registerParams>) {
 
   const passwordHash = hashPassword(password);
 
-  const user = await prisma.user.create({
-    data: {
-      email,
-      password: passwordHash,
-      verified,
-      invitedBy: inviteId ? { connect: { code: inviteId } } : undefined,
-    },
-  });
+  try {
+    const user = await prisma.user.create({
+      data: {
+        email,
+        password: passwordHash,
+        verified,
+        invitedBy: inviteId ? { connect: { code: inviteId } } : undefined,
+      },
+    });
 
-  await signin({ id: user.id, role: user.role, verified: user.verified });
+    await signin({ id: user.id, role: user.role, verified: user.verified });
+  } catch (e) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      if (e.code === "P2002") {
+        return { success: false, message: `User with email: ${email} already exists` };
+      }
+    }
+    console.error(e);
+    return { success: false, message: "Something went wrong" };
+  }
 
   redirect("/");
 }
