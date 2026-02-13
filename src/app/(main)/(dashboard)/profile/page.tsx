@@ -20,8 +20,8 @@ export default async function ProfilePage({ searchParams }) {
 
   return (
     <>
-      <div className="lg:flex">
-        <div className="w-max-200 w-full lg:p-3">
+      <div className="max-w-400 lg:flex">
+        <div className="md:w-full lg:p-3">
           <h3 className="text-lg">我的角色</h3>
           <ProfileList
             userId={currentAuth.id}
@@ -31,7 +31,7 @@ export default async function ProfilePage({ searchParams }) {
           />
         </div>
 
-        <div className=" w-max-200 w-full lg:p-3">
+        <div className="md:w-full lg:p-3">
           {profileId && (
             <>
               <h3 className="text-lg">角色信息</h3>
