@@ -42,7 +42,8 @@ export async function POST(req: Request) {
     }
   }
 
-  const finalClientToken = clientToken ?? verified.payload.clientToken;
+  const finalClientToken =
+    clientToken ?? verified.payload.clientToken ?? verified.payload.clientTokenHash;
 
   const newToken = await createAccessToken(
     userId,

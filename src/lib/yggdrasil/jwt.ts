@@ -26,14 +26,19 @@ export async function verifyAccessToken(token: string, clientToken?: string) {
 
     let clientMatch = false;
     if (clientToken) {
-      clientMatch = clientToken === payload.clientToken;
+      clientMatch = clientToken === payload.clientToken || clientToken === payload.clientTokenHash;
     }
 
     return {
       valid: true,
       semiExpire,
       clientMatch,
-      payload: payload as { userId: string; clientToken: string; profileId: string },
+      payload: payload as {
+        userId: string;
+        clientToken: string;
+        clientTokenHash: string;
+        profileId: string;
+      },
     };
   } catch (e) {
     return { valid: false };
