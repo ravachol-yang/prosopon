@@ -1,5 +1,6 @@
 import { jwtVerify, SignJWT } from "jose";
 import { TOKEN_HALF_LIFE } from "@/lib/constants";
+import { createHash } from "node:crypto";
 
 const secret = new TextEncoder().encode(process.env.APP_SECRET);
 const alg = "HS256";
@@ -26,7 +27,9 @@ export async function verifyAccessToken(token: string, clientToken?: string) {
 
     let clientMatch = false;
     if (clientToken) {
-      clientMatch = clientToken === payload.clientToken || clientToken === payload.clientTokenHash;
+      clientMatch =
+        clientToken === payload.clientToken ||
+        createHash("sha256").update(clientToken).digest("hex") === payload.clientTokenHash;
     }
 
     return {
