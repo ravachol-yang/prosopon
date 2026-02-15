@@ -10,7 +10,7 @@ export async function POST(req: Request) {
   const verified = await verifyAccessToken(accessToken, clientToken);
 
   // Check if fully expired, semi expired token can be refreshed
-  if (!verified.valid || (clientToken && !verified.clientMatch)) {
+  if (!verified.valid || !verified.payload || (clientToken && !verified.clientMatch)) {
     return NextResponse.json(new ForbiddenOperationException("Invalid token"), {
       status: ForbiddenOperationException.status,
     });
@@ -42,15 +42,18 @@ export async function POST(req: Request) {
     }
   }
 
+  const finalClientToken =
+    clientToken ?? verified.payload.clientToken ?? verified.payload.clientTokenHash;
+
   const newToken = await createAccessToken(
     userId,
-    clientToken,
+    finalClientToken,
     targetProfileId ? trimUuid(profile.uuid) : undefined,
   );
 
   return NextResponse.json({
     accessToken: newToken,
-    clientToken,
+    clientToken: finalClientToken,
     selectedProfile: profile ? buildProfile(profile) : undefined,
     user: requestUser ? { id: userId } : undefined,
   });
