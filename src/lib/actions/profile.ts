@@ -69,13 +69,13 @@ export async function updateProfileName(id: string, data: z.infer<typeof createP
   }
   const { name } = validated.data;
 
-  const profile = await prisma.profile.update({
-    where: { id },
+  const profile = await prisma.profile.updateMany({
+    where: { id, userId: user.id },
     data: {
       name,
     },
   });
 
-  if (!profile) return { success: false, message: "Update failed" };
+  if (profile.count != 1) return { success: false, message: "Profile not found or not owned" };
   return { success: true, data: profile };
 }
